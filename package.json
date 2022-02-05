@@ -6,7 +6,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "serve": "nodemon src/test/test.ts --exec ts-node",
+    "serve": "nodemon test/test.ts --exec ts-node",
     "prestart": "npm run build",
     "start": "node .",
     "lint": "eslint . --ext .ts",
