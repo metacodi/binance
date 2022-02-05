@@ -24,7 +24,6 @@ npm-debug.log*
 /.versions
 /.vscode
 /coverage
-/dist
 /node_modules
 /platforms
 /plugins
@@ -35,4 +34,3 @@ npm-debug.log*
 /electron
 
 node_modules
-www
