@@ -1,15 +1,36 @@
-import { BinanceSpot } from '../src/binance-spot';
-import { BinanceFutures } from '../src/binance-futures';
+import { BinanceApiSpot } from '../src/binance-api-spot';
+import { BinanceApiFutures } from '../src/binance-api-futures';
 import { BinanceApiOptions, BinanceMarketType } from '../src/types/binance.types';
+import { BinanceWebsocketOptions } from '../src/types/binance-websocket.types';
+import { BinanceWebsocket } from '../src';
 
-const main = async () => {
 
+const setTestKeys = (options: any, market?: BinanceMarketType) => {
+  if (options.isTest) {
+    switch (options.market || market) {
+      case 'spot':
+        // Spot test keys Jordi.
+        options.apiKey = 'Km2NVvyj0nIvBS26keQkvCbRyZ01yzGyFweRWt8oJf9Rza00u1V5wYVVmEUSg130';
+        options.apiSecret = 'n9QtgRInpJ1Z68hJkGWZ06LVxvTRdsojoOXCIth8IGtDtiNYNoKyNol0EELGhWN9';
+        break;
+  
+      case 'usdm':
+        // Futures test keys Jordi.
+        options.apiKey = '';
+        options.apiSecret = '';
+        break;
+    }
+  }
+  return options;
+};
+
+const testApi = async () => {
   try {
     
-    console.log('---------------- TEST ----------------------');
+    console.log('---------------- API TEST ----------------------');
  
     const market: BinanceMarketType = 'spot';
-    // const market: any = 'futures';
+    // const market: BinanceMarketType = 'usdm';
 
     const options: BinanceApiOptions = {
       // Binance keys Jordi.
@@ -18,20 +39,9 @@ const main = async () => {
       // isTest: true,
     };
 
-    if (options.isTest) {
-      if (market === 'spot') {
-        // Spot test keys Jordi.
-        options.apiKey = 'Km2NVvyj0nIvBS26keQkvCbRyZ01yzGyFweRWt8oJf9Rza00u1V5wYVVmEUSg130';
-        options.apiSecret = 'n9QtgRInpJ1Z68hJkGWZ06LVxvTRdsojoOXCIth8IGtDtiNYNoKyNol0EELGhWN9';
+    if (options.isTest) { setTestKeys(options, market); }
 
-      } else if (market === 'futures') {
-        // Futures test keys Jordi.
-        options.apiKey = '';
-        options.apiSecret = '';
-      }
-    }
-
-    const api = market === 'spot' ? new BinanceSpot(options) : new BinanceFutures(options);
+    const api = market === 'spot' ? new BinanceApiSpot(options) : new BinanceApiFutures(options);
     
     // NOTA: Les funcions troncals que passen per l'api d'spot no funcionen per testnet.
     // console.log('getSystemStatus() =>', await api.getSystemStatus());
@@ -39,17 +49,24 @@ const main = async () => {
     // console.log('getFundingWallet() =>', await api.getFundingWallet());
     // console.log('getFundingWallet() =>', await api.getFundingWallet({ asset: 'EUR' }));
 
-    if (api instanceof BinanceSpot) {
+    if (api instanceof BinanceApiSpot) {
+
+      // console.log('getUserDataListenKey() =>', await api.getUserDataListenKey());
+      // console.log('keepAliveUserDataListenKey() =>', await api.keepAliveUserDataListenKey('CAcCcyIJwicrA6deJKprBWNZY81QFwNiYn9WsDvky2uflOKS89VkbITvbWht'));
+      // console.log('closeUserDataListenKey() =>', await api.closeUserDataListenKey());
 
       // console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbol: 'BNBEUR' }));
       // console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbols: ['BNBEUR', 'BNBUSDT'] }));
+
       // console.log('getBalances() =>', await api.getBalances());
       // console.log('getAccountInformation() =>', await api.getAccountInformation());
       // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
+
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker());
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker({ symbol: 'BNBUSDT'}));
+
       // console.log('getAllOrders() =>', await api.getAllOrders({ symbol: 'BNBEUR'}));
       // console.log('getOpenOrders() =>', await api.getOpenOrders({ symbol: 'BNBEUR' }));
       // console.log('getOrder() =>', await api.getOrder({ symbol: 'BNBEUR', orderId: 379881536 }));
@@ -69,16 +86,23 @@ const main = async () => {
       //   newOrderRespType: 'RESULT',
       // }));
       
-    } else if (api instanceof BinanceFutures) {
+    } else if (api instanceof BinanceApiFutures) {
       
+      // console.log('getUserDataListenKey() =>', await api.getUserDataListenKey());
+      // console.log('keepAliveUserDataListenKey() =>', await api.keepAliveUserDataListenKey());
+      // console.log('closeUserDataListenKey() =>', await api.closeUserDataListenKey());
+
       // console.log('getExchangeInfo() =>', await api.getExchangeInfo());
+
       // console.log('getBalances() =>', await api.getBalances());
       // console.log('getAccountInformation() =>', await api.getAccountInformation());
       // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
+
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker());
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker({ symbol: 'BNBUSDT'}));
+
       // console.log('getAllOrders() =>', await api.getAllOrders({ symbol: 'BNBUSDT'}));
     }
 
@@ -86,8 +110,70 @@ const main = async () => {
   } catch (error) {
     console.error('API ERROR', error);
   }
-  
 };
 
-main();
+const testUserWs = async () => {
+  try {
+
+    console.log('---------------- User WebSocket TEST ----------------------');
+ 
+    const market: BinanceMarketType = 'spot';
+    // const market: BinanceMarketType = 'usdm';
+
+    const userOptions: BinanceWebsocketOptions = {
+      streamType: 'user',
+      market: market,
+      // streamFormat: 'stream',
+      // isTest: true,
+      apiKey: '6mjeCol48kgmK5diGfy90GynOW43RCQcOl6pXsJIPHpwtQWob6LIsW1Vw5vGv5Ax',
+      apiSecret: 'livWZ3R7HSkFQXmBoXF37o7RVxWRMQ2A1JfK4QzUu89srHEzknFaBhc51zw6xCqj',
+    };
+
+    const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
+
+    wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
+    wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
+    wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
+
+  } catch (error) {
+    console.error('Websocket ERROR', error);
+  }
+};
+
+const testMarketWs = async () => {
+  try {
+
+    console.log('---------------- Market WebSocket TEST ----------------------');
+ 
+    // const market: BinanceMarketType = 'spot';
+    const market: BinanceMarketType = 'usdm';
+
+    const marketOptions: BinanceWebsocketOptions = {
+      streamType: 'market',
+      market: market,
+      streamFormat: 'stream',
+      // isTest: true,
+    };
+    
+    const wsMarket = new BinanceWebsocket(marketOptions);
+
+    // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
+    // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
+    // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log(data));
+    // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log(data));
+    // const bookTickerUSDT = wsMarket.bookTicker('BNBUSDT').subscribe(data => console.log('bookTickerUSDT =>', data));
+    
+    // setTimeout(() => {
+    //   console.log('Unsibscribe USDT miniTicker');
+    //   miniTickerUSDT.unsubscribe();
+    // }, 10000);
+
+  } catch (error) {
+    console.error('Websocket ERROR', error);
+  }
+};
+
+testUserWs();
+// testMarketWs();
+// testApi();
 

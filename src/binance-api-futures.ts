@@ -10,9 +10,9 @@ import { BinanceFuturesTradeListRequest,
   BinanceFuturesSymbolOrderBookTickerRequest,
   BinanceFuturesSymbolOrderBookTicker,
   BinanceFuturesGetAllOrdersRequest,
-  BinanceFuturesOrder,
   BinanceFuturesGetOpenOrdersRequest,
   BinanceFuturesGetOrderRequest,
+  BinanceFuturesOrder,
   BinanceFuturesPostOrderRequest,
   BinanceFuturesNewOrder,
   BinanceFuturesCancelOrderRequest,
@@ -21,9 +21,9 @@ import { BinanceFuturesTradeListRequest,
 } from './types/binance-futures.types';
 
 
-export class BinanceFutures extends BinanceApi {
+export class BinanceApiFutures extends BinanceApi {
 
-  market: BinanceMarketType = 'futures';
+  market: BinanceMarketType = 'usdm';
   
   subdomain: BinanceFuturesSubdomain = 'fapi';
 
@@ -39,6 +39,21 @@ export class BinanceFutures extends BinanceApi {
   // ---------------------------------------------------------------------------------------------------
   //  entities
   // ---------------------------------------------------------------------------------------------------
+
+  /** {@link https://binance-docs.github.io/apidocs/futures/en/#start-user-data-stream-user_stream Start User Data Stream (USER_STREAM)} */
+  getUserDataListenKey(): Promise<{ listenKey: string }> {
+    return this.post('fapi/v1/listenKey', { isPublic: true });
+  }
+  
+  /** {@link https://binance-docs.github.io/apidocs/futures/en/#keepalive-user-data-stream-user_stream Keepalive User Data Stream (USER_STREAM)} */
+  keepAliveUserDataListenKey(listenKey?: string): Promise<{}> {
+    return this.put('fapi/v1/listenKey', { isPublic: true });
+  }
+  
+  /** {@link https://binance-docs.github.io/apidocs/futures/en/#close-user-data-stream-user_stream Close User Data Stream (USER_STREAM)} */
+  closeUserDataListenKey(listenKey?: string): Promise<{}> {
+    return this.delete('fapi/v1/listenKey', { isPublic: true });
+  }
 
   /** {@link https://binance-docs.github.io/apidocs/futures/en/#exchange-information Exchange Information} */
   getExchangeInfo(): Promise<BinanceFuturesExchangeInfo> {

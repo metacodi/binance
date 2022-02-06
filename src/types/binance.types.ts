@@ -1,5 +1,4 @@
 
-
 // ---------------------------------------------------------------------------------------------------
 //  Api types
 // ---------------------------------------------------------------------------------------------------
@@ -13,12 +12,6 @@ export interface BinanceApiOptions {
   isTest?: boolean,
   /** Override the max size of the request window (in ms). */
   recvWindow?: number;
-  /** Indica el timeout per les cnsultes. */
-  reconnectTimeout?: number;
-  /** Temps en milisegons per l'interval qua ha de manetenir viva la connexió. */
-  pingInterval?: number;
-  /** Temps en milisegons pel timeout de la crida a l'entitat pong. */
-  pongTimeout?: number;
 }
 
 /**
@@ -48,25 +41,12 @@ export interface SignedRequestState {
   recvWindow?: number;
 }
 
-// ---------------------------------------------------------------------------------------------------
-//  Websocket types
-// ---------------------------------------------------------------------------------------------------
-
-export interface BinanceWebsocketOptions {
-  /** Indica el timeout per les cnsultes. */
-  reconnectTimeout?: number;
-  /** Temps en milisegons per l'interval qua ha de manetenir viva la connexió. */
-  pingInterval?: number;
-  /** Temps en milisegons pel timeout de la crida a l'entitat pong. */
-  pongTimeout?: number;
-}
-
 
 // ---------------------------------------------------------------------------------------------------
 //  shared types
 // ---------------------------------------------------------------------------------------------------
 
-export type BinanceMarketType = 'spot' | 'futures' | 'margin';
+export type BinanceMarketType = 'spot' | 'usdm' | 'coinm' | 'margin' | 'voptions';
 
 export type BinanceOrderSide = 'BUY' | 'SELL';
 

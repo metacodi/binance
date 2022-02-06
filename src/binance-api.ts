@@ -30,7 +30,7 @@ export abstract class BinanceApi {
   constructor(
     options: BinanceApiOptions,
   ) {
-    this.options = Object.assign(this.defaultOptions, options);
+    this.options = { ...this.defaultOptions, ...options };
   }
 
 
@@ -178,9 +178,19 @@ export abstract class BinanceApi {
 
 
   // ---------------------------------------------------------------------------------------------------
+  //  entities
+  // ---------------------------------------------------------------------------------------------------
+  
+  abstract getUserDataListenKey(): Promise<{ listenKey: string }>;
+  
+  abstract keepAliveUserDataListenKey(listenKey?: string): Promise<{}>;
+
+  abstract closeUserDataListenKey(listenKey?: string): Promise<{}>;
+
+
+  // ---------------------------------------------------------------------------------------------------
   //  shared entities
   // ---------------------------------------------------------------------------------------------------
-
   
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#system-status-system System Status (System)} */
   getSystemStatus(): Promise<SystemStatusResponse> {

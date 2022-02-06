@@ -17,18 +17,24 @@
     "url": "git+https://github.com/metacodi/binance.git"
   },
   "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com"
   },
   "engines": {
     "node": ">= 8.0.0"
   },
-  "keywords": [ "Binance", "API", "Exchange" ],
+  "keywords": [
+    "Binance",
+    "API",
+    "Exchange"
+  ],
   "author": "Metacodi, S.L.",
   "homepage": "https://github.com/metacodi/binance#readme",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.24.0",
-    "ws": "^8.3.0"
+    "isomorphic-ws": "^4.0.1",
+    "rxjs": "^7.5.2",
+    "ws": "^8.4.2"
   },
   "devDependencies": {
     "@angular-eslint/builder": "^13.0.1",

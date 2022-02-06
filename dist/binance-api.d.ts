@@ -2,13 +2,9 @@ import { AxiosError } from "axios";
 import { BinanceApiOptions, BinanceApiPermissions, BinanceApiResquestOptions, BinanceFundingWallet, BinanceFundingWalletRequest, BinanceMarketType, BinanceSubdomain, SignedRequestState, SystemStatusResponse } from "./types/binance.types";
 declare type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
 export declare abstract class BinanceApi {
-    /** Indica el tipus de mercat. */
     abstract market: BinanceMarketType;
-    /** Aquest subdomini es sobrescriu quan s'utilitzen subdominis alternatius pel mateix market. Si el market és `spot`, aquest valor pot valdre `spot`, `spot1`, `spot2`... */
     abstract subdomain: BinanceSubdomain;
-    /** Retorna la url base amb el protocol i el subdomini. */
     abstract baseUrl(): string;
-    /** Opcions de configuració. */
     protected options: BinanceApiOptions;
     constructor(options: BinanceApiOptions);
     get apiKey(): string;
@@ -30,11 +26,13 @@ export declare abstract class BinanceApi {
     }): string;
     protected signMessage(message: string, secret: string): Promise<string>;
     protected parseException(e: AxiosError, url: string): unknown;
-    /** {@link https://binance-docs.github.io/apidocs/spot/en/#system-status-system System Status (System)} */
+    abstract getUserDataListenKey(): Promise<{
+        listenKey: string;
+    }>;
+    abstract keepAliveUserDataListenKey(listenKey?: string): Promise<{}>;
+    abstract closeUserDataListenKey(listenKey?: string): Promise<{}>;
     getSystemStatus(): Promise<SystemStatusResponse>;
-    /** {@link https://binance-docs.github.io/apidocs/spot/en/#get-api-key-permission-user_data Get API Key Permission (USER_DATA)} */
     getApiKeyPermissions(): Promise<BinanceApiPermissions>;
-    /** {@link https://binance-docs.github.io/apidocs/spot/en/#funding-wallet-user_data Funding Wallet (USER_DATA)} */
     getFundingWallet(params?: BinanceFundingWalletRequest): Promise<BinanceFundingWallet>;
 }
 export {};

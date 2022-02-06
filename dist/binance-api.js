@@ -17,11 +17,8 @@ const axios_1 = __importDefault(require("axios"));
 const crypto_1 = require("crypto");
 class BinanceApi {
     constructor(options) {
-        this.options = Object.assign(this.defaultOptions, options);
+        this.options = Object.assign(Object.assign({}, this.defaultOptions), options);
     }
-    // ---------------------------------------------------------------------------------------------------
-    //  options
-    // ---------------------------------------------------------------------------------------------------
     get apiKey() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.apiKey; }
     get apiSecret() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.apiSecret; }
     get isTest() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.isTest; }
@@ -32,16 +29,10 @@ class BinanceApi {
             recvWindow: 5000,
         };
     }
-    // ---------------------------------------------------------------------------------------------------
-    //  request helpers
-    // ---------------------------------------------------------------------------------------------------
     get(endpoint, options) { return this.request('GET', endpoint, options); }
     post(endpoint, options) { return this.request('POST', endpoint, options); }
     put(endpoint, options) { return this.request('PUT', endpoint, options); }
     delete(endpoint, options) { return this.request('DELETE', endpoint, options); }
-    // ---------------------------------------------------------------------------------------------------
-    //  request
-    // ---------------------------------------------------------------------------------------------------
     request(method, endpoint, options) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!options) {
@@ -55,17 +46,12 @@ class BinanceApi {
                 method,
                 url: 'https://' + [baseUrl, endpoint].join('/'),
                 headers: { 'X-MBX-APIKEY': this.apiKey },
-                timeout: 1000 * 60 * 5, // 5 min.
+                timeout: 1000 * 60 * 5,
             };
-            /**
-             * Els mètodes POST, PUT i DELETE han d'enviar el seu body en format `x-www-form-urlencoded`.
-             * {@link https://binance-docs.github.io/apidocs/spot/en/#general-api-information General Information on Endpoints}
-             */
             if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
                 config.headers['content-type'] = 'application/x-www-form-urlencoded';
             }
             const timestamp = Date.now();
-            // Handles serialisation of params into query string (url?key1=value1&key2=value2), handles encoding of values, adds timestamp and signature to request.
             const { serialisedParams, signature, requestBody } = yield this.getRequestSignature(params, apiSecret, recvWindow, timestamp);
             if (!isPublic) {
                 const concat = config.url.includes('?') ? (config.url.endsWith('?') ? '' : '&') : '?';
@@ -78,9 +64,7 @@ class BinanceApi {
             else {
                 config.data = this.serialiseParams(requestBody, { encodeValues: true, strictValidation: false });
             }
-            // console.log(config);
             return (0, axios_1.default)(config).then(response => {
-                // console.log(config.url, response);
                 if (response.status !== 200) {
                     throw response;
                 }
@@ -90,7 +74,6 @@ class BinanceApi {
     }
     getRequestSignature(data, apiSecret, recvWindow, timestamp, strictValidation) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Optional, set to 5000 by default. Increase if timestamp/recvWindow errors are seen.
             recvWindow = (data === null || data === void 0 ? void 0 : data.recvWindow) || recvWindow;
             if (apiSecret) {
                 const requestParams = Object.assign(Object.assign({}, data), { timestamp, recvWindow });
@@ -122,11 +105,9 @@ class BinanceApi {
     ;
     signMessage(message, secret) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Si és possible, fem servir la funció de crypto.
             if (typeof crypto_1.createHmac === 'function') {
                 return (0, crypto_1.createHmac)('sha256', secret).update(message).digest('hex');
             }
-            // Si no s'ha pogut importar la funció en entorn browser, li donem suport.
             const encoder = new TextEncoder();
             const keyData = encoder.encode(secret);
             const algorithm = { name: 'HMAC', hash: { name: 'SHA-256' } };
@@ -141,7 +122,6 @@ class BinanceApi {
     parseException(e, url) {
         var _a, _b;
         const { response, request, message } = e;
-        // Si no hem rebut una resposta...
         if (!response) {
             throw request ? e : message;
         }
@@ -155,18 +135,12 @@ class BinanceApi {
             requestOptions: Object.assign({}, this.options),
         };
     }
-    // ---------------------------------------------------------------------------------------------------
-    //  shared entities
-    // ---------------------------------------------------------------------------------------------------
-    /** {@link https://binance-docs.github.io/apidocs/spot/en/#system-status-system System Status (System)} */
     getSystemStatus() {
         return this.get('sapi/v1/system/status', { isPublic: true, baseUrlOverride: 'api.binance.com' });
     }
-    /** {@link https://binance-docs.github.io/apidocs/spot/en/#get-api-key-permission-user_data Get API Key Permission (USER_DATA)} */
     getApiKeyPermissions() {
         return this.get('sapi/v1/account/apiRestrictions', { baseUrlOverride: 'api.binance.com' });
     }
-    /** {@link https://binance-docs.github.io/apidocs/spot/en/#funding-wallet-user_data Funding Wallet (USER_DATA)} */
     getFundingWallet(params) {
         return this.post('sapi/v1/asset/get-funding-asset', { params, baseUrlOverride: 'api.binance.com' });
     }

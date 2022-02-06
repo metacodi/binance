@@ -11,18 +11,18 @@ import { BinanceSpotTradeListRequest,
   BinanceSpotSymbolOrderBookTickerRequest,
   BinanceSpotSymbolOrderBookTicker,
   BinanceSpotGetAllOrdersRequest,
-  BinanceSpotOrder,
+  BinanceSpotGetOpenOrdersRequest,
   BinanceSpotGetOrderRequest,
+  BinanceSpotOrder,
   BinanceSpotPostOrderRequest,
   BinanceSpotNewOrder,
   BinanceSpotCancelOrderRequest,
-  BinanceSpotCancelOrder,
-  BinanceSpotGetOpenOrdersRequest,
   BinanceSpotCancelAllSymbolOrdersRequest,
+  BinanceSpotCancelOrder,
 } from './types/binance-spot.types';
 
 
-export class BinanceSpot extends BinanceApi {
+export class BinanceApiSpot extends BinanceApi {
 
   market: BinanceMarketType = 'spot';
 
@@ -40,6 +40,21 @@ export class BinanceSpot extends BinanceApi {
   // ---------------------------------------------------------------------------------------------------
   //  entities
   // ---------------------------------------------------------------------------------------------------
+
+  /** {@link https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot Create a ListenKey (USER_STREAM)} */
+  getUserDataListenKey(): Promise<{ listenKey: string }> {
+    return this.post('api/v3/userDataStream', { isPublic: true });
+  }
+
+  /** {@link https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot Ping/Keep-alive a ListenKey (USER_STREAM)} */
+  keepAliveUserDataListenKey(listenKey?: string): Promise<{}> {
+    return this.put(`api/v3/userDataStream?listenKey=${listenKey}`, { isPublic: true });
+  }
+  
+  /** {@link https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot Close a ListenKey (USER_STREAM)} */
+  closeUserDataListenKey(listenKey?: string): Promise<{}> {
+    return this.delete(`api/v3/userDataStream?listenKey=${listenKey}`, { isPublic: true });
+  }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#exchange-information Exchange Information} */
   getExchangeInfo(params?: BinanceSpotExchangeInfoRequest): Promise<BinanceSpotExchangeInfo> {

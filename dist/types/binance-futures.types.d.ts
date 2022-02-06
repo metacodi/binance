@@ -4,7 +4,6 @@ export declare type BinanceContractType = 'PERPETUAL' | 'CURRENT_MONTH' | 'NEXT_
 export declare type BinanceContractStatus = 'PENDING_TRADING' | 'TRADING' | 'PRE_DELIVERING' | 'DELIVERING' | 'DELIVERED' | 'CANCELLED' | 'PRE_SETTLE' | 'SETTLING' | 'CLOSE';
 export declare type BinanceFuturesOrderType = 'LIMIT' | 'MARKET' | 'STOP' | 'STOP_MARKET' | 'TAKE_PROFIT' | 'TAKE_PROFIT_MARKET' | 'TRAILING_STOP_MARKET';
 export declare type BinanceFuturesWorkingType = "MARK_PRICE" | "CONTRACT_PRICE";
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#exchange-information Exchange Information} */
 export interface BinanceFuturesExchangeInfo {
     exchangeFilters: BinanceExchangeFilter[];
     rateLimits: BinanceRateLimiter[];
@@ -13,7 +12,6 @@ export interface BinanceFuturesExchangeInfo {
     symbols: BinanceFuturesSymbolExchangeInfo[];
     timezone: string;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#exchange-information Exchange Information} */
 export interface BinanceFuturesSymbolExchangeInfo {
     symbol: string;
     pair: string;
@@ -40,7 +38,6 @@ export interface BinanceFuturesSymbolExchangeInfo {
     liquidationFee: string;
     marketTakeBound: string;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#futures-account-balance-v2-user_data Futures Account Balance V2 (USER_DATA)} */
 export interface BinanceFuturesAccountBalance {
     accountAlias: string;
     asset: string;
@@ -52,7 +49,6 @@ export interface BinanceFuturesAccountBalance {
     marginAvailable: boolean;
     updateTime: number;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data Account Information V2 (USER_DATA)} */
 export interface BinanceFuturesAccountInformation {
     feeTier: string;
     canTrade: boolean;
@@ -73,7 +69,6 @@ export interface BinanceFuturesAccountInformation {
     assets: BinanceFuturesAssetInfo[];
     positions: BinanceFuturesPosition[];
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data Account Information V2 (USER_DATA)} */
 export interface BinanceFuturesAssetInfo {
     asset: string;
     walletBalance: string;
@@ -90,7 +85,6 @@ export interface BinanceFuturesAssetInfo {
     marginAvailable: boolean;
     updateTime: number;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data Account Information V2 (USER_DATA)} */
 export interface BinanceFuturesPosition {
     symbol: string;
     initialMargin: string;
@@ -108,16 +102,13 @@ export interface BinanceFuturesPosition {
     positionAmt: string;
     updateTime: number;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
 export interface BinanceFuturesTradeListRequest {
     symbol: string;
     fromId?: number;
     startTime?: number;
     endTime?: number;
-    /** Results per page. Default 500; max 1000. */
     limit?: number;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
 export interface BinanceFuturesTradeList {
     symbol: string;
     id: number;
@@ -134,21 +125,17 @@ export interface BinanceFuturesTradeList {
     buyer: boolean;
     maker: boolean;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
 export interface BinanceFuturesSymbolPriceTickerRequest {
     symbol?: string;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
 export interface BinanceFuturesSymbolPriceTicker {
     symbol: string;
     price: string;
     time: number;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker Symbol Order Book Ticker} */
 export interface BinanceFuturesSymbolOrderBookTickerRequest {
     symbol?: string;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker Symbol Order Book Ticker} */
 export interface BinanceFuturesSymbolOrderBookTicker {
     symbol: string;
     bidPrice: string;
@@ -157,30 +144,21 @@ export interface BinanceFuturesSymbolOrderBookTicker {
     askQty: string;
     time: number;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#all-orders-user_data All Orders (USER_DATA)} */
 export interface BinanceFuturesGetAllOrdersRequest {
     symbol: string;
     orderId?: number;
     startTime?: number;
     endTime?: number;
-    /** Results per page. Default 500; max 1000. */
     limit?: number;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#current-all-open-orders-user_data Current All Open Orders (USER_DATA)} */
 export interface BinanceFuturesGetOpenOrdersRequest {
     symbol: string;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#query-order-user_data Query Order (USER_DATA)} */
 export interface BinanceFuturesGetOrderRequest {
     symbol: string;
     orderId?: number;
     origClientOrderId?: string;
 }
-/**
- * {@link https://binance-docs.github.io/apidocs/futures/en/#all-orders-user_data All Orders (USER_DATA)}
- * {@link https://binance-docs.github.io/apidocs/futures/en/#current-all-open-orders-user_data Current All Open Orders (USER_DATA)}
- * {@link https://binance-docs.github.io/apidocs/futures/en/#query-order-user_data Query Order (USER_DATA)}
- */
 export interface BinanceFuturesOrder {
     avgPrice: string;
     clientOrderId: string;
@@ -206,7 +184,6 @@ export interface BinanceFuturesOrder {
     workingType: BinanceFuturesWorkingType;
     priceProtect: boolean;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#new-order-trade New Order (TRADE)} */
 export interface BinanceFuturesPostOrderRequest {
     symbol: string;
     side: BinanceOrderSide;
@@ -226,7 +203,6 @@ export interface BinanceFuturesPostOrderRequest {
     newOrderRespType?: BinanceOrderResponseType;
 }
 export declare type BinanceFuturesNewOrder = BinanceFuturesNewOrderResponseResult;
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#new-order-trade New Order (TRADE)} */
 export interface BinanceFuturesNewOrderResponseResult {
     clientOrderId: string;
     cumQty: string;
@@ -252,20 +228,14 @@ export interface BinanceFuturesNewOrderResponseResult {
     workingType: BinanceFuturesWorkingType;
     priceProtect: boolean;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#cancel-order-trade Cancel Order (TRADE)} */
 export interface BinanceFuturesCancelOrderRequest {
     symbol: string;
     orderId?: number;
     origClientOrderId?: string;
 }
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#cancel-all-open-orders-trade Cancel All Open Orders (TRADE)} */
 export interface BinanceFuturesCancelAllSymbolOrdersRequest {
     symbol: string;
 }
-/**
- * {@link https://binance-docs.github.io/apidocs/futures/en/#cancel-order-trade Cancel Order (TRADE)}
- * {@link https://binance-docs.github.io/apidocs/futures/en/#cancel-all-open-orders-trade Cancel All Open Orders (TRADE)}
- */
 export interface BinanceFuturesCancelOrder {
     clientOrderId: string;
     cumQty: string;
