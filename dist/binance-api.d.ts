@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { BinanceApiOptions, BinanceApiPermissions, BinanceApiResquestOptions, BinanceFundingWallet, BinanceFundingWalletRequest, BinanceMarketType, BinanceSubdomain, SignedRequestState, SystemStatusResponse } from "./types/binance.types";
-declare type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
+export declare type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD';
 export declare abstract class BinanceApi {
     abstract market: BinanceMarketType;
     abstract subdomain: BinanceSubdomain;
@@ -35,5 +35,4 @@ export declare abstract class BinanceApi {
     getApiKeyPermissions(): Promise<BinanceApiPermissions>;
     getFundingWallet(params?: BinanceFundingWalletRequest): Promise<BinanceFundingWallet>;
 }
-export {};
 //# sourceMappingURL=binance-api.d.ts.map
