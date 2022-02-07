@@ -23,8 +23,6 @@ export class BinanceWebsocket extends EventEmitter {
   protected listenKey?: string;
   /** Emisors de missatges. */
   protected emitters: { [WsStreamEmitterType: string]: Subject<any> } = {};
-  /** Notifiquem l'estat de la connexió. */
-  open = new Subject<void>();
 
   constructor(
     options: BinanceWebsocketOptions,
@@ -63,7 +61,7 @@ export class BinanceWebsocket extends EventEmitter {
       isTest: false,
       streamFormat: 'raw',
       reconnectPeriod: 500,
-      pingPeriod: 10000,
+      pingPeriod: 3 * 60 * 1000,
       pongPeriod: 7500,
     }
   }
@@ -303,7 +301,7 @@ export class BinanceWebsocket extends EventEmitter {
   //  accountUpdate
   // ---------------------------------------------------------------------------------------------------
 
-  accountUpdate(): Subject<any> { return this.registerAccountSubscription('accountUpdate'); }
+  accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate> { return this.registerAccountSubscription('accountUpdate'); }
 
   protected emitAccountUpdate(event: any) { this.emitNextAccountEvent('accountUpdate', event, this.parseAccountUpdate); }
 
@@ -359,12 +357,15 @@ export class BinanceWebsocket extends EventEmitter {
   //  balanceUpdate
   // ---------------------------------------------------------------------------------------------------
 
-  balanceUpdate(): Subject<any> { return this.registerAccountSubscription('balanceUpdate'); }
+  balanceUpdate(): Subject<BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate> { return this.registerAccountSubscription('balanceUpdate'); }
 
   protected emitBalanceUpdate(event: any) { this.emitNextAccountEvent('balanceUpdate', event, this.parseBalanceUpdate); }
 
-  /** {@link https://binance-docs.github.io/apidocs/spot/en/#payload-balance-update Payload: Balance Update} */
-  protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate {
+  /**
+   * {@link https://binance-docs.github.io/apidocs/spot/en/#payload-balance-update Payload: Balance Update}
+   * {@link https://binance-docs.github.io/apidocs/futures/en/#event-balance-and-position-update Event: Balance and Position Update}
+   */
+   protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate {
     if (data.e === 'balanceUpdate') {
       // spot
       return {
@@ -409,7 +410,7 @@ export class BinanceWebsocket extends EventEmitter {
   //  orderUpdate
   // ---------------------------------------------------------------------------------------------------
 
-  orderUpdate(): Subject<any> { return this.registerAccountSubscription('orderUpdate'); }
+  orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate> { return this.registerAccountSubscription('orderUpdate'); }
 
   protected emitOrderUpdate(event: any) { this.emitNextAccountEvent('orderUpdate', event, this.parseOrderUpdate); }
 
@@ -594,7 +595,7 @@ export class BinanceWebsocket extends EventEmitter {
   //  bookTicker
   // ---------------------------------------------------------------------------------------------------
 
-  bookTicker(symbol: string): Subject<any> {
+  bookTicker(symbol: string): Subject<BinanceWsBookTicker> {
     const key = `${symbol.toLocaleLowerCase()}@bookTicker`;
     return this.registerMarketStreamSubscription(key);
   }
@@ -621,6 +622,11 @@ export class BinanceWebsocket extends EventEmitter {
       // transactionTime: data.T,  // (usmd only)
     };
   }
+
+
+  // ---------------------------------------------------------------------------------------------------
+  //  log
+  // ---------------------------------------------------------------------------------------------------
 
   protected get wsId(): string { return `${this.market}-${this.streamType}-ws =>`; }
 }

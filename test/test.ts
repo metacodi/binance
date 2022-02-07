@@ -123,7 +123,7 @@ const testUserWs = async () => {
     const userOptions: BinanceWebsocketOptions = {
       streamType: 'user',
       market: market,
-      // streamFormat: 'stream',
+      streamFormat: 'stream',
       // isTest: true,
       apiKey: '6mjeCol48kgmK5diGfy90GynOW43RCQcOl6pXsJIPHpwtQWob6LIsW1Vw5vGv5Ax',
       apiSecret: 'livWZ3R7HSkFQXmBoXF37o7RVxWRMQ2A1JfK4QzUu89srHEzknFaBhc51zw6xCqj',
@@ -131,9 +131,9 @@ const testUserWs = async () => {
 
     const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
 
-    wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
-    wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
-    wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
+    // wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
+    // wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
+    // wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
 
   } catch (error) {
     console.error('Websocket ERROR', error);
@@ -145,8 +145,8 @@ const testMarketWs = async () => {
 
     console.log('---------------- Market WebSocket TEST ----------------------');
  
-    // const market: BinanceMarketType = 'spot';
-    const market: BinanceMarketType = 'usdm';
+    const market: BinanceMarketType = 'spot';
+    // const market: BinanceMarketType = 'usdm';
 
     const marketOptions: BinanceWebsocketOptions = {
       streamType: 'market',
@@ -157,7 +157,7 @@ const testMarketWs = async () => {
     
     const wsMarket = new BinanceWebsocket(marketOptions);
 
-    // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
+    const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
     // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
     // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log(data));
     // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log(data));
@@ -173,7 +173,7 @@ const testMarketWs = async () => {
   }
 };
 
-testUserWs();
-// testMarketWs();
+// testUserWs();
+testMarketWs();
 // testApi();
 

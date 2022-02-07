@@ -16,7 +16,6 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected emitters: {
         [WsStreamEmitterType: string]: Subject<any>;
     };
-    open: Subject<void>;
     constructor(options: BinanceWebsocketOptions);
     get market(): BinanceMarketType;
     get streamType(): WsStreamType;
@@ -48,13 +47,13 @@ export declare class BinanceWebsocket extends EventEmitter {
     private isBookTickerEventType;
     protected registerAccountSubscription(key: WsUserStreamEmitterType): Subject<any>;
     protected emitNextAccountEvent(key: string, event: any, parser: (data: any) => any): void;
-    accountUpdate(): Subject<any>;
+    accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate>;
     protected emitAccountUpdate(event: any): void;
     protected parseAccountUpdate(data: BinanceWsSpotAccountUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate;
-    balanceUpdate(): Subject<any>;
+    balanceUpdate(): Subject<BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate>;
     protected emitBalanceUpdate(event: any): void;
     protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate;
-    orderUpdate(): Subject<any>;
+    orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate>;
     protected emitOrderUpdate(event: any): void;
     protected parseOrderUpdate(data: BinanceWsSpotOrderUpdateRaw | BinanceWsFuturesOrderUpdateRaw): BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate;
     private subscriptionId;
@@ -67,7 +66,7 @@ export declare class BinanceWebsocket extends EventEmitter {
     miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker>;
     protected emitMiniTicker(event: any): void;
     protected parseMiniTicker(data: BinanceWs24hrMiniTickerRaw): BinanceWs24hrMiniTicker;
-    bookTicker(symbol: string): Subject<any>;
+    bookTicker(symbol: string): Subject<BinanceWsBookTicker>;
     protected emitBookTicker(event: any): void;
     protected parseBookTicker(data: BinanceWsBookTickerRaw): BinanceWsBookTicker;
     protected get wsId(): string;

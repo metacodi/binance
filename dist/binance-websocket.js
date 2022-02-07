@@ -22,7 +22,6 @@ class BinanceWebsocket extends events_1.default {
         super();
         this.status = 'initial';
         this.emitters = {};
-        this.open = new rxjs_1.Subject();
         this.subscriptionId = 0;
         this.options = Object.assign(Object.assign({}, this.defaultOptions), options);
         this.initialize();
@@ -41,7 +40,7 @@ class BinanceWebsocket extends events_1.default {
             isTest: false,
             streamFormat: 'raw',
             reconnectPeriod: 500,
-            pingPeriod: 10000,
+            pingPeriod: 3 * 60 * 1000,
             pongPeriod: 7500,
         };
     }
