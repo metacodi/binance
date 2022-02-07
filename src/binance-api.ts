@@ -13,7 +13,7 @@ import { BinanceApiOptions,
 } from "./types/binance.types";
 
 
-type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
+type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD';
 
 export abstract class BinanceApi {
 
