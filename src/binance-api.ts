@@ -13,7 +13,7 @@ import { BinanceApiOptions,
 } from "./types/binance.types";
 
 
-export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD';
+export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
 
 export abstract class BinanceApi {
 
@@ -28,7 +28,7 @@ export abstract class BinanceApi {
   protected options: BinanceApiOptions;
 
   constructor(
-    options: BinanceApiOptions,
+    options?: BinanceApiOptions,
   ) {
     this.options = { ...this.defaultOptions, ...options };
   }
@@ -51,6 +51,11 @@ export abstract class BinanceApi {
       isTest: false,
       recvWindow: 5000,
     }
+  }
+
+  public setCredentials(data: { apiKey: string; apiSecret: string; }): void {
+    this.options.apiKey = data.apiKey;
+    this.options.apiSecret = data.apiSecret;
   }
 
 

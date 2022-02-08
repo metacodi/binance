@@ -23,6 +23,7 @@
   "exclude": [
     "dist",
     "test",
+    "precode",
     "node_modules"
   ]
 }

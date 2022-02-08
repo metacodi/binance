@@ -4,7 +4,7 @@ import { BinanceFuturesTradeListRequest, BinanceFuturesTradeList, BinanceFutures
 export declare class BinanceApiFutures extends BinanceApi {
     market: BinanceMarketType;
     subdomain: BinanceFuturesSubdomain;
-    constructor(options: BinanceApiOptions);
+    constructor(options?: BinanceApiOptions);
     baseUrl(): string;
     getUserDataListenKey(): Promise<{
         listenKey: string;
@@ -12,7 +12,7 @@ export declare class BinanceApiFutures extends BinanceApi {
     keepAliveUserDataListenKey(listenKey?: string): Promise<{}>;
     closeUserDataListenKey(listenKey?: string): Promise<{}>;
     getExchangeInfo(): Promise<BinanceFuturesExchangeInfo>;
-    getBalances(): Promise<BinanceFuturesAccountBalance>;
+    getBalances(): Promise<BinanceFuturesAccountBalance[]>;
     getAccountInformation(): Promise<BinanceFuturesAccountInformation>;
     getAccountTradeList(params: BinanceFuturesTradeListRequest): Promise<BinanceFuturesTradeList>;
     getSymbolPriceTicker(params?: BinanceFuturesSymbolPriceTickerRequest): Promise<BinanceFuturesSymbolPriceTicker | BinanceFuturesSymbolPriceTicker[]>;

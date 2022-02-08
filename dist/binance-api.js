@@ -29,6 +29,10 @@ class BinanceApi {
             recvWindow: 5000,
         };
     }
+    setCredentials(data) {
+        this.options.apiKey = data.apiKey;
+        this.options.apiSecret = data.apiSecret;
+    }
     get(endpoint, options) { return this.request('GET', endpoint, options); }
     post(endpoint, options) { return this.request('POST', endpoint, options); }
     put(endpoint, options) { return this.request('PUT', endpoint, options); }

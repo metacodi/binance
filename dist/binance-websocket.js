@@ -38,14 +38,14 @@ class BinanceWebsocket extends events_1.default {
     get defaultOptions() {
         return {
             isTest: false,
-            streamFormat: 'raw',
+            streamFormat: 'stream',
             reconnectPeriod: 500,
             pingPeriod: 3 * 60 * 1000,
             pongPeriod: 7500,
         };
     }
     getApiClient() {
-        const { apiKey, apiSecret, isTest, streamType } = this.options;
+        const { apiKey, apiSecret, isTest } = this.options;
         return this.market === 'spot' ? new _1.BinanceApiSpot({ apiKey, apiSecret, isTest }) : new _1.BinanceApiFutures({ apiKey, apiSecret, isTest });
     }
     initialize() {

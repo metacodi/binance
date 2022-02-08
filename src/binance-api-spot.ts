@@ -29,7 +29,7 @@ export class BinanceApiSpot extends BinanceApi {
   subdomain: BinanceSpotSubdomain = 'api';
 
   constructor(
-    options: BinanceApiOptions,
+    options?: BinanceApiOptions,
   ) {
     super(options);
   }

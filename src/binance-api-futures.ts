@@ -28,7 +28,7 @@ export class BinanceApiFutures extends BinanceApi {
   subdomain: BinanceFuturesSubdomain = 'fapi';
 
   constructor(
-    options: BinanceApiOptions,
+    options?: BinanceApiOptions,
   ) {
     super(options);
   }
@@ -61,7 +61,7 @@ export class BinanceApiFutures extends BinanceApi {
   }
 
   /** {@link https://binance-docs.github.io/apidocs/futures/en/#futures-account-balance-v2-user_data Futures Account Balance V2 (USER_DATA)} */
-  getBalances(): Promise<BinanceFuturesAccountBalance> {
+  getBalances(): Promise<BinanceFuturesAccountBalance[]> {
     return this.get('fapi/v2/balance');
   }
 

@@ -59,7 +59,7 @@ export class BinanceWebsocket extends EventEmitter {
   get defaultOptions(): Partial<BinanceWebsocketOptions> {
     return {
       isTest: false,
-      streamFormat: 'raw',
+      streamFormat: 'stream',
       reconnectPeriod: 500,
       pingPeriod: 3 * 60 * 1000,
       pongPeriod: 7500,
@@ -72,7 +72,7 @@ export class BinanceWebsocket extends EventEmitter {
   // ---------------------------------------------------------------------------------------------------
 
   protected getApiClient(): BinanceApi {
-    const { apiKey, apiSecret, isTest, streamType } = this.options;
+    const { apiKey, apiSecret, isTest } = this.options;
     return this.market === 'spot' ? new BinanceApiSpot({ apiKey, apiSecret, isTest }) :  new BinanceApiFutures({ apiKey, apiSecret, isTest });
   }
 

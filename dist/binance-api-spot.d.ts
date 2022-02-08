@@ -4,7 +4,7 @@ import { BinanceSpotTradeListRequest, BinanceSpotTradeList, BinanceSpotAccountIn
 export declare class BinanceApiSpot extends BinanceApi {
     market: BinanceMarketType;
     subdomain: BinanceSpotSubdomain;
-    constructor(options: BinanceApiOptions);
+    constructor(options?: BinanceApiOptions);
     baseUrl(): string;
     getUserDataListenKey(): Promise<{
         listenKey: string;
