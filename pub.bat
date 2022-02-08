@@ -1,0 +1,1 @@
+npx ts-node precode\publish.ts
