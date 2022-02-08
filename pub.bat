@@ -7,5 +7,5 @@ if [%1]==[] (
 ) else (
   REM Descripció pel commit.
   echo "npx ts-node precode\publish.ts -c %1"
-  npx ts-node precode\publish.ts -c '%1'
+  npx ts-node precode\publish.ts -c "%1"
 )
