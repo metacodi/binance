@@ -145,8 +145,8 @@ class BinanceApi {
     getSystemStatus() {
         return this.get('sapi/v1/system/status', { isPublic: true, baseUrlOverride: 'api.binance.com' });
     }
-    getApiKeyPermissions() {
-        return this.get('sapi/v1/account/apiRestrictions', { baseUrlOverride: 'api.binance.com' });
+    getApiKeyPermissions(headers) {
+        return this.get('sapi/v1/account/apiRestrictions', { baseUrlOverride: 'api.binance.com', headers });
     }
     getFundingWallet(params) {
         return this.post('sapi/v1/asset/get-funding-asset', { params, baseUrlOverride: 'api.binance.com' });

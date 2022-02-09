@@ -36,7 +36,7 @@ export declare abstract class BinanceApi {
     abstract keepAliveUserDataListenKey(listenKey?: string): Promise<{}>;
     abstract closeUserDataListenKey(listenKey?: string): Promise<{}>;
     getSystemStatus(): Promise<SystemStatusResponse>;
-    getApiKeyPermissions(): Promise<BinanceApiPermissions>;
+    getApiKeyPermissions(headers?: BinanceApiResquestOptions['headers']): Promise<BinanceApiPermissions>;
     getFundingWallet(params?: BinanceFundingWalletRequest): Promise<BinanceFundingWallet>;
 }
 //# sourceMappingURL=binance-api.d.ts.map

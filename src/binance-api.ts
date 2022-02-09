@@ -206,8 +206,8 @@ export abstract class BinanceApi {
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#get-api-key-permission-user_data Get API Key Permission (USER_DATA)} */
-  getApiKeyPermissions(): Promise<BinanceApiPermissions> {
-    return this.get('sapi/v1/account/apiRestrictions', { baseUrlOverride: 'api.binance.com' });
+  getApiKeyPermissions(headers?: BinanceApiResquestOptions['headers']): Promise<BinanceApiPermissions> {
+    return this.get('sapi/v1/account/apiRestrictions', { baseUrlOverride: 'api.binance.com', headers });
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#funding-wallet-user_data Funding Wallet (USER_DATA)} */
