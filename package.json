@@ -1,6 +1,6 @@
 {
   "name": "@metacodi/binance",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "Binance API Client",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
