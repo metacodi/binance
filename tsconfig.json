@@ -15,14 +15,9 @@
     "resolveJsonModule": false,
     "strictNullChecks": false,
     "removeComments": true,
-    "typeRoots": [
-      "node_modules/@types"
+    "types": [
+      "node", "ws"
     ],
-    "paths": {
-      "crypto": [
-        "node_modules/crypto-js"
-      ]
-    },
     "strict": true,
   },
   "exclude": [
