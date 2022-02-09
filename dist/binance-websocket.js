@@ -124,7 +124,7 @@ class BinanceWebsocket extends events_1.default {
         if (this.pingInterval) {
             this.pingInterval.unsubscribe();
         }
-        this.pingInterval = (0, rxjs_1.interval)(this.pingPeriod).subscribe(() => this.ping());
+        this.pingInterval = rxjs_1.interval(this.pingPeriod).subscribe(() => this.ping());
         this.respawnMarketStreamSubscriptions();
     }
     onWsClose(event) {
@@ -147,7 +147,7 @@ class BinanceWebsocket extends events_1.default {
             if (this.pongTimer) {
                 this.pongTimer.unsubscribe();
             }
-            this.pongTimer = (0, rxjs_1.timer)(this.pongPeriod).subscribe(() => {
+            this.pongTimer = rxjs_1.timer(this.pongPeriod).subscribe(() => {
                 console.log(this.wsId, `Pong timeout - closing socket to reconnect`);
                 this.reconnect();
             });

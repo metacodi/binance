@@ -45,7 +45,7 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected parseWsMessage(event: any): any;
     protected discoverEventType(data: any): string;
     private isBookTickerEventType;
-    protected registerAccountSubscription(key: WsUserStreamEmitterType): Subject<any>;
+    protected registerAccountSubscription(key: WsUserStreamEmitterType): any;
     protected emitNextAccountEvent(key: string, event: any, parser: (data: any) => any): void;
     accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate>;
     protected emitAccountUpdate(event: any): void;
@@ -61,7 +61,7 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected unsubscribeMarketStream(params: string[]): void;
     protected respawnMarketStreamSubscriptions(): void;
     protected isSubjectUnobserved(emitter: Subject<any>): boolean;
-    protected registerMarketStreamSubscription(key: string): Subject<any>;
+    protected registerMarketStreamSubscription(key: string): any;
     protected emitNextMarketStreamEvent(key: string, event: any, parser: (data: any) => any): void;
     miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker>;
     protected emitMiniTicker(event: any): void;
