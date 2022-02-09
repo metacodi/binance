@@ -1,0 +1,74 @@
+/// <reference types="ws" />
+/// <reference types="node" />
+import WebSocket from 'isomorphic-ws';
+import EventEmitter from 'events';
+import { Subject, Subscription } from 'rxjs';
+import { BinanceApi } from './binance-api';
+import { BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsMessageSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate } from ".";
+export declare class BinanceWebsocket extends EventEmitter {
+    protected options: BinanceWebsocketOptions;
+    protected ws: WebSocket;
+    protected api: BinanceApi;
+    protected status: WsConnectionState;
+    protected pingInterval?: Subscription;
+    protected pongTimer?: Subscription;
+    protected listenKey?: string;
+    protected emitters: {
+        [WsStreamEmitterType: string]: Subject<any>;
+    };
+    constructor(options: BinanceWebsocketOptions);
+    get market(): BinanceMarketType;
+    get streamType(): WsStreamType;
+    get streamFormat(): WsStreamFormat;
+    get apiKey(): string;
+    get apiSecret(): string;
+    get isTest(): boolean;
+    get reconnectPeriod(): number;
+    get pingPeriod(): number;
+    get pongPeriod(): number;
+    get defaultOptions(): Partial<BinanceWebsocketOptions>;
+    protected getApiClient(): BinanceApi;
+    protected initialize(): Promise<void>;
+    get baseUrl(): string;
+    get url(): string;
+    connect(): void;
+    reconnect(): void;
+    close(): void;
+    destroy(): void;
+    protected onWsOpen(event: WebSocket.Event): void;
+    protected onWsClose(event: WebSocket.CloseEvent): void;
+    protected onWsError(event: WebSocket.ErrorEvent): void;
+    protected ping(): void;
+    protected onWsPing(event: any): void;
+    protected onWsPong(event: any): void;
+    protected onWsMessage(event: WebSocket.MessageEvent): void;
+    protected parseWsMessage(event: any): any;
+    protected discoverEventType(data: any): string;
+    private isBookTickerEventType;
+    protected registerAccountSubscription(key: WsUserStreamEmitterType): Subject<any>;
+    protected emitNextAccountEvent(key: string, event: any, parser: (data: any) => any): void;
+    accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate>;
+    protected emitAccountUpdate(event: any): void;
+    protected parseAccountUpdate(data: BinanceWsSpotAccountUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate;
+    balanceUpdate(): Subject<BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate>;
+    protected emitBalanceUpdate(event: any): void;
+    protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate;
+    orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate>;
+    protected emitOrderUpdate(event: any): void;
+    protected parseOrderUpdate(data: BinanceWsSpotOrderUpdateRaw | BinanceWsFuturesOrderUpdateRaw): BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate;
+    private subscriptionId;
+    protected subscribeMarketStream(params: string[]): void;
+    protected unsubscribeMarketStream(params: string[]): void;
+    protected respawnMarketStreamSubscriptions(): void;
+    protected isSubjectUnobserved(emitter: Subject<any>): boolean;
+    protected registerMarketStreamSubscription(key: string): Subject<any>;
+    protected emitNextMarketStreamEvent(key: string, event: any, parser: (data: any) => any): void;
+    miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker>;
+    protected emitMiniTicker(event: any): void;
+    protected parseMiniTicker(data: BinanceWs24hrMiniTickerRaw): BinanceWs24hrMiniTicker;
+    bookTicker(symbol: string): Subject<BinanceWsBookTicker>;
+    protected emitBookTicker(event: any): void;
+    protected parseBookTicker(data: BinanceWsBookTickerRaw): BinanceWsBookTicker;
+    protected get wsId(): string;
+}
+//# sourceMappingURL=binance-websocket.d.ts.map
