@@ -80,6 +80,7 @@ export abstract class BinanceApi {
     if (!options) { options = {}; }
     const isPublic = options.isPublic === undefined ? false : options.isPublic;
     const params = options.params === undefined ? undefined : options.params;
+    const headers = options.headers === undefined ? undefined : options.headers;
 
     const { apiSecret, recvWindow } = this;
 
@@ -88,10 +89,9 @@ export abstract class BinanceApi {
     const config: AxiosRequestConfig<any> = {
       method,
       url: 'https://' + [baseUrl, endpoint].join('/'),
-      headers: {
+      headers: { ...{
         'X-MBX-APIKEY': this.apiKey,
-        'Access-Control-Allow-Origin': '*',
-      },
+      }, ...options.headers },
       timeout: 1000 * 60 * 5, // 5 min.
     };
 

@@ -44,15 +44,15 @@ class BinanceApi {
             }
             const isPublic = options.isPublic === undefined ? false : options.isPublic;
             const params = options.params === undefined ? undefined : options.params;
+            const headers = options.headers === undefined ? undefined : options.headers;
             const { apiSecret, recvWindow } = this;
             const baseUrl = options.baseUrlOverride || this.baseUrl();
             const config = {
                 method,
                 url: 'https://' + [baseUrl, endpoint].join('/'),
-                headers: {
+                headers: Object.assign({
                     'X-MBX-APIKEY': this.apiKey,
-                    'Access-Control-Allow-Origin': '*',
-                },
+                }, options.headers),
                 timeout: 1000 * 60 * 5,
             };
             if (method === 'POST' || method === 'PUT' || method === 'DELETE') {

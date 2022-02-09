@@ -6,6 +6,9 @@ export interface BinanceApiOptions {
 }
 export interface BinanceApiResquestOptions {
     params?: any;
+    headers?: {
+        [key: string]: string | number;
+    };
     isPublic?: boolean;
     baseUrlOverride?: string;
 }
