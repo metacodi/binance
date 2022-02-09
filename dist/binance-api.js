@@ -49,7 +49,10 @@ class BinanceApi {
             const config = {
                 method,
                 url: 'https://' + [baseUrl, endpoint].join('/'),
-                headers: { 'X-MBX-APIKEY': this.apiKey },
+                headers: {
+                    'X-MBX-APIKEY': this.apiKey,
+                    'Access-Control-Allow-Origin': '*',
+                },
                 timeout: 1000 * 60 * 5,
             };
             if (method === 'POST' || method === 'PUT' || method === 'DELETE') {

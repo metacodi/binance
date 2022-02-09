@@ -88,7 +88,10 @@ export abstract class BinanceApi {
     const config: AxiosRequestConfig<any> = {
       method,
       url: 'https://' + [baseUrl, endpoint].join('/'),
-      headers: { 'X-MBX-APIKEY': this.apiKey },
+      headers: {
+        'X-MBX-APIKEY': this.apiKey,
+        'Access-Control-Allow-Origin': '*',
+      },
       timeout: 1000 * 60 * 5, // 5 min.
     };
 

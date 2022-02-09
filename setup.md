@@ -38,7 +38,8 @@ La llibreria utilitza packages com **isomorphic-ws** que no tenen declarada cap 
 
 <br />
 
-## Dependència de **crypto**
+## Dependència **crypto**
+
 <br>
 
 > Error: ./node_modules/@metacodi/binance/dist/binance-api.js
@@ -65,24 +66,17 @@ npm i crypto-js
 ```
 <br />
 
-```tsconfig```
-```json
-{
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "paths": {
-      "crypto": [
-        "node_modules/crypto-js"
-      ]
-    },
-    "typeRoots": [
-      "node_modules/@types"
-    ]
-  }
-}
+
+## Definicions pel package **ws**
+
+<br>
+
+> Error TS2688: Cannot find type definition file for 'ws'
+
+<br>
+
+```bash
+npm i -D @types/ws@^8.2.2
 ```
+
+<br />
