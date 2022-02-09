@@ -1,6 +1,6 @@
 {
   "name": "@metacodi/binance",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "Binance API Client",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,6 +34,7 @@
     "axios": "^0.24.0",
     "isomorphic-ws": "^4.0.1",
     "rxjs": "~6.6.0",
+    "crypto": "^1.0.1",
     "ws": "^8.4.2"
   },
   "devDependencies": {
