@@ -18,6 +18,11 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "paths": {
+      "crypto": [
+        "node_modules/crypto-js"
+      ]
+    },
     "strict": true,
   },
   "exclude": [
