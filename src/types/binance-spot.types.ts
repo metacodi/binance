@@ -11,6 +11,11 @@ import {
 } from './binance.types';
 
 
+/** Compatibilitat amb inferiors a versions ^4.0 */
+type Uppercase<S extends string> = string;
+/** Compatibilitat amb inferiors a versions ^4.0 */
+type Lowercase<S extends string> = string;
+
 // ---------------------------------------------------------------------------------------------------
 //  getExchangeInfo
 // ---------------------------------------------------------------------------------------------------

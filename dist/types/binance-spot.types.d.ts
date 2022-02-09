@@ -1,4 +1,5 @@
 import { BinanceMarketType, BinanceExchangeFilter, BinanceOrderType, BinanceRateLimiter, BinanceSymbolFilter, BinanceOrderSide, BinanceOrderStatus, BinanceOrderTimeInForce, BinanceOrderResponseType } from './binance.types';
+declare type Uppercase<S extends string> = string;
 export interface BinanceSpotExchangeInfoRequest {
     symbol?: string;
     symbols?: string[];
@@ -232,4 +233,5 @@ export interface BinanceSpotCancelOrder {
     side: BinanceOrderSide;
     type: BinanceOrderType;
 }
+export {};
 //# sourceMappingURL=binance-spot.types.d.ts.map

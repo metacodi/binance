@@ -38,6 +38,33 @@ La llibreria utilitza packages com **isomorphic-ws** que no tenen declarada cap 
 
 <br />
 
+## Dependència de **crypto**
+<br>
+
+> Error: ./node_modules/@metacodi/binance/dist/binance-api.js
+> Module not found: Error: Can't resolve 'crypto'
+
+<br>
+
+Instal·lem el package manualment.
+```bash
+npm i crypto-js
+```
+
+```tsconfig```
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "crypto": [
+        "node_modules/crypto-js"
+      ]
+    },
+  }
+}
+```
+<br />
+
 ```tsconfig```
 ```json
 {
