@@ -89,11 +89,11 @@ export abstract class BinanceApi {
     const config: AxiosRequestConfig<any> = {
       method,
       url: 'https://' + [baseUrl, endpoint].join('/'),
-      headers: { ...{
-        'X-MBX-APIKEY': this.apiKey,
-      }, ...options.headers },
+      headers: { ...{}, ...options.headers },
       timeout: 1000 * 60 * 5, // 5 min.
     };
+
+    if (isPublic) { config.headers['X-MBX-APIKEY'] = this.apiKey; }
 
     /**
      * Els mètodes POST, PUT i DELETE han d'enviar el seu body en format `x-www-form-urlencoded`.
