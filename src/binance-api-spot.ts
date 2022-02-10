@@ -1,5 +1,5 @@
 import { BinanceApi } from './binance-api';
-import { BinanceApiOptions, BinanceMarketType, BinanceSpotSubdomain } from './types/binance.types';
+import { BinanceApiOptions, BinanceApiResquestOptions, BinanceMarketType, BinanceSpotSubdomain } from './types/binance.types';
 import { BinanceSpotTradeListRequest,
   BinanceSpotTradeList,
   BinanceSpotAccountInformation,
@@ -78,8 +78,8 @@ export class BinanceApiSpot extends BinanceApi {
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
-  getSymbolPriceTicker(params?: BinanceSpotSymbolPriceTickerRequest): Promise<BinanceSpotSymbolPriceTicker | BinanceSpotSymbolPriceTicker[]> {
-    return this.get('api/v3/ticker/price', { isPublic: true, params });
+  getSymbolPriceTicker(params?: BinanceSpotSymbolPriceTickerRequest, headers?: BinanceApiResquestOptions['headers']): Promise<BinanceSpotSymbolPriceTicker | BinanceSpotSymbolPriceTicker[]> {
+    return this.get('api/v3/ticker/price', { isPublic: true, params, headers });
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker Symbol Order Book Ticker} */
