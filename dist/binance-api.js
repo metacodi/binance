@@ -50,11 +50,12 @@ class BinanceApi {
             const config = {
                 method,
                 url: 'https://' + [baseUrl, endpoint].join('/'),
-                headers: Object.assign({
-                    'X-MBX-APIKEY': this.apiKey,
-                }, options.headers),
+                headers: Object.assign({}, options.headers),
                 timeout: 1000 * 60 * 5,
             };
+            if (!isPublic) {
+                config.headers['X-MBX-APIKEY'] = this.apiKey;
+            }
             if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
                 config.headers['content-type'] = 'application/x-www-form-urlencoded';
             }
