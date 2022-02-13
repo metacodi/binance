@@ -1,5 +1,4 @@
 echo off
-cls
 
 if [%1]==[] (
   echo "npx ts-node precode\publish.ts"
