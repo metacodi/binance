@@ -23,7 +23,7 @@ export interface BinanceWsSpotBalanceUpdateRaw {
     d: string;
     T: number;
 }
-export interface BinanceWsMessageSpotBalanceUpdate {
+export interface BinanceWsSpotBalanceUpdate {
     eventType: 'balanceUpdate';
     eventTime: number;
     asset: string;

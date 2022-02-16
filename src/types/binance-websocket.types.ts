@@ -52,7 +52,7 @@ export interface BinanceWsSpotBalanceUpdateRaw {
 }
 
 /** {@link https://binance-docs.github.io/apidocs/spot/en/#payload-balance-update Payload: Balance Update} */
-export interface BinanceWsMessageSpotBalanceUpdate {
+export interface BinanceWsSpotBalanceUpdate {
   eventType: 'balanceUpdate';
   eventTime: number;
   asset: string;
