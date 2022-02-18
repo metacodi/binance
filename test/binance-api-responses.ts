@@ -343,6 +343,7 @@ const limitSellFiledSpot = [{
     wsKey: 'spot_userData__j72ItN9ReHzXdekcXuqCxT2ZKEltSQ45ueHG4AyMA0JDylpAMZ3ab68XpfiU'
   }
 }];
+
 const limitBuyNewSpot = [{
   formattedMsg:  {
     "eventType": "executionReport",
@@ -382,6 +383,7 @@ const limitBuyNewSpot = [{
   }
   
 }];
+
 const limitBuyFilledSpot = [{
   formattedMsg:  {
     "eventType": "executionReport",

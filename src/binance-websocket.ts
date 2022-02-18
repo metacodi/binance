@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 import { Subject, interval, timer, Subscription } from 'rxjs';
 
 import { BinanceApi } from './binance-api';
-import { BinanceApiOptions, BinanceApiFutures, BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceApiSpot, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsMessageSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate } from ".";
+import { BinanceApiOptions, BinanceApiFutures, BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceApiSpot, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate } from ".";
 
 
 export class BinanceWebsocket extends EventEmitter {
@@ -357,7 +357,7 @@ export class BinanceWebsocket extends EventEmitter {
   //  balanceUpdate
   // ---------------------------------------------------------------------------------------------------
 
-  balanceUpdate(): Subject<BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate> { return this.registerAccountSubscription('balanceUpdate'); }
+  balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate> { return this.registerAccountSubscription('balanceUpdate'); }
 
   protected emitBalanceUpdate(event: any) { this.emitNextAccountEvent('balanceUpdate', event, this.parseBalanceUpdate); }
 
@@ -365,7 +365,7 @@ export class BinanceWebsocket extends EventEmitter {
    * {@link https://binance-docs.github.io/apidocs/spot/en/#payload-balance-update Payload: Balance Update}
    * {@link https://binance-docs.github.io/apidocs/futures/en/#event-balance-and-position-update Event: Balance and Position Update}
    */
-   protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate {
+   protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate {
     if (data.e === 'balanceUpdate') {
       // spot
       return {

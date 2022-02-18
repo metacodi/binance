@@ -4,7 +4,7 @@ import WebSocket from 'isomorphic-ws';
 import EventEmitter from 'events';
 import { Subject, Subscription } from 'rxjs';
 import { BinanceApi } from './binance-api';
-import { BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsMessageSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate } from ".";
+import { BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate } from ".";
 export declare class BinanceWebsocket extends EventEmitter {
     protected options: BinanceWebsocketOptions;
     protected ws: WebSocket;
@@ -50,9 +50,9 @@ export declare class BinanceWebsocket extends EventEmitter {
     accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate>;
     protected emitAccountUpdate(event: any): void;
     protected parseAccountUpdate(data: BinanceWsSpotAccountUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate;
-    balanceUpdate(): Subject<BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate>;
+    balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate>;
     protected emitBalanceUpdate(event: any): void;
-    protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsMessageSpotBalanceUpdate | BinanceWsFuturesAccountUpdate;
+    protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate;
     orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate>;
     protected emitOrderUpdate(event: any): void;
     protected parseOrderUpdate(data: BinanceWsSpotOrderUpdateRaw | BinanceWsFuturesOrderUpdateRaw): BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate;

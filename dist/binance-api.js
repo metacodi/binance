@@ -42,6 +42,7 @@ class BinanceApi {
             if (!options) {
                 options = {};
             }
+            const createSignature = options.createSignature === undefined ? true : options.createSignature;
             const isPublic = options.isPublic === undefined ? false : options.isPublic;
             const params = options.params === undefined ? undefined : options.params;
             const headers = options.headers === undefined ? undefined : options.headers;
@@ -61,7 +62,7 @@ class BinanceApi {
             }
             const timestamp = Date.now();
             const { serialisedParams, signature, requestBody } = yield this.getRequestSignature(params, apiSecret, recvWindow, timestamp);
-            if (!isPublic) {
+            if (!isPublic && createSignature) {
                 const concat = config.url.includes('?') ? (config.url.endsWith('?') ? '' : '&') : '?';
                 const query = [serialisedParams, 'signature=' + signature].join('&');
                 config.url += concat + query;

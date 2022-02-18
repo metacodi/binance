@@ -41,7 +41,7 @@ const testApi = async () => {
 
     if (options.isTest) { setTestKeys(options, market); }
 
-    const api = market === 'spot' ? new BinanceApiSpot(options) : new BinanceApiFutures(options);
+    const api = (market as any) === 'spot' ? new BinanceApiSpot(options) : new BinanceApiFutures(options);
     
     // NOTA: Les funcions troncals que passen per l'api d'spot no funcionen per testnet.
     // console.log('getSystemStatus() =>', await api.getSystemStatus());
@@ -51,16 +51,16 @@ const testApi = async () => {
 
     if (api instanceof BinanceApiSpot) {
 
-      // console.log('getUserDataListenKey() =>', await api.getUserDataListenKey());
+      console.log('getUserDataListenKey() =>', await api.getUserDataListenKey());
       // console.log('keepAliveUserDataListenKey() =>', await api.keepAliveUserDataListenKey('CAcCcyIJwicrA6deJKprBWNZY81QFwNiYn9WsDvky2uflOKS89VkbITvbWht'));
       // console.log('closeUserDataListenKey() =>', await api.closeUserDataListenKey());
 
       // console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbol: 'BNBEUR' }));
-      // console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbols: ['BNBEUR', 'BNBUSDT'] }));
+      console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbols: ['BNBEUR', 'BNBUSDT'] }));
 
       // console.log('getBalances() =>', await api.getBalances());
       // console.log('getAccountInformation() =>', await api.getAccountInformation());
-      // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
+      // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBEUR' }));
 
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
@@ -99,7 +99,7 @@ const testApi = async () => {
       // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
 
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
-      // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
+      console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker());
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker({ symbol: 'BNBUSDT'}));
 
@@ -117,8 +117,8 @@ const testUserWs = async () => {
 
     console.log('---------------- User WebSocket TEST ----------------------');
  
-    const market: BinanceMarketType = 'spot';
-    // const market: BinanceMarketType = 'usdm';
+    // const market: BinanceMarketType = 'spot';
+    const market: BinanceMarketType = 'usdm';
 
     const userOptions: BinanceWebsocketOptions = {
       streamType: 'user',
@@ -131,9 +131,9 @@ const testUserWs = async () => {
 
     const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
 
-    // wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
-    // wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
-    // wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
+    wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
+    wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
+    wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
 
   } catch (error) {
     console.error('Websocket ERROR', error);
@@ -173,7 +173,7 @@ const testMarketWs = async () => {
   }
 };
 
-// testUserWs();
-testMarketWs();
+testUserWs();
+// testMarketWs();
 // testApi();
 

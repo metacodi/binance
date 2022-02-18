@@ -43,17 +43,17 @@ export class BinanceApiSpot extends BinanceApi {
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot Create a ListenKey (USER_STREAM)} */
   getUserDataListenKey(): Promise<{ listenKey: string }> {
-    return this.post('api/v3/userDataStream', { isPublic: true });
+    return this.post('api/v3/userDataStream', { createSignature: false });
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot Ping/Keep-alive a ListenKey (USER_STREAM)} */
   keepAliveUserDataListenKey(listenKey?: string): Promise<{}> {
-    return this.put(`api/v3/userDataStream?listenKey=${listenKey}`, { isPublic: true });
+    return this.put(`api/v3/userDataStream?listenKey=${listenKey}`, { createSignature: false });
   }
   
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot Close a ListenKey (USER_STREAM)} */
   closeUserDataListenKey(listenKey?: string): Promise<{}> {
-    return this.delete(`api/v3/userDataStream?listenKey=${listenKey}`, { isPublic: true });
+    return this.delete(`api/v3/userDataStream?listenKey=${listenKey}`, { createSignature: false });
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#exchange-information Exchange Information} */

@@ -78,6 +78,7 @@ export abstract class BinanceApi {
 
   async request(method: HttpMethod, endpoint: string, options?: BinanceApiResquestOptions): Promise<any> {
     if (!options) { options = {}; }
+    const createSignature = options.createSignature === undefined ? true : options.createSignature;
     const isPublic = options.isPublic === undefined ? false : options.isPublic;
     const params = options.params === undefined ? undefined : options.params;
     const headers = options.headers === undefined ? undefined : options.headers;
@@ -106,7 +107,7 @@ export abstract class BinanceApi {
     // Handles serialisation of params into query string (url?key1=value1&key2=value2), handles encoding of values, adds timestamp and signature to request.
     const { serialisedParams, signature, requestBody } = await this.getRequestSignature(params, apiSecret, recvWindow, timestamp);
     
-    if (!isPublic) {
+    if (!isPublic && createSignature) {
       const concat = config.url.includes('?') ? (config.url.endsWith('?') ? '' : '&') : '?';
       const query = [serialisedParams, 'signature=' + signature].join('&');
       config.url += concat + query;
@@ -214,5 +215,5 @@ export abstract class BinanceApi {
   getFundingWallet(params?: BinanceFundingWalletRequest): Promise<BinanceFundingWallet> {
     return this.post('sapi/v1/asset/get-funding-asset', { params, baseUrlOverride: 'api.binance.com' });
   }
-  
+
 }

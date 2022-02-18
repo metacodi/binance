@@ -23,6 +23,7 @@ export interface BinanceApiResquestOptions {
   params?: any;
   headers?: { [key: string]: string | number };
   isPublic?: boolean;
+  createSignature?: boolean;
   baseUrlOverride?: string;
 }
 
