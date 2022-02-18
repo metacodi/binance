@@ -10,13 +10,13 @@ class BinanceApiFutures extends binance_api_1.BinanceApi {
     }
     baseUrl() { return this.isTest ? 'testnet.binancefuture.com' : `${this.subdomain}.binance.com`; }
     getUserDataListenKey() {
-        return this.post('fapi/v1/listenKey', { isPublic: true });
+        return this.post('fapi/v1/listenKey', { createSignature: false });
     }
     keepAliveUserDataListenKey(listenKey) {
-        return this.put('fapi/v1/listenKey', { isPublic: true });
+        return this.put('fapi/v1/listenKey', { createSignature: false });
     }
     closeUserDataListenKey(listenKey) {
-        return this.delete('fapi/v1/listenKey', { isPublic: true });
+        return this.delete('fapi/v1/listenKey', { createSignature: false });
     }
     getExchangeInfo() {
         return this.get('fapi/v1/exchangeInfo', { isPublic: true });

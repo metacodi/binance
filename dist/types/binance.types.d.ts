@@ -10,6 +10,7 @@ export interface BinanceApiResquestOptions {
         [key: string]: string | number;
     };
     isPublic?: boolean;
+    createSignature?: boolean;
     baseUrlOverride?: string;
 }
 export declare type BinanceSpotSubdomain = 'api' | 'api1' | 'api2' | 'api3' | 'testnet';

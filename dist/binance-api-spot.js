@@ -10,13 +10,13 @@ class BinanceApiSpot extends binance_api_1.BinanceApi {
     }
     baseUrl() { return this.isTest ? 'testnet.binance.vision' : `${this.subdomain}.binance.com`; }
     getUserDataListenKey() {
-        return this.post('api/v3/userDataStream', { isPublic: true });
+        return this.post('api/v3/userDataStream', { createSignature: false });
     }
     keepAliveUserDataListenKey(listenKey) {
-        return this.put(`api/v3/userDataStream?listenKey=${listenKey}`, { isPublic: true });
+        return this.put(`api/v3/userDataStream?listenKey=${listenKey}`, { createSignature: false });
     }
     closeUserDataListenKey(listenKey) {
-        return this.delete(`api/v3/userDataStream?listenKey=${listenKey}`, { isPublic: true });
+        return this.delete(`api/v3/userDataStream?listenKey=${listenKey}`, { createSignature: false });
     }
     getExchangeInfo(params) {
         if (params === null || params === void 0 ? void 0 : params.symbols) {

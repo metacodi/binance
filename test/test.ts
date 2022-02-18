@@ -41,7 +41,7 @@ const testApi = async () => {
 
     if (options.isTest) { setTestKeys(options, market); }
 
-    const api = market === 'spot' ? new BinanceApiSpot(options) : new BinanceApiFutures(options);
+    const api = (market as any) === 'spot' ? new BinanceApiSpot(options) : new BinanceApiFutures(options);
     
     // NOTA: Les funcions troncals que passen per l'api d'spot no funcionen per testnet.
     // console.log('getSystemStatus() =>', await api.getSystemStatus());
@@ -51,7 +51,7 @@ const testApi = async () => {
 
     if (api instanceof BinanceApiSpot) {
 
-      // console.log('getUserDataListenKey() =>', await api.getUserDataListenKey());
+      console.log('getUserDataListenKey() =>', await api.getUserDataListenKey());
       // console.log('keepAliveUserDataListenKey() =>', await api.keepAliveUserDataListenKey('CAcCcyIJwicrA6deJKprBWNZY81QFwNiYn9WsDvky2uflOKS89VkbITvbWht'));
       // console.log('closeUserDataListenKey() =>', await api.closeUserDataListenKey());
 
@@ -60,7 +60,7 @@ const testApi = async () => {
 
       // console.log('getBalances() =>', await api.getBalances());
       // console.log('getAccountInformation() =>', await api.getAccountInformation());
-      // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
+      // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBEUR' }));
 
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
@@ -99,7 +99,7 @@ const testApi = async () => {
       // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
 
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
-      // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
+      console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker());
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker({ symbol: 'BNBUSDT'}));
 
@@ -174,6 +174,6 @@ const testMarketWs = async () => {
 };
 
 // testUserWs();
-testMarketWs();
-// testApi();
+// testMarketWs();
+testApi();
 
