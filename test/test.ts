@@ -56,7 +56,7 @@ const testApi = async () => {
       // console.log('closeUserDataListenKey() =>', await api.closeUserDataListenKey());
 
       // console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbol: 'BNBEUR' }));
-      // console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbols: ['BNBEUR', 'BNBUSDT'] }));
+      console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbols: ['BNBEUR', 'BNBUSDT'] }));
 
       // console.log('getBalances() =>', await api.getBalances());
       // console.log('getAccountInformation() =>', await api.getAccountInformation());
@@ -117,8 +117,8 @@ const testUserWs = async () => {
 
     console.log('---------------- User WebSocket TEST ----------------------');
  
-    const market: BinanceMarketType = 'spot';
-    // const market: BinanceMarketType = 'usdm';
+    // const market: BinanceMarketType = 'spot';
+    const market: BinanceMarketType = 'usdm';
 
     const userOptions: BinanceWebsocketOptions = {
       streamType: 'user',
@@ -131,9 +131,9 @@ const testUserWs = async () => {
 
     const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
 
-    // wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
-    // wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
-    // wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
+    wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
+    wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
+    wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
 
   } catch (error) {
     console.error('Websocket ERROR', error);
@@ -173,7 +173,7 @@ const testMarketWs = async () => {
   }
 };
 
-// testUserWs();
+testUserWs();
 // testMarketWs();
-testApi();
+// testApi();
 
