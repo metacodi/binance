@@ -80,3 +80,13 @@ npm i -D @types/ws@^8.2.2
 ```
 
 <br />
+
+## TOKEN
+
+Per poder descarregar el packages tens que fer login a github
+
+<br>
+
+```bash
+npm login --repository https://npm.pkg.github.com --scope=metacodi
+```
