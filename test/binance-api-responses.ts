@@ -423,3 +423,96 @@ const limitBuyFilledSpot = [{
   }
   
 }];
+
+
+const marketBuyFilledSpot = {
+  symbol: 'BNBUSDT',
+  orderId: 3700084399,
+  orderListId: -1,
+  clientOrderId: 'web_013af71d482f41009e5addeb0b9c42fc',
+  price: '0.00000000',
+  origQty: '0.02400000',
+  executedQty: '0.02400000',
+  cummulativeQuoteQty: '9.82560000',
+  status: 'FILLED',
+  timeInForce: 'GTC',
+  type: 'MARKET',
+  side: 'BUY',
+  stopPrice: '0.00000000',
+  icebergQty: '0.00000000',
+  time: 1645178250949,
+  updateTime: 1645178250949,
+  isWorking: true,
+  origQuoteOrderQty: '10.00000000'
+};
+
+const marketSellFilledSpot = {
+  symbol: 'BNBUSDT',
+  orderId: 3700100134,
+  orderListId: -1,
+  clientOrderId: 'web_3ebe480b7f5d4c489268f181b7b4d5d0',
+  price: '0.00000000',
+  origQty: '0.02500000',
+  executedQty: '0.02500000',
+  cummulativeQuoteQty: '10.21250000',
+  status: 'FILLED',
+  timeInForce: 'GTC',
+  type: 'MARKET',
+  side: 'SELL',
+  stopPrice: '0.00000000',
+  icebergQty: '0.00000000',
+  time: 1645178708055,
+  updateTime: 1645178708055,
+  isWorking: true,
+  origQuoteOrderQty: '0.00000000'
+};
+
+
+const marketBuyFilledFutures = {
+  orderId: 37656777728,
+  symbol: 'BNBUSDT',
+  status: 'FILLED',
+  clientOrderId: 'web_TW7KoOAifxt0bI2YapCM',
+  price: '0',
+  avgPrice: '408.13000',
+  origQty: '0.02',
+  executedQty: '0.02',
+  cumQuote: '8.16260',
+  timeInForce: 'GTC',
+  type: 'MARKET',
+  reduceOnly: false,
+  closePosition: false,
+  side: 'BUY',
+  positionSide: 'BOTH',
+  stopPrice: '0',
+  workingType: 'CONTRACT_PRICE',
+  priceProtect: false,
+  origType: 'MARKET',
+  time: 1645180230208,
+  updateTime: 1645180230208
+};
+
+
+const marketSellFilledFutures = {
+  orderId: 37656781528,
+  symbol: 'BNBUSDT',
+  status: 'FILLED',
+  clientOrderId: 'web_b8QWqqSOXS5QGu0IgsHA',
+  price: '0',
+  avgPrice: '407.89000',
+  origQty: '0.02',
+  executedQty: '0.02',
+  cumQuote: '8.15780',
+  timeInForce: 'GTC',
+  type: 'MARKET',
+  reduceOnly: true,
+  closePosition: false,
+  side: 'SELL',
+  positionSide: 'BOTH',
+  stopPrice: '0',
+  workingType: 'CONTRACT_PRICE',
+  priceProtect: false,
+  origType: 'MARKET',
+  time: 1645180256394,
+  updateTime: 1645180256394
+};

@@ -29,8 +29,8 @@ const testApi = async () => {
     
     console.log('---------------- API TEST ----------------------');
  
-    const market: BinanceMarketType = 'spot';
-    // const market: BinanceMarketType = 'usdm';
+    // const market: BinanceMarketType = 'spot';
+    const market: BinanceMarketType = 'usdm';
 
     const options: BinanceApiOptions = {
       // Binance keys Jordi.
@@ -51,23 +51,23 @@ const testApi = async () => {
 
     if (api instanceof BinanceApiSpot) {
 
-      console.log('getUserDataListenKey() =>', await api.getUserDataListenKey());
+      // console.log('getUserDataListenKey() =>', await api.getUserDataListenKey());
       // console.log('keepAliveUserDataListenKey() =>', await api.keepAliveUserDataListenKey('CAcCcyIJwicrA6deJKprBWNZY81QFwNiYn9WsDvky2uflOKS89VkbITvbWht'));
       // console.log('closeUserDataListenKey() =>', await api.closeUserDataListenKey());
 
       // console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbol: 'BNBEUR' }));
-      console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbols: ['BNBEUR', 'BNBUSDT'] }));
+      // console.log('getExchangeInfo() =>', await api.getExchangeInfo({ symbols: ['BNBEUR', 'BNBUSDT'] }));
 
       // console.log('getBalances() =>', await api.getBalances());
       // console.log('getAccountInformation() =>', await api.getAccountInformation());
-      // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBEUR' }));
+      console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
 
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker());
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker({ symbol: 'BNBUSDT'}));
 
-      // console.log('getAllOrders() =>', await api.getAllOrders({ symbol: 'BNBEUR'}));
+      console.log('getAllOrders() =>', await api.getAllOrders({ symbol: 'BNBUSDT'}));
       // console.log('getOpenOrders() =>', await api.getOpenOrders({ symbol: 'BNBEUR' }));
       // console.log('getOrder() =>', await api.getOrder({ symbol: 'BNBEUR', orderId: 379881536 }));
       // console.log('postOrder() =>', await api.postOrder({
@@ -96,10 +96,10 @@ const testApi = async () => {
 
       // console.log('getBalances() =>', await api.getBalances());
       // console.log('getAccountInformation() =>', await api.getAccountInformation());
-      // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
+      console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
 
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
-      console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
+      // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker());
       // console.log('getSymbolOrderBookTicker() =>', await api.getSymbolOrderBookTicker({ symbol: 'BNBUSDT'}));
 
@@ -173,7 +173,7 @@ const testMarketWs = async () => {
   }
 };
 
-testUserWs();
+// testUserWs();
 // testMarketWs();
-// testApi();
+testApi();
 
