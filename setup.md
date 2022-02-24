@@ -88,5 +88,7 @@ Per poder descarregar el packages tens que fer login a github
 <br>
 
 ```bash
-npm login --repository https://npm.pkg.github.com --scope=metacodi
+npm login --scope=@metacodi --registry=https://npm.pkg.github.com
+
+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
 ```
