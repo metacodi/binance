@@ -70,21 +70,21 @@ const testApi = async () => {
       // console.log('getAllOrders() =>', await api.getAllOrders({ symbol: 'BNBUSDT'}));
       // console.log('getOpenOrders() =>', await api.getOpenOrders({ symbol: 'BNBEUR' }));
       // console.log('getOrder() =>', await api.getOrder({ symbol: 'BNBEUR', orderId: 379881536 }));
-      // console.log('postOrder() =>', await api.postOrder({
-      //   symbol: 'BNBUSDT',
-      //   side: 'BUY',
-      //   type: 'LIMIT',
-      //   newClientOrderId: 'prova-limit-bnb',
-      //   // quantity: 0.00001, // Filter failure: (minQty) LOT_SIZE = {"minQty": "0.00100000", "maxQty":"9222449.00000000", "stepSize": "0.00100000"}
-      //   // quantity: 0.001,   // Filter failure: MIN_NOTIONAL = {"minNotional": "10.00000000", "applyToMarket": true, "avgPriceMins": 5}; notional_value = price * quantity;
-      //   quantity: 0.1,
-      //   // price: 0.01,       // Filter failure: (minPrice) PRICE_FILTER = { "minPrice": "0.10000000", "maxPrice": "10000.00000000", "tickSize": "0.10000000" }
-      //   // price: 300.001,    // Filter failure: (tickSize) PRICE_FILTER = { "minPrice": "0.10000000", "maxPrice": "10000.00000000", "tickSize": "0.10000000" }
-      //   price: 300.0,
-      //   timeInForce: 'GTC',
-      //   // newOrderRespType: 'FULL',
-      //   newOrderRespType: 'RESULT',
-      // }));
+      console.log('postOrder() =>', await api.postOrder({
+        symbol: 'BNBUSDT',
+        side: 'BUY',
+        type: 'LIMIT',
+        newClientOrderId: 'prova-limit-bnb',
+        // quantity: 0.00001, // Filter failure: (minQty) LOT_SIZE = {"minQty": "0.00100000", "maxQty":"9222449.00000000", "stepSize": "0.00100000"}
+        // quantity: 0.001,   // Filter failure: MIN_NOTIONAL = {"minNotional": "10.00000000", "applyToMarket": true, "avgPriceMins": 5}; notional_value = price * quantity;
+        quantity: 0.1,
+        // price: 0.01,       // Filter failure: (minPrice) PRICE_FILTER = { "minPrice": "0.10000000", "maxPrice": "10000.00000000", "tickSize": "0.10000000" }
+        // price: 300.001,    // Filter failure: (tickSize) PRICE_FILTER = { "minPrice": "0.10000000", "maxPrice": "10000.00000000", "tickSize": "0.10000000" }
+        price: 300.0,
+        timeInForce: 'GTC',
+        // newOrderRespType: 'FULL',
+        newOrderRespType: 'RESULT',
+      }));
       
     } else if (api instanceof BinanceApiFutures) {
       
