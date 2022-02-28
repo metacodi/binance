@@ -21,6 +21,8 @@ export class BinanceWebsocket extends EventEmitter {
   protected pongTimer?: Subscription;
   /** Clau associada amb l'stream d'usuari. */
   protected listenKey?: string;
+  /** Subscriptor al timer que controla la renovació de la clau. */
+  protected listenKeyTimer?: Subscription;
   /** Emisors de missatges. */
   protected emitters: { [WsStreamEmitterType: string]: Subject<any> } = {};
 
@@ -79,12 +81,6 @@ export class BinanceWebsocket extends EventEmitter {
   protected async initialize() {
     // Instanciem un client per l'API.
     this.api = this.getApiClient();
-    // Obtenim una clau per l'usuari.
-    if (this.streamType === 'user') {
-      const response = await this.api.getUserDataListenKey();
-      this.listenKey = response.listenKey;
-      console.log(this.wsId, 'listenKey: ', this.listenKey);
-    }
     // Iniciem la connexió amb l'stream de l'exchange.
     this.connect();
   }
@@ -109,7 +105,9 @@ export class BinanceWebsocket extends EventEmitter {
     return `${this.baseUrl}/${format}${listenKey}`;
   }
 
-  connect() {
+  async connect() {
+    // Obtenim una clau per l'stream de l'usuari.
+    if (this.streamType === 'user') { await this.getUserDataListenKey(); }
     // Nova instància.
     this.ws = new WebSocket(this.url);
     console.log(this.wsId, 'connecting', this.url);
@@ -129,15 +127,18 @@ export class BinanceWebsocket extends EventEmitter {
   }
 
   reconnect() {
+    if (this.status === 'reconnecting') { return; }
     this.status = 'reconnecting';
     this.close();
     setTimeout(() => this.connect(), this.reconnectPeriod);
   }
 
-  close() {
+  async close() {
     if (this.status !== 'reconnecting') { this.status = 'closing'; }
     if (this.pingInterval) { this.pingInterval.unsubscribe(); }
     if (this.pongTimer) { this.pongTimer.unsubscribe(); }
+    if (this.listenKeyTimer) { this.listenKeyTimer.unsubscribe(); }
+    await this.api.closeUserDataListenKey(this.listenKey);
     this.ws.close();
     // #168: ws.terminate() undefined in browsers.
     if (typeof this.ws.terminate === 'function') { this.ws.terminate(); }
@@ -171,7 +172,7 @@ export class BinanceWebsocket extends EventEmitter {
 
   protected onWsClose(event: WebSocket.CloseEvent) {
     console.log(this.wsId, 'closed');
-    if (this.status === 'reconnecting') {
+    if (this.status !== 'closing') {
       this.reconnect();
       this.emit('reconnecting', { event });
     } else {
@@ -219,6 +220,26 @@ export class BinanceWebsocket extends EventEmitter {
 
 
   // ---------------------------------------------------------------------------------------------------
+  //  listen Key
+  // ---------------------------------------------------------------------------------------------------
+
+  /**
+   * {@link https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot LISTEN KEY SPOT}
+   * {@link https://binance-docs.github.io/apidocs/futures/en/#start-user-data-stream-user_stream Start User Data Stream (USER_STREAM)}
+   */
+  protected async getUserDataListenKey(): Promise<void> {
+    if (this.listenKeyTimer) { this.listenKeyTimer.unsubscribe(); }
+    // Obtenim una clau per l'stream d'usuari.
+    const response = await this.api.getUserDataListenKey();
+    this.listenKey = response.listenKey;
+    console.log(this.wsId, 'listenKey: ', this.listenKey);
+    // Mantenim viva la clau d'usuari.
+    this.listenKeyTimer = timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
+    return Promise.resolve();
+  }
+
+
+  // ---------------------------------------------------------------------------------------------------
   //  message event
   // ---------------------------------------------------------------------------------------------------
 
@@ -234,6 +255,9 @@ export class BinanceWebsocket extends EventEmitter {
       case 'outboundAccountPosition': return this.emitAccountUpdate(data);
       case 'ACCOUNT_UPDATE': this.emitBalanceUpdate(data); this.emitAccountUpdate(data); break;
       case 'executionReport': case 'ORDER_TRADE_UPDATE': return this.emitOrderUpdate(data);
+      case 'listenKeyExpired':
+        if (this.status !== 'closing' && this.status !== 'initial') { this.reconnect(); }
+        break;
       // Market events
       case '24hrMiniTicker': return this.emitMiniTicker(data);
       case 'bookTicker': return this.emitBookTicker(data);

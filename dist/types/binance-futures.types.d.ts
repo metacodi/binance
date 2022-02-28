@@ -1,4 +1,4 @@
-import { BinanceExchangeFilter, BinanceOrderTimeInForce, BinanceRateLimiter, BinanceSymbolFilter, BinanceOrderType, BinanceOrderSide, BinanceOrderStatus, BinanceOrderResponseType } from './binance.types';
+import { BinanceExchangeFilter, BinanceOrderTimeInForce, BinanceRateLimiter, BinanceSymbolFilter, BinanceOrderType, BinanceOrderSide, BinanceOrderStatus, BinanceOrderResponseType, BinanceKlineInterval } from './binance.types';
 export declare type BinancePositionSide = 'BOTH' | 'LONG' | 'SHORT';
 export declare type BinanceContractType = 'PERPETUAL' | 'CURRENT_MONTH' | 'NEXT_MONTH' | 'CURRENT_QUARTER' | 'NEXT_QUARTER';
 export declare type BinanceContractStatus = 'PENDING_TRADING' | 'TRADING' | 'PRE_DELIVERING' | 'DELIVERING' | 'DELIVERED' | 'CANCELLED' | 'PRE_SETTLE' | 'SETTLING' | 'CLOSE';
@@ -143,6 +143,13 @@ export interface BinanceFuturesSymbolOrderBookTicker {
     askPrice: string;
     askQty: string;
     time: number;
+}
+export interface BinanceFuturesSymbolKlinesRequest {
+    symbol: string;
+    interval: BinanceKlineInterval;
+    startTime?: number;
+    endTime?: number;
+    limit?: number;
 }
 export interface BinanceFuturesGetAllOrdersRequest {
     symbol: string;

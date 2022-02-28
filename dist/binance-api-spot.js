@@ -33,11 +33,14 @@ class BinanceApiSpot extends binance_api_1.BinanceApi {
     getAccountTradeList(params) {
         return this.get('api/v3/myTrades', { params });
     }
-    getSymbolPriceTicker(params, headers) {
-        return this.get('api/v3/ticker/price', { isPublic: true, params, headers });
+    getSymbolPriceTicker(params) {
+        return this.get('api/v3/ticker/price', { isPublic: true, params });
     }
     getSymbolOrderBookTicker(params) {
         return this.get('api/v3/ticker/bookTicker', { isPublic: true, params });
+    }
+    getSymbolKlines(params) {
+        return this.get('api/v3/klines', { isPublic: true, params });
     }
     getAllOrders(params) {
         return this.get('api/v3/allOrders', { params });

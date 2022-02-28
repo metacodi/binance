@@ -13,6 +13,7 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected pingInterval?: Subscription;
     protected pongTimer?: Subscription;
     protected listenKey?: string;
+    protected listenKeyTimer?: Subscription;
     protected emitters: {
         [WsStreamEmitterType: string]: Subject<any>;
     };
@@ -31,9 +32,9 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected initialize(): Promise<void>;
     get baseUrl(): string;
     get url(): string;
-    connect(): void;
+    connect(): Promise<void>;
     reconnect(): void;
-    close(): void;
+    close(): Promise<void>;
     destroy(): void;
     protected onWsOpen(event: WebSocket.Event): void;
     protected onWsClose(event: WebSocket.CloseEvent): void;
@@ -41,6 +42,7 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected ping(): void;
     protected onWsPing(event: any): void;
     protected onWsPong(event: any): void;
+    protected getUserDataListenKey(): Promise<void>;
     protected onWsMessage(event: WebSocket.MessageEvent): void;
     protected parseWsMessage(event: any): any;
     protected discoverEventType(data: any): string;

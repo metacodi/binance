@@ -19,6 +19,7 @@ import { BinanceSpotTradeListRequest,
   BinanceSpotCancelOrderRequest,
   BinanceSpotCancelAllSymbolOrdersRequest,
   BinanceSpotCancelOrder,
+  BinanceSpotSymbolKlinesRequest,
 } from './types/binance-spot.types';
 
 
@@ -77,14 +78,19 @@ export class BinanceApiSpot extends BinanceApi {
     return this.get('api/v3/myTrades', { params });
   }
 
-  /** {@link https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
-  getSymbolPriceTicker(params?: BinanceSpotSymbolPriceTickerRequest, headers?: BinanceApiResquestOptions['headers']): Promise<BinanceSpotSymbolPriceTicker | BinanceSpotSymbolPriceTicker[]> {
-    return this.get('api/v3/ticker/price', { isPublic: true, params, headers });
+  /** {@link https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker Symbol Price Ticker} */
+  getSymbolPriceTicker(params?: BinanceSpotSymbolPriceTickerRequest): Promise<BinanceSpotSymbolPriceTicker | BinanceSpotSymbolPriceTicker[]> {
+    return this.get('api/v3/ticker/price', { isPublic: true, params });
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker Symbol Order Book Ticker} */
   getSymbolOrderBookTicker(params?: BinanceSpotSymbolOrderBookTickerRequest): Promise<BinanceSpotSymbolOrderBookTicker | BinanceSpotSymbolOrderBookTicker[]> {
     return this.get('api/v3/ticker/bookTicker', { isPublic: true, params });
+  }
+
+  /** {@link https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data Kline/Candlestick Data} */
+  getSymbolKlines(params?: BinanceSpotSymbolKlinesRequest): Promise<any[]> { // Promise<BinanceSpotSymbolKline | BinanceSpotSymbolKline[]> {
+    return this.get('api/v3/klines', { isPublic: true, params });
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#all-orders-user_data All Orders (USER_DATA)} */

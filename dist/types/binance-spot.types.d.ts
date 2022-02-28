@@ -1,4 +1,4 @@
-import { BinanceMarketType, BinanceExchangeFilter, BinanceOrderType, BinanceRateLimiter, BinanceSymbolFilter, BinanceOrderSide, BinanceOrderStatus, BinanceOrderTimeInForce, BinanceOrderResponseType } from './binance.types';
+import { BinanceMarketType, BinanceExchangeFilter, BinanceOrderType, BinanceRateLimiter, BinanceSymbolFilter, BinanceOrderSide, BinanceOrderStatus, BinanceOrderTimeInForce, BinanceOrderResponseType, BinanceKlineInterval } from './binance.types';
 declare type Uppercase<S extends string> = string;
 export interface BinanceSpotExchangeInfoRequest {
     symbol?: string;
@@ -115,6 +115,13 @@ export interface BinanceSpotSymbolOrderBookTicker {
     bidQty: string;
     askPrice: string;
     askQty: string;
+}
+export interface BinanceSpotSymbolKlinesRequest {
+    symbol: string;
+    interval: BinanceKlineInterval;
+    startTime?: number;
+    endTime?: number;
+    limit?: number;
 }
 export interface BinanceSpotGetAllOrdersRequest {
     symbol: string;

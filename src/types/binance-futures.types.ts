@@ -7,6 +7,7 @@ import {
   BinanceOrderSide,
   BinanceOrderStatus,
   BinanceOrderResponseType,
+  BinanceKlineInterval,
 } from './binance.types';
 
 
@@ -212,6 +213,20 @@ export interface BinanceFuturesSymbolOrderBookTicker {
   askPrice: string;
   askQty: string;
   time: number;
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  getSymbolKlines
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data Kline/Candlestick Data} */
+export interface BinanceFuturesSymbolKlinesRequest {
+  symbol: string;
+  interval: BinanceKlineInterval;
+  startTime?: number;
+  endTime?: number;
+  limit?: number;
 }
 
 

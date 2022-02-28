@@ -51,11 +51,6 @@ class BinanceWebsocket extends events_1.default {
     initialize() {
         return __awaiter(this, void 0, void 0, function* () {
             this.api = this.getApiClient();
-            if (this.streamType === 'user') {
-                const response = yield this.api.getUserDataListenKey();
-                this.listenKey = response.listenKey;
-                console.log(this.wsId, 'listenKey: ', this.listenKey);
-            }
             this.connect();
         });
     }
@@ -74,38 +69,52 @@ class BinanceWebsocket extends events_1.default {
         return `${this.baseUrl}/${format}${listenKey}`;
     }
     connect() {
-        this.ws = new isomorphic_ws_1.default(this.url);
-        console.log(this.wsId, 'connecting', this.url);
-        this.ws.onopen = event => this.onWsOpen(event);
-        this.ws.onerror = event => this.onWsError(event);
-        this.ws.onclose = event => this.onWsClose(event);
-        this.ws.onmessage = event => this.onWsMessage(event);
-        if (typeof this.ws.on === 'function') {
-            this.ws.on('ping', event => this.onWsPing(event));
-            this.ws.on('pong', event => this.onWsPong(event));
-        }
-        this.ws.onping = (event) => this.onWsPing(event);
-        this.ws.onpong = (event) => this.onWsPong(event);
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.streamType === 'user') {
+                yield this.getUserDataListenKey();
+            }
+            this.ws = new isomorphic_ws_1.default(this.url);
+            console.log(this.wsId, 'connecting', this.url);
+            this.ws.onopen = event => this.onWsOpen(event);
+            this.ws.onerror = event => this.onWsError(event);
+            this.ws.onclose = event => this.onWsClose(event);
+            this.ws.onmessage = event => this.onWsMessage(event);
+            if (typeof this.ws.on === 'function') {
+                this.ws.on('ping', event => this.onWsPing(event));
+                this.ws.on('pong', event => this.onWsPong(event));
+            }
+            this.ws.onping = (event) => this.onWsPing(event);
+            this.ws.onpong = (event) => this.onWsPong(event);
+        });
     }
     reconnect() {
+        if (this.status === 'reconnecting') {
+            return;
+        }
         this.status = 'reconnecting';
         this.close();
         setTimeout(() => this.connect(), this.reconnectPeriod);
     }
     close() {
-        if (this.status !== 'reconnecting') {
-            this.status = 'closing';
-        }
-        if (this.pingInterval) {
-            this.pingInterval.unsubscribe();
-        }
-        if (this.pongTimer) {
-            this.pongTimer.unsubscribe();
-        }
-        this.ws.close();
-        if (typeof this.ws.terminate === 'function') {
-            this.ws.terminate();
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.status !== 'reconnecting') {
+                this.status = 'closing';
+            }
+            if (this.pingInterval) {
+                this.pingInterval.unsubscribe();
+            }
+            if (this.pongTimer) {
+                this.pongTimer.unsubscribe();
+            }
+            if (this.listenKeyTimer) {
+                this.listenKeyTimer.unsubscribe();
+            }
+            yield this.api.closeUserDataListenKey(this.listenKey);
+            this.ws.close();
+            if (typeof this.ws.terminate === 'function') {
+                this.ws.terminate();
+            }
+        });
     }
     destroy() {
         Object.keys(this.emitters).map(WsStreamEmitterType => this.emitters[WsStreamEmitterType].complete());
@@ -129,7 +138,7 @@ class BinanceWebsocket extends events_1.default {
     }
     onWsClose(event) {
         console.log(this.wsId, 'closed');
-        if (this.status === 'reconnecting') {
+        if (this.status !== 'closing') {
             this.reconnect();
             this.emit('reconnecting', { event });
         }
@@ -168,6 +177,18 @@ class BinanceWebsocket extends events_1.default {
             this.pongTimer.unsubscribe();
         }
     }
+    getUserDataListenKey() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.listenKeyTimer) {
+                this.listenKeyTimer.unsubscribe();
+            }
+            const response = yield this.api.getUserDataListenKey();
+            this.listenKey = response.listenKey;
+            console.log(this.wsId, 'listenKey: ', this.listenKey);
+            this.listenKeyTimer = rxjs_1.timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
+            return Promise.resolve();
+        });
+    }
     onWsMessage(event) {
         const data = this.parseWsMessage(event);
         this.emit('message', data);
@@ -180,6 +201,11 @@ class BinanceWebsocket extends events_1.default {
                 break;
             case 'executionReport':
             case 'ORDER_TRADE_UPDATE': return this.emitOrderUpdate(data);
+            case 'listenKeyExpired':
+                if (this.status !== 'closing' && this.status !== 'initial') {
+                    this.reconnect();
+                }
+                break;
             case '24hrMiniTicker': return this.emitMiniTicker(data);
             case 'bookTicker': return this.emitBookTicker(data);
             default:

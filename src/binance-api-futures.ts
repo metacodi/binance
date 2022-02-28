@@ -18,6 +18,7 @@ import { BinanceFuturesTradeListRequest,
   BinanceFuturesCancelOrderRequest,
   BinanceFuturesCancelAllSymbolOrdersRequest,
   BinanceFuturesCancelOrder,
+  BinanceFuturesSymbolKlinesRequest,
 } from './types/binance-futures.types';
 
 
@@ -75,7 +76,7 @@ export class BinanceApiFutures extends BinanceApi {
     return this.get('fapi/v1/userTrades', { params });
   }
   
-  /** {@link https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
+  /** {@link https://binance-docs.github.io/apidocs/futures/en/#symbol-price-ticker Symbol Price Ticker} */
   getSymbolPriceTicker(params?: BinanceFuturesSymbolPriceTickerRequest): Promise<BinanceFuturesSymbolPriceTicker | BinanceFuturesSymbolPriceTicker[]> {
     return this.get('fapi/v1/ticker/price', { isPublic: true, params });
   }
@@ -85,6 +86,11 @@ export class BinanceApiFutures extends BinanceApi {
     return this.get('fapi/v1/ticker/bookTicker', { isPublic: true, params });
   }
 
+  /** {@link https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data Kline/Candlestick Data} */
+  getSymbolKlines(params?: BinanceFuturesSymbolKlinesRequest): Promise<any[]> { // Promise<BinanceFuturesSymbolKline | BinanceFuturesSymbolKline[]> {
+    return this.get('fapi/v1/klines', { isPublic: true, params });
+  }
+  
   /** {@link https://binance-docs.github.io/apidocs/futures/en/#all-orders-user_data All Orders (USER_DATA)} */
   getAllOrders(params: BinanceFuturesGetAllOrdersRequest): Promise<BinanceFuturesOrder | BinanceFuturesOrder[]> {
     return this.get('fapi/v1/allOrders', { params });

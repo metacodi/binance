@@ -36,6 +36,9 @@ class BinanceApiFutures extends binance_api_1.BinanceApi {
     getSymbolOrderBookTicker(params) {
         return this.get('fapi/v1/ticker/bookTicker', { isPublic: true, params });
     }
+    getSymbolKlines(params) {
+        return this.get('fapi/v1/klines', { isPublic: true, params });
+    }
     getAllOrders(params) {
         return this.get('fapi/v1/allOrders', { params });
     }

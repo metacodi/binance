@@ -1,6 +1,6 @@
 import { BinanceApi } from './binance-api';
 import { BinanceApiOptions, BinanceFuturesSubdomain, BinanceMarketType } from './types/binance.types';
-import { BinanceFuturesTradeListRequest, BinanceFuturesTradeList, BinanceFuturesAccountInformation, BinanceFuturesExchangeInfo, BinanceFuturesAccountBalance, BinanceFuturesSymbolPriceTickerRequest, BinanceFuturesSymbolPriceTicker, BinanceFuturesSymbolOrderBookTickerRequest, BinanceFuturesSymbolOrderBookTicker, BinanceFuturesGetAllOrdersRequest, BinanceFuturesGetOpenOrdersRequest, BinanceFuturesGetOrderRequest, BinanceFuturesOrder, BinanceFuturesPostOrderRequest, BinanceFuturesNewOrder, BinanceFuturesCancelOrderRequest, BinanceFuturesCancelAllSymbolOrdersRequest, BinanceFuturesCancelOrder } from './types/binance-futures.types';
+import { BinanceFuturesTradeListRequest, BinanceFuturesTradeList, BinanceFuturesAccountInformation, BinanceFuturesExchangeInfo, BinanceFuturesAccountBalance, BinanceFuturesSymbolPriceTickerRequest, BinanceFuturesSymbolPriceTicker, BinanceFuturesSymbolOrderBookTickerRequest, BinanceFuturesSymbolOrderBookTicker, BinanceFuturesGetAllOrdersRequest, BinanceFuturesGetOpenOrdersRequest, BinanceFuturesGetOrderRequest, BinanceFuturesOrder, BinanceFuturesPostOrderRequest, BinanceFuturesNewOrder, BinanceFuturesCancelOrderRequest, BinanceFuturesCancelAllSymbolOrdersRequest, BinanceFuturesCancelOrder, BinanceFuturesSymbolKlinesRequest } from './types/binance-futures.types';
 export declare class BinanceApiFutures extends BinanceApi {
     market: BinanceMarketType;
     subdomain: BinanceFuturesSubdomain;
@@ -17,6 +17,7 @@ export declare class BinanceApiFutures extends BinanceApi {
     getAccountTradeList(params: BinanceFuturesTradeListRequest): Promise<BinanceFuturesTradeList>;
     getSymbolPriceTicker(params?: BinanceFuturesSymbolPriceTickerRequest): Promise<BinanceFuturesSymbolPriceTicker | BinanceFuturesSymbolPriceTicker[]>;
     getSymbolOrderBookTicker(params?: BinanceFuturesSymbolOrderBookTickerRequest): Promise<BinanceFuturesSymbolOrderBookTicker | BinanceFuturesSymbolOrderBookTicker[]>;
+    getSymbolKlines(params?: BinanceFuturesSymbolKlinesRequest): Promise<any[]>;
     getAllOrders(params: BinanceFuturesGetAllOrdersRequest): Promise<BinanceFuturesOrder | BinanceFuturesOrder[]>;
     getOpenOrders(params: BinanceFuturesGetOpenOrdersRequest): Promise<BinanceFuturesOrder[]>;
     getOrder(params: BinanceFuturesGetOrderRequest): Promise<BinanceFuturesOrder>;
