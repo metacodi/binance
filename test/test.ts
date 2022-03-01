@@ -5,6 +5,9 @@ import { BinanceWebsocketOptions } from '../src/types/binance-websocket.types';
 import { BinanceWebsocket } from '../src';
 import { interval } from 'rxjs';
 
+import { Resource, Terminal  } from '@metacodi/precode';
+import * as fs from 'fs';
+
 
 const setTestKeys = (options: any, market?: BinanceMarketType) => {
   if (options.isTest) {
@@ -118,8 +121,8 @@ const testUserWs = async () => {
 
     console.log('---------------- User WebSocket TEST ----------------------');
  
-    const market: BinanceMarketType = 'spot';
-    // const market: BinanceMarketType = 'usdm';
+    // const market: BinanceMarketType = 'spot';
+    const market: BinanceMarketType = 'usdm';
 
     const userOptions: BinanceWebsocketOptions = {
       streamType: 'user',
@@ -132,9 +135,11 @@ const testUserWs = async () => {
 
     const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
 
-    wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
-    wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
-    wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
+    wsUser.balanceUpdate().subscribe(data => writeLog('exemple_4_balanceUpdate_', data));
+    wsUser.orderUpdate().subscribe(data => writeLog('exemple_4_orderUpdate_', data));
+    // wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', JSON.stringify(data, null, '  ')));
+    // wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', JSON.stringify(data, null, '  ')));
+    // wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', JSON.stringify(data, null, '  ')));
 
     // setTimeout(() => { console.log('Reconnecting...'); wsUser.reconnect(); }, 10000);
     
@@ -164,15 +169,15 @@ const testMarketWs = async () => {
     
     const wsMarket = new BinanceWebsocket(marketOptions);
 
-    const klineUSDT3m = wsMarket.kline('BNBUSDT', '3m').subscribe(data => console.log(data));
-    // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
-    // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
+    // const klineUSDT3m = wsMarket.kline('BNBUSDT', '3m').subscribe(data => console.log(data));
+    const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
+    const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
     // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log(data));
     // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log(data));
     // const bookTickerUSDT = wsMarket.bookTicker('BNBUSDT').subscribe(data => console.log('bookTickerUSDT =>', data));
     
-    // setTimeout(() => { console.log('Unsibscribe USDT miniTicker'); miniTickerUSDT.unsubscribe(); }, 10000);    
-    setTimeout(() => { console.log('Reconnecting...'); wsMarket.reconnect(); }, 10000);
+    setTimeout(() => { console.log('Unsibscribe USDT miniTicker'); miniTickerUSDT.unsubscribe(); }, 10000);    
+    // setTimeout(() => { console.log('Reconnecting...'); wsMarket.reconnect(); }, 10000);
     // setTimeout(() => { console.log('Subscribing to orderUpdate...'); wsMarket.orderUpdate(); }, 10000);
 
   } catch (error) {
@@ -180,7 +185,15 @@ const testMarketWs = async () => {
   }
 };
 
-// testUserWs();
-testMarketWs();
+const logFileName = 'exemple-5-futures-buy-sell-limit-1BNB.ts';
+
+function writeLog(variable: string, data: any) {
+  const url = Resource.normalize(`./test/${logFileName}`);
+  const value = JSON.stringify(data, null, ' ');
+  console.log(value);
+  fs.appendFileSync(url, `const ${variable} = ${value};\n\n`);
+}
 // testApi();
+testUserWs();
+// testMarketWs();
 

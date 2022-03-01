@@ -688,3 +688,14 @@ const streamUserFuturesSellMarket_accountUpdate_with_BaseComission = {
     updatedPositions: [ [Object] ]
   }
 }
+
+
+const streamUserFuturesAccountConfigUpdate = {
+  stream: 'PexyKLAIHOFI0EKfEQFvdv3pUjPQ3a6mLuDPQrT8MLnQv2j0TBP6CzWJfOG4k9t5',
+  data: {
+    e: 'ACCOUNT_CONFIG_UPDATE',
+    T: 1646145679696,
+    E: 1646145679706,
+    ac: { s: 'BNBUSDT', l: 2 }
+  }
+}

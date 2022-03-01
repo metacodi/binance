@@ -210,6 +210,7 @@ export class BinanceWebsocket extends EventEmitter {
 
     } catch (error) {
       console.error(this.wsId, `=> Failed to send WS ping`);
+      // TODO: Notificar l'error.
     }
   }
 
