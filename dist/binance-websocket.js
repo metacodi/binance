@@ -74,7 +74,7 @@ class BinanceWebsocket extends events_1.default {
                 yield this.getUserDataListenKey();
             }
             this.ws = new isomorphic_ws_1.default(this.url);
-            console.log(this.wsId, 'connecting', this.url);
+            console.log(this.wsId, '=> connecting', this.url);
             this.ws.onopen = event => this.onWsOpen(event);
             this.ws.onerror = event => this.onWsError(event);
             this.ws.onclose = event => this.onWsClose(event);
@@ -109,7 +109,9 @@ class BinanceWebsocket extends events_1.default {
             if (this.listenKeyTimer) {
                 this.listenKeyTimer.unsubscribe();
             }
-            yield this.api.closeUserDataListenKey(this.listenKey);
+            if (this.streamType === 'user') {
+                yield this.api.closeUserDataListenKey(this.listenKey);
+            }
             this.ws.close();
             if (typeof this.ws.terminate === 'function') {
                 this.ws.terminate();
@@ -122,11 +124,11 @@ class BinanceWebsocket extends events_1.default {
     }
     onWsOpen(event) {
         if (this.status === 'reconnecting') {
-            console.log(this.wsId, 'reconnected!');
+            console.log(this.wsId, '=> reconnected!');
             this.emit('reconnected', { event });
         }
         else {
-            console.log(this.wsId, 'connected!');
+            console.log(this.wsId, '=> connected!');
             this.emit('open', { event });
         }
         this.status = 'connected';
@@ -137,7 +139,7 @@ class BinanceWebsocket extends events_1.default {
         this.respawnMarketStreamSubscriptions();
     }
     onWsClose(event) {
-        console.log(this.wsId, 'closed');
+        console.log(this.wsId, '=> closed');
         if (this.status !== 'closing') {
             this.reconnect();
             this.emit('reconnecting', { event });
@@ -148,31 +150,31 @@ class BinanceWebsocket extends events_1.default {
         }
     }
     onWsError(event) {
-        console.error(this.wsId, (event === null || event === void 0 ? void 0 : event.error) || event);
+        console.error(`${this.wsId} =>`, (event === null || event === void 0 ? void 0 : event.error) || event);
     }
     ping() {
-        console.log(this.wsId, `Sending ping...`);
+        console.log(this.wsId, `=> Sending ping...`);
         try {
             if (this.pongTimer) {
                 this.pongTimer.unsubscribe();
             }
             this.pongTimer = rxjs_1.timer(this.pongPeriod).subscribe(() => {
-                console.log(this.wsId, `Pong timeout - closing socket to reconnect`);
+                console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
                 this.reconnect();
             });
             this.ws.ping();
             this.ws.pong();
         }
         catch (error) {
-            console.error(this.wsId, `Failed to send WS ping`);
+            console.error(this.wsId, `=> Failed to send WS ping`);
         }
     }
     onWsPing(event) {
-        console.log(this.wsId, 'Received ping, sending pong');
+        console.log(this.wsId, '=> Received ping, sending pong');
         this.ws.pong();
     }
     onWsPong(event) {
-        console.log(this.wsId, 'Received pong, clearing timer');
+        console.log(this.wsId, '=> Received pong, clearing timer');
         if (this.pongTimer) {
             this.pongTimer.unsubscribe();
         }
@@ -184,7 +186,7 @@ class BinanceWebsocket extends events_1.default {
             }
             const response = yield this.api.getUserDataListenKey();
             this.listenKey = response.listenKey;
-            console.log(this.wsId, 'listenKey: ', this.listenKey);
+            console.log(this.wsId, '=> listenKey: ', this.listenKey);
             this.listenKeyTimer = rxjs_1.timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
             return Promise.resolve();
         });
@@ -252,6 +254,9 @@ class BinanceWebsocket extends events_1.default {
         return keys.length === match.length && keys.every(key => match.includes(key));
     }
     registerAccountSubscription(key) {
+        if (this.streamType === 'market') {
+            throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a l'stream de mercat de ${this.market}.`);
+        }
         const stored = this.emitters[key];
         if (stored) {
             return stored;
@@ -432,7 +437,7 @@ class BinanceWebsocket extends events_1.default {
     subscribeMarketStream(params) {
         const id = ++this.subscriptionId;
         const data = { method: "SUBSCRIBE", id, params };
-        console.log(this.wsId, 'subscribeMarketStream => ', data);
+        console.log(this.wsId, '=> subscribeMarketStream => ', data);
         this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error) : undefined);
     }
     unsubscribeMarketStream(params) {
@@ -463,6 +468,9 @@ class BinanceWebsocket extends events_1.default {
         return !emitter || emitter.closed || !((_a = emitter.observers) === null || _a === void 0 ? void 0 : _a.length);
     }
     registerMarketStreamSubscription(key) {
+        if (this.streamType === 'user') {
+            throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a un strem d'usuari.`);
+        }
         const stored = this.emitters[key];
         if (stored) {
             return stored;
@@ -529,7 +537,7 @@ class BinanceWebsocket extends events_1.default {
             askQty: +data.A,
         };
     }
-    get wsId() { return `${this.market}-${this.streamType}-ws =>`; }
+    get wsId() { return `${this.market}-${this.streamType}-ws`; }
 }
 exports.BinanceWebsocket = BinanceWebsocket;
 //# sourceMappingURL=binance-websocket.js.map

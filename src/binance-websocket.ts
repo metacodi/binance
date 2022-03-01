@@ -106,11 +106,11 @@ export class BinanceWebsocket extends EventEmitter {
   }
 
   async connect() {
-    // Obtenim una clau per l'stream de l'usuari.
+    // Obtenim una clau per l'stream d'usuari.
     if (this.streamType === 'user') { await this.getUserDataListenKey(); }
     // Nova instància.
     this.ws = new WebSocket(this.url);
-    console.log(this.wsId, 'connecting', this.url);
+    console.log(this.wsId, '=> connecting', this.url);
     // Listeners.
     this.ws.onopen = event => this.onWsOpen(event);
     this.ws.onerror = event => this.onWsError(event);
@@ -138,7 +138,7 @@ export class BinanceWebsocket extends EventEmitter {
     if (this.pingInterval) { this.pingInterval.unsubscribe(); }
     if (this.pongTimer) { this.pongTimer.unsubscribe(); }
     if (this.listenKeyTimer) { this.listenKeyTimer.unsubscribe(); }
-    await this.api.closeUserDataListenKey(this.listenKey);
+    if (this.streamType === 'user') { await this.api.closeUserDataListenKey(this.listenKey); }
     this.ws.close();
     // #168: ws.terminate() undefined in browsers.
     if (typeof this.ws.terminate === 'function') { this.ws.terminate(); }
@@ -156,10 +156,10 @@ export class BinanceWebsocket extends EventEmitter {
 
   protected onWsOpen(event: WebSocket.Event) {
     if (this.status === 'reconnecting') {
-      console.log(this.wsId, 'reconnected!');
+      console.log(this.wsId, '=> reconnected!');
       this.emit('reconnected', { event });
     } else {
-      console.log(this.wsId, 'connected!');
+      console.log(this.wsId, '=> connected!');
       this.emit('open', { event });
     }
     this.status = 'connected';
@@ -171,7 +171,7 @@ export class BinanceWebsocket extends EventEmitter {
   }
 
   protected onWsClose(event: WebSocket.CloseEvent) {
-    console.log(this.wsId, 'closed');
+    console.log(this.wsId, '=> closed');
     if (this.status !== 'closing') {
       this.reconnect();
       this.emit('reconnecting', { event });
@@ -182,7 +182,7 @@ export class BinanceWebsocket extends EventEmitter {
   }
 
   protected onWsError(event: WebSocket.ErrorEvent) {
-    console.error(this.wsId, event?.error || event);
+    console.error(`${this.wsId} =>`, event?.error || event);
   }
 
 
@@ -191,11 +191,11 @@ export class BinanceWebsocket extends EventEmitter {
   // ---------------------------------------------------------------------------------------------------
 
   protected ping() {
-    console.log(this.wsId, `Sending ping...`);
+    console.log(this.wsId, `=> Sending ping...`);
     try {
       if (this.pongTimer) { this.pongTimer.unsubscribe(); }
       this.pongTimer = timer(this.pongPeriod).subscribe(() => {
-        console.log(this.wsId, `Pong timeout - closing socket to reconnect`);
+        console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
         this.reconnect();
       });
 
@@ -204,17 +204,17 @@ export class BinanceWebsocket extends EventEmitter {
       this.ws.pong();
 
     } catch (error) {
-      console.error(this.wsId, `Failed to send WS ping`);
+      console.error(this.wsId, `=> Failed to send WS ping`);
     }
   }
 
   protected onWsPing(event: any) {
-    console.log(this.wsId, 'Received ping, sending pong');
+    console.log(this.wsId, '=> Received ping, sending pong');
     this.ws.pong();
   }
 
   protected onWsPong(event: any) {
-    console.log(this.wsId, 'Received pong, clearing timer');
+    console.log(this.wsId, '=> Received pong, clearing timer');
     if (this.pongTimer) { this.pongTimer.unsubscribe(); }
   }
 
@@ -232,7 +232,7 @@ export class BinanceWebsocket extends EventEmitter {
     // Obtenim una clau per l'stream d'usuari.
     const response = await this.api.getUserDataListenKey();
     this.listenKey = response.listenKey;
-    console.log(this.wsId, 'listenKey: ', this.listenKey);
+    console.log(this.wsId, '=> listenKey: ', this.listenKey);
     // Mantenim viva la clau d'usuari.
     this.listenKeyTimer = timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
     return Promise.resolve();
@@ -306,6 +306,7 @@ export class BinanceWebsocket extends EventEmitter {
   // ---------------------------------------------------------------------------------------------------
 
   protected registerAccountSubscription(key: WsUserStreamEmitterType) {
+    if (this.streamType === 'market') { throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a l'stream de mercat de ${this.market}.`); }
     const stored = this.emitters[key];
     if (stored) { return stored; }
     const created = new Subject<any>();
@@ -531,7 +532,7 @@ export class BinanceWebsocket extends EventEmitter {
   protected subscribeMarketStream(params: string[]) {
     const id = ++this.subscriptionId;
     const data = { method: "SUBSCRIBE", id, params };
-    console.log(this.wsId, 'subscribeMarketStream => ', data);
+    console.log(this.wsId, '=> subscribeMarketStream => ', data);
     this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error as any) : undefined);
   }
 
@@ -562,6 +563,7 @@ export class BinanceWebsocket extends EventEmitter {
   }
 
   protected registerMarketStreamSubscription(key: string) {
+    if (this.streamType === 'user') { throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a un strem d'usuari.`); }
     const stored = this.emitters[key];
     if (stored) { return stored; }
     const created = new Subject<any>();
@@ -652,7 +654,7 @@ export class BinanceWebsocket extends EventEmitter {
   //  log
   // ---------------------------------------------------------------------------------------------------
 
-  protected get wsId(): string { return `${this.market}-${this.streamType}-ws =>`; }
+  protected get wsId(): string { return `${this.market}-${this.streamType}-ws`; }
 }
 
 

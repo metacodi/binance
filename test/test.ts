@@ -3,6 +3,7 @@ import { BinanceApiFutures } from '../src/binance-api-futures';
 import { BinanceApiOptions, BinanceMarketType } from '../src/types/binance.types';
 import { BinanceWebsocketOptions } from '../src/types/binance-websocket.types';
 import { BinanceWebsocket } from '../src';
+import { interval } from 'rxjs';
 
 
 const setTestKeys = (options: any, market?: BinanceMarketType) => {
@@ -117,8 +118,8 @@ const testUserWs = async () => {
 
     console.log('---------------- User WebSocket TEST ----------------------');
  
-    // const market: BinanceMarketType = 'spot';
-    const market: BinanceMarketType = 'usdm';
+    const market: BinanceMarketType = 'spot';
+    // const market: BinanceMarketType = 'usdm';
 
     const userOptions: BinanceWebsocketOptions = {
       streamType: 'user',
@@ -134,6 +135,12 @@ const testUserWs = async () => {
     wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', data));
     wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', data));
     wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', data));
+
+    // setTimeout(() => { console.log('Reconnecting...'); wsUser.reconnect(); }, 10000);
+    
+    setTimeout(() => { console.log('Subscribing to miniTicker...'); wsUser.miniTicker('BNBUSDT'); }, 10000);
+
+    // interval(10000).subscribe(() => { console.log('Reconnecting...'); wsUser.reconnect(); });
 
   } catch (error) {
     console.error('Websocket ERROR', error);
@@ -163,17 +170,15 @@ const testMarketWs = async () => {
     // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log(data));
     // const bookTickerUSDT = wsMarket.bookTicker('BNBUSDT').subscribe(data => console.log('bookTickerUSDT =>', data));
     
-    // setTimeout(() => {
-    //   console.log('Unsibscribe USDT miniTicker');
-    //   miniTickerUSDT.unsubscribe();
-    // }, 10000);
+    // setTimeout(() => { console.log('Unsibscribe USDT miniTicker'); miniTickerUSDT.unsubscribe(); }, 10000);    
+    // setTimeout(() => { console.log('Reconnecting...'); wsMarket.reconnect(); }, 10000);
 
   } catch (error) {
     console.error('Websocket ERROR', error);
   }
 };
 
-// testUserWs();
+testUserWs();
 // testMarketWs();
-testApi();
+// testApi();
 
