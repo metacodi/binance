@@ -4,7 +4,7 @@ import WebSocket from 'isomorphic-ws';
 import EventEmitter from 'events';
 import { Subject, Subscription } from 'rxjs';
 import { BinanceApi } from './binance-api';
-import { BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate } from ".";
+import { BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceWs24hrMiniTicker, WsUserStreamEmitterType, BinanceWsSpotBalanceUpdate, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdate, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsFuturesOrderUpdate, BinanceWsKline, BinanceKlineInterval } from ".";
 export declare class BinanceWebsocket extends EventEmitter {
     protected options: BinanceWebsocketOptions;
     protected ws: WebSocket;
@@ -51,26 +51,23 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected emitNextAccountEvent(key: string, event: any, parser: (data: any) => any): void;
     accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate>;
     protected emitAccountUpdate(event: any): void;
-    protected parseAccountUpdate(data: BinanceWsSpotAccountUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate;
     balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate>;
     protected emitBalanceUpdate(event: any): void;
-    protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate;
     orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate>;
     protected emitOrderUpdate(event: any): void;
-    protected parseOrderUpdate(data: BinanceWsSpotOrderUpdateRaw | BinanceWsFuturesOrderUpdateRaw): BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate;
-    private subscriptionId;
-    protected subscribeMarketStream(params: string[]): void;
-    protected unsubscribeMarketStream(params: string[]): void;
-    protected respawnMarketStreamSubscriptions(): void;
-    protected isSubjectUnobserved(emitter: Subject<any>): boolean;
     protected registerMarketStreamSubscription(key: string): Subject<any>;
     protected emitNextMarketStreamEvent(key: string, event: any, parser: (data: any) => any): void;
+    private subscriptionId;
+    protected respawnMarketStreamSubscriptions(): void;
+    protected isSubjectUnobserved(emitter: Subject<any>): boolean;
+    protected subscribeMarketStream(params: string[]): void;
+    protected unsubscribeMarketStream(params: string[]): void;
     miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker>;
     protected emitMiniTicker(event: any): void;
-    protected parseMiniTicker(data: BinanceWs24hrMiniTickerRaw): BinanceWs24hrMiniTicker;
     bookTicker(symbol: string): Subject<BinanceWsBookTicker>;
     protected emitBookTicker(event: any): void;
-    protected parseBookTicker(data: BinanceWsBookTickerRaw): BinanceWsBookTicker;
+    kline(symbol: string, interval: BinanceKlineInterval): Subject<BinanceWsKline>;
+    protected emitKline(event: any): void;
     protected get wsId(): string;
 }
 //# sourceMappingURL=binance-websocket.d.ts.map

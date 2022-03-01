@@ -1,4 +1,4 @@
-import { BinanceFuturesOrderType, BinanceFuturesWorkingType, BinanceMarketType, BinanceOrderExecutionType, BinanceOrderSide, BinanceOrderStatus, BinanceOrderTimeInForce, BinanceOrderType, BinancePositionSide } from '..';
+import { BinanceFuturesOrderType, BinanceFuturesWorkingType, BinanceKlineInterval, BinanceMarketType, BinanceOrderExecutionType, BinanceOrderSide, BinanceOrderStatus, BinanceOrderTimeInForce, BinanceOrderType, BinancePositionSide } from '..';
 export declare type WsConnectionState = 'initial' | 'connecting' | 'connected' | 'reconnecting' | 'closing';
 export declare type WsStreamType = 'user' | 'market';
 export declare type WsStreamFormat = 'raw' | 'stream';
@@ -30,6 +30,7 @@ export interface BinanceWsSpotBalanceUpdate {
     balanceDelta: number;
     clearTime: number;
 }
+export declare function parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate;
 export interface BinanceWsSpotAccountUpdateRaw {
     e: 'outboundAccountPosition';
     E: number;
@@ -100,6 +101,7 @@ export interface BinanceWsFuturesAccountUpdate {
         }[];
     };
 }
+export declare function parseAccountUpdate(data: BinanceWsSpotAccountUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate;
 export interface BinanceWsSpotOrderUpdateRaw {
     e: 'executionReport';
     E: number;
@@ -242,6 +244,7 @@ export interface BinanceWsFuturesOrderUpdate {
         realisedProfit: number;
     };
 }
+export declare function parseOrderUpdate(data: BinanceWsSpotOrderUpdateRaw | BinanceWsFuturesOrderUpdateRaw): BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate;
 export interface BinanceWs24hrMiniTickerRaw {
     e: '24hrMiniTicker';
     E: number;
@@ -266,9 +269,12 @@ export interface BinanceWs24hrMiniTicker {
     baseAssetVolume: number;
     quoteAssetVolume: number;
 }
+export declare function parseMiniTicker(data: BinanceWs24hrMiniTickerRaw): BinanceWs24hrMiniTicker;
 export interface BinanceWsBookTickerRaw {
     e: 'bookTicker';
     u: number;
+    E?: number;
+    T?: number;
     s: string;
     b: string;
     B: string;
@@ -277,6 +283,8 @@ export interface BinanceWsBookTickerRaw {
 }
 export interface BinanceWsBookTicker {
     eventType: 'bookTicker';
+    eventTime?: number;
+    transactionTime?: number;
     updateId: number;
     symbol: string;
     bidPrice: number;
@@ -284,5 +292,52 @@ export interface BinanceWsBookTicker {
     askPrice: number;
     askQty: number;
 }
+export declare function parseBookTicker(data: BinanceWsBookTickerRaw): BinanceWsBookTicker;
+export interface BinanceWsKlineRaw {
+    e: 'kline';
+    E: number;
+    s: string;
+    k: {
+        t: number;
+        T: number;
+        s: string;
+        i: BinanceKlineInterval;
+        f: number;
+        L: number;
+        o: string;
+        c: string;
+        h: string;
+        l: string;
+        v: string;
+        n: number;
+        x: boolean;
+        q: string;
+        V: string;
+        Q: string;
+        B: string;
+    };
+}
+export interface BinanceWsKline {
+    eventType: 'kline';
+    eventTime: number;
+    symbol: string;
+    startTime: number;
+    closeTime: number;
+    interval: BinanceKlineInterval;
+    firstTradeId: number;
+    lastTradeId: number;
+    open: number;
+    close: number;
+    high: number;
+    low: number;
+    volume: number;
+    trades: number;
+    final: false;
+    quoteVolume: number;
+    volumeActive: number;
+    quoteVolumeActive: number;
+    ignored: number;
+}
+export declare function parseKline(data: BinanceWsKlineRaw): BinanceWsKline;
 export {};
 //# sourceMappingURL=binance-websocket.types.d.ts.map

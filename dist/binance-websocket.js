@@ -97,24 +97,29 @@ class BinanceWebsocket extends events_1.default {
     }
     close() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.status !== 'reconnecting') {
-                this.status = 'closing';
+            try {
+                if (this.status !== 'reconnecting') {
+                    this.status = 'closing';
+                }
+                if (this.pingInterval) {
+                    this.pingInterval.unsubscribe();
+                }
+                if (this.pongTimer) {
+                    this.pongTimer.unsubscribe();
+                }
+                if (this.listenKeyTimer) {
+                    this.listenKeyTimer.unsubscribe();
+                }
+                if (this.streamType === 'user') {
+                    yield this.api.closeUserDataListenKey(this.listenKey);
+                }
+                this.ws.close();
+                if (typeof this.ws.terminate === 'function') {
+                    this.ws.terminate();
+                }
             }
-            if (this.pingInterval) {
-                this.pingInterval.unsubscribe();
-            }
-            if (this.pongTimer) {
-                this.pongTimer.unsubscribe();
-            }
-            if (this.listenKeyTimer) {
-                this.listenKeyTimer.unsubscribe();
-            }
-            if (this.streamType === 'user') {
-                yield this.api.closeUserDataListenKey(this.listenKey);
-            }
-            this.ws.close();
-            if (typeof this.ws.terminate === 'function') {
-                this.ws.terminate();
+            catch (error) {
+                console.error(error);
             }
         });
     }
@@ -181,14 +186,20 @@ class BinanceWebsocket extends events_1.default {
     }
     getUserDataListenKey() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.listenKeyTimer) {
-                this.listenKeyTimer.unsubscribe();
+            try {
+                if (this.listenKeyTimer) {
+                    this.listenKeyTimer.unsubscribe();
+                }
+                const response = yield this.api.getUserDataListenKey();
+                this.listenKey = response.listenKey;
+                console.log(this.wsId, '=> listenKey: ', this.listenKey);
+                this.listenKeyTimer = rxjs_1.timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
+                return Promise.resolve();
             }
-            const response = yield this.api.getUserDataListenKey();
-            this.listenKey = response.listenKey;
-            console.log(this.wsId, '=> listenKey: ', this.listenKey);
-            this.listenKeyTimer = rxjs_1.timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
-            return Promise.resolve();
+            catch (error) {
+                console.error(error);
+                return Promise.reject();
+            }
         });
     }
     onWsMessage(event) {
@@ -210,6 +221,7 @@ class BinanceWebsocket extends events_1.default {
                 break;
             case '24hrMiniTicker': return this.emitMiniTicker(data);
             case 'bookTicker': return this.emitBookTicker(data);
+            case 'kline': return this.emitKline(data);
             default:
                 console.log(data);
         }
@@ -255,7 +267,7 @@ class BinanceWebsocket extends events_1.default {
     }
     registerAccountSubscription(key) {
         if (this.streamType === 'market') {
-            throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a l'stream de mercat de ${this.market}.`);
+            throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat un stream de mercat.`);
         }
         const stored = this.emitters[key];
         if (stored) {
@@ -273,200 +285,11 @@ class BinanceWebsocket extends events_1.default {
         }
     }
     accountUpdate() { return this.registerAccountSubscription('accountUpdate'); }
-    emitAccountUpdate(event) { this.emitNextAccountEvent('accountUpdate', event, this.parseAccountUpdate); }
-    parseAccountUpdate(data) {
-        if (data.e === 'outboundAccountPosition') {
-            return {
-                eventType: 'outboundAccountPosition',
-                eventTime: data.E,
-                lastAccountUpdateTime: data.u,
-                balances: data.B.map(b => ({
-                    asset: b.a,
-                    free: +b.f,
-                    locked: +b.l,
-                })),
-            };
-        }
-        else if (data.e === 'ACCOUNT_UPDATE') {
-            return {
-                eventType: 'ACCOUNT_UPDATE',
-                eventTime: data.E,
-                transactionId: data.T,
-                updateData: {
-                    updateEventType: data.a.m,
-                    updatedBalances: data.a.B.map(b => ({
-                        asset: b.a,
-                        balanceChange: +b.bc,
-                        crossWalletBalance: +b.cw,
-                        walletBalance: +b.wb,
-                    })),
-                    updatedPositions: data.a.P.map(p => ({
-                        symbol: p.s,
-                        marginAsset: undefined,
-                        positionAmount: +p.pa,
-                        entryPrice: +p.ep,
-                        accumulatedRealisedPreFee: +p.cr,
-                        unrealisedPnl: +p.up,
-                        marginType: p.mt,
-                        isolatedWalletAmount: +p.iw,
-                        positionSide: p.ps,
-                    })),
-                },
-            };
-        }
-    }
+    emitAccountUpdate(event) { this.emitNextAccountEvent('accountUpdate', event, _1.parseAccountUpdate); }
     balanceUpdate() { return this.registerAccountSubscription('balanceUpdate'); }
-    emitBalanceUpdate(event) { this.emitNextAccountEvent('balanceUpdate', event, this.parseBalanceUpdate); }
-    parseBalanceUpdate(data) {
-        if (data.e === 'balanceUpdate') {
-            return {
-                eventType: 'balanceUpdate',
-                eventTime: data.E,
-                asset: data.a,
-                balanceDelta: +data.d,
-                clearTime: data.T,
-            };
-        }
-        else if (data.e === 'ACCOUNT_UPDATE') {
-            return {
-                eventType: 'ACCOUNT_UPDATE',
-                eventTime: data.E,
-                transactionId: data.T,
-                updateData: {
-                    updateEventType: data.a.m,
-                    updatedBalances: data.a.B.map(b => ({
-                        asset: b.a,
-                        balanceChange: +b.bc,
-                        crossWalletBalance: +b.cw,
-                        walletBalance: +b.wb,
-                    })),
-                    updatedPositions: data.a.P.map(p => ({
-                        symbol: p.s,
-                        marginAsset: undefined,
-                        positionAmount: +p.pa,
-                        entryPrice: +p.ep,
-                        accumulatedRealisedPreFee: +p.cr,
-                        unrealisedPnl: +p.up,
-                        marginType: p.mt,
-                        isolatedWalletAmount: +p.iw,
-                        positionSide: p.ps,
-                    })),
-                },
-            };
-        }
-    }
+    emitBalanceUpdate(event) { this.emitNextAccountEvent('balanceUpdate', event, _1.parseBalanceUpdate); }
     orderUpdate() { return this.registerAccountSubscription('orderUpdate'); }
-    emitOrderUpdate(event) { this.emitNextAccountEvent('orderUpdate', event, this.parseOrderUpdate); }
-    parseOrderUpdate(data) {
-        if (data.e === 'executionReport') {
-            return {
-                eventType: 'executionReport',
-                eventTime: data.E,
-                symbol: data.s,
-                newClientOrderId: data.c,
-                side: data.S,
-                orderType: data.o,
-                cancelType: data.f,
-                quantity: +data.q,
-                price: +data.p,
-                stopPrice: +data.P,
-                icebergQuantity: +data.F,
-                orderListId: data.g,
-                originalClientOrderId: data.C,
-                executionType: data.x,
-                orderStatus: data.X,
-                rejectReason: data.r,
-                orderId: data.i,
-                lastTradeQuantity: +data.l,
-                accumulatedQuantity: +data.z,
-                lastTradePrice: +data.L,
-                commission: +data.n,
-                commissionAsset: data.N,
-                tradeTime: data.T,
-                tradeId: data.t,
-                ignoreThis1: data.I,
-                isOrderOnBook: data.w,
-                isMaker: data.m,
-                ignoreThis2: data.M,
-                orderCreationTime: data.O,
-                cumulativeQuoteAssetTransactedQty: +data.Z,
-                lastQuoteAssetTransactedQty: +data.Y,
-                orderQuoteQty: +data.Q,
-            };
-        }
-        else if (data.e === 'ORDER_TRADE_UPDATE') {
-            return {
-                eventType: 'ORDER_TRADE_UPDATE',
-                eventTime: data.E,
-                transactionTime: data.T,
-                order: {
-                    symbol: data.o.s,
-                    clientOrderId: data.o.c,
-                    orderSide: data.o.S,
-                    orderType: data.o.o,
-                    orderTimeInForce: data.o.f,
-                    originalQuantity: +data.o.q,
-                    originalPrice: +data.o.p,
-                    averagePrice: +data.o.ap,
-                    stopPrice: +data.o.sp,
-                    executionType: data.o.x,
-                    orderStatus: data.o.X,
-                    orderId: data.o.i,
-                    lastFilledQuantity: +data.o.l,
-                    orderFilledAccumulatedQuantity: +data.o.z,
-                    lastFilledPrice: +data.o.L,
-                    commissionAsset: data.o.N,
-                    commissionAmount: +data.o.n,
-                    orderTradeTime: +data.o.T,
-                    tradeId: data.o.t,
-                    bidsNotional: +data.o.b,
-                    asksNotional: +data.o.a,
-                    isMakerTrade: data.o.m,
-                    isReduceOnly: data.o.R,
-                    stopPriceWorkingType: data.o.wt,
-                    originalOrderType: data.o.ot,
-                    positionSide: data.o.ps,
-                    isCloseAll: data.o.cp,
-                    trailingStopActivationPrice: +data.o.AP,
-                    trailingStopCallbackRate: +data.o.cr,
-                    realisedProfit: +data.o.rp,
-                }
-            };
-        }
-    }
-    subscribeMarketStream(params) {
-        const id = ++this.subscriptionId;
-        const data = { method: "SUBSCRIBE", id, params };
-        console.log(this.wsId, '=> subscribeMarketStream => ', data);
-        this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error) : undefined);
-    }
-    unsubscribeMarketStream(params) {
-        const id = ++this.subscriptionId;
-        const data = { method: "UNSUBSCRIBE", id, params };
-        this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error) : undefined);
-    }
-    respawnMarketStreamSubscriptions() {
-        const params = [];
-        Object.keys(this.emitters).map(key => {
-            const stored = this.emitters[key];
-            if (this.isSubjectUnobserved(stored)) {
-                if (stored) {
-                    stored.complete();
-                }
-                delete this.emitters[key];
-            }
-            else if (key.includes('@')) {
-                params.push(key);
-            }
-        });
-        if (params.length) {
-            this.subscribeMarketStream(params);
-        }
-    }
-    isSubjectUnobserved(emitter) {
-        var _a;
-        return !emitter || emitter.closed || !((_a = emitter.observers) === null || _a === void 0 ? void 0 : _a.length);
-    }
+    emitOrderUpdate(event) { this.emitNextAccountEvent('orderUpdate', event, _1.parseOrderUpdate); }
     registerMarketStreamSubscription(key) {
         if (this.streamType === 'user') {
             throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a un strem d'usuari.`);
@@ -496,27 +319,46 @@ class BinanceWebsocket extends events_1.default {
             stored.next(parser(data));
         }
     }
+    respawnMarketStreamSubscriptions() {
+        const params = [];
+        Object.keys(this.emitters).map(key => {
+            const stored = this.emitters[key];
+            if (this.isSubjectUnobserved(stored)) {
+                if (stored) {
+                    stored.complete();
+                }
+                delete this.emitters[key];
+            }
+            else if (key.includes('@')) {
+                params.push(key);
+            }
+        });
+        if (params.length) {
+            this.subscribeMarketStream(params);
+        }
+    }
+    isSubjectUnobserved(emitter) {
+        var _a;
+        return !emitter || emitter.closed || !((_a = emitter.observers) === null || _a === void 0 ? void 0 : _a.length);
+    }
+    subscribeMarketStream(params) {
+        const id = ++this.subscriptionId;
+        const data = { method: "SUBSCRIBE", id, params };
+        console.log(this.wsId, '=> subscribeMarketStream => ', data);
+        this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error) : undefined);
+    }
+    unsubscribeMarketStream(params) {
+        const id = ++this.subscriptionId;
+        const data = { method: "UNSUBSCRIBE", id, params };
+        this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error) : undefined);
+    }
     miniTicker(symbol) {
         const key = `${symbol.toLocaleLowerCase()}@miniTicker`;
         return this.registerMarketStreamSubscription(key);
     }
     emitMiniTicker(event) {
         const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@miniTicker` : event.stream;
-        this.emitNextMarketStreamEvent(key, event, this.parseMiniTicker);
-    }
-    parseMiniTicker(data) {
-        return {
-            eventType: '24hrMiniTicker',
-            eventTime: data.E,
-            symbol: data.s,
-            contractSymbol: data.ps,
-            close: +data.c,
-            open: +data.o,
-            high: +data.h,
-            low: +data.l,
-            baseAssetVolume: +data.v,
-            quoteAssetVolume: +data.q,
-        };
+        this.emitNextMarketStreamEvent(key, event, _1.parseMiniTicker);
     }
     bookTicker(symbol) {
         const key = `${symbol.toLocaleLowerCase()}@bookTicker`;
@@ -524,18 +366,15 @@ class BinanceWebsocket extends events_1.default {
     }
     emitBookTicker(event) {
         const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@bookTicker` : event.stream;
-        this.emitNextMarketStreamEvent(key, event, this.parseBookTicker);
+        this.emitNextMarketStreamEvent(key, event, _1.parseBookTicker);
     }
-    parseBookTicker(data) {
-        return {
-            eventType: 'bookTicker',
-            updateId: data.u,
-            symbol: data.s,
-            bidPrice: +data.b,
-            bidQty: +data.B,
-            askPrice: +data.a,
-            askQty: +data.A,
-        };
+    kline(symbol, interval) {
+        const key = `${symbol.toLocaleLowerCase()}@kline_${interval}`;
+        return this.registerMarketStreamSubscription(key);
+    }
+    emitKline(event) {
+        const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@kline_${event.k.i}` : event.stream;
+        this.emitNextMarketStreamEvent(key, event, _1.parseKline);
     }
     get wsId() { return `${this.market}-${this.streamType}-ws`; }
 }

@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 import { Subject, interval, timer, Subscription } from 'rxjs';
 
 import { BinanceApi } from './binance-api';
-import { BinanceApiOptions, BinanceApiFutures, BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceApiSpot, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate } from ".";
+import { BinanceApiOptions, BinanceApiFutures, BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceApiSpot, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate, BinanceWsKlineRaw, BinanceWsKline, BinanceKlineInterval, parseKline, parseBookTicker, parseMiniTicker, parseAccountUpdate, parseBalanceUpdate, parseOrderUpdate } from ".";
 
 
 export class BinanceWebsocket extends EventEmitter {
@@ -134,14 +134,19 @@ export class BinanceWebsocket extends EventEmitter {
   }
 
   async close() {
-    if (this.status !== 'reconnecting') { this.status = 'closing'; }
-    if (this.pingInterval) { this.pingInterval.unsubscribe(); }
-    if (this.pongTimer) { this.pongTimer.unsubscribe(); }
-    if (this.listenKeyTimer) { this.listenKeyTimer.unsubscribe(); }
-    if (this.streamType === 'user') { await this.api.closeUserDataListenKey(this.listenKey); }
-    this.ws.close();
-    // #168: ws.terminate() undefined in browsers.
-    if (typeof this.ws.terminate === 'function') { this.ws.terminate(); }
+    try {
+      if (this.status !== 'reconnecting') { this.status = 'closing'; }
+      if (this.pingInterval) { this.pingInterval.unsubscribe(); }
+      if (this.pongTimer) { this.pongTimer.unsubscribe(); }
+      if (this.listenKeyTimer) { this.listenKeyTimer.unsubscribe(); }
+      if (this.streamType === 'user') { await this.api.closeUserDataListenKey(this.listenKey); }
+      this.ws.close();
+      // #168: ws.terminate() undefined in browsers.
+      if (typeof this.ws.terminate === 'function') { this.ws.terminate(); }
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   destroy() {
@@ -228,14 +233,20 @@ export class BinanceWebsocket extends EventEmitter {
    * {@link https://binance-docs.github.io/apidocs/futures/en/#start-user-data-stream-user_stream Start User Data Stream (USER_STREAM)}
    */
   protected async getUserDataListenKey(): Promise<void> {
-    if (this.listenKeyTimer) { this.listenKeyTimer.unsubscribe(); }
-    // Obtenim una clau per l'stream d'usuari.
-    const response = await this.api.getUserDataListenKey();
-    this.listenKey = response.listenKey;
-    console.log(this.wsId, '=> listenKey: ', this.listenKey);
-    // Mantenim viva la clau d'usuari.
-    this.listenKeyTimer = timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
-    return Promise.resolve();
+    try {
+      if (this.listenKeyTimer) { this.listenKeyTimer.unsubscribe(); }
+      // Obtenim una clau per l'stream d'usuari.
+      const response = await this.api.getUserDataListenKey();
+      this.listenKey = response.listenKey;
+      console.log(this.wsId, '=> listenKey: ', this.listenKey);
+      // Mantenim viva la clau d'usuari.
+      this.listenKeyTimer = timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
+      return Promise.resolve();
+      
+    } catch (error) {
+      console.error(error);
+      return Promise.reject();
+    }
   }
 
 
@@ -261,6 +272,7 @@ export class BinanceWebsocket extends EventEmitter {
       // Market events
       case '24hrMiniTicker': return this.emitMiniTicker(data);
       case 'bookTicker': return this.emitBookTicker(data);
+      case 'kline': return this.emitKline(data);
       default:
         console.log(data);
     }
@@ -306,7 +318,7 @@ export class BinanceWebsocket extends EventEmitter {
   // ---------------------------------------------------------------------------------------------------
 
   protected registerAccountSubscription(key: WsUserStreamEmitterType) {
-    if (this.streamType === 'market') { throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a l'stream de mercat de ${this.market}.`); }
+    if (this.streamType === 'market') { throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat un stream de mercat.`); }
     const stored = this.emitters[key];
     if (stored) { return stored; }
     const created = new Subject<any>();
@@ -322,245 +334,33 @@ export class BinanceWebsocket extends EventEmitter {
     }
   }
 
-  // ---------------------------------------------------------------------------------------------------
   //  accountUpdate
   // ---------------------------------------------------------------------------------------------------
 
   accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate> { return this.registerAccountSubscription('accountUpdate'); }
 
-  protected emitAccountUpdate(event: any) { this.emitNextAccountEvent('accountUpdate', event, this.parseAccountUpdate); }
+  protected emitAccountUpdate(event: any) { this.emitNextAccountEvent('accountUpdate', event, parseAccountUpdate); }
 
-  /**
-   * {@link https://binance-docs.github.io/apidocs/spot/en/#payload-account-update Payload: Account Update}
-   * {@link https://binance-docs.github.io/apidocs/futures/en/#event-balance-and-position-update Event: Balance and Position Update}
-   */
-  protected parseAccountUpdate(data: BinanceWsSpotAccountUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate {
-    if (data.e === 'outboundAccountPosition') {
-      // spot
-      return {
-        eventType: 'outboundAccountPosition',
-        eventTime: data.E,
-        lastAccountUpdateTime: data.u,
-        balances: data.B.map(b => ({
-          asset: b.a,
-          free: +b.f,
-          locked: +b.l,
-        })) as BinanceWsSpotAccountUpdate['balances'],
-      }
 
-    } else if (data.e === 'ACCOUNT_UPDATE') {
-      // usdm
-      return {
-        eventType: 'ACCOUNT_UPDATE',
-        eventTime: data.E,
-        transactionId: data.T,
-        updateData: {
-          updateEventType: data.a.m,
-          updatedBalances: data.a.B.map(b => ({
-            asset: b.a,
-            balanceChange: +b.bc,
-            crossWalletBalance: +b.cw,
-            walletBalance: +b.wb,
-          })) as BinanceWsFuturesAccountUpdate['updateData']['updatedBalances'],
-          updatedPositions: data.a.P.map(p => ({
-            symbol: p.s,
-            marginAsset: undefined,  // (margin only)
-            positionAmount: +p.pa,
-            entryPrice: +p.ep,
-            accumulatedRealisedPreFee: +p.cr,
-            unrealisedPnl: +p.up,
-            marginType: p.mt,
-            isolatedWalletAmount: +p.iw,
-            positionSide: p.ps,
-          })) as BinanceWsFuturesAccountUpdate['updateData']['updatedPositions'],
-        },
-      };
-    }
-  }
-
-  // ---------------------------------------------------------------------------------------------------
   //  balanceUpdate
   // ---------------------------------------------------------------------------------------------------
 
   balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate> { return this.registerAccountSubscription('balanceUpdate'); }
 
-  protected emitBalanceUpdate(event: any) { this.emitNextAccountEvent('balanceUpdate', event, this.parseBalanceUpdate); }
+  protected emitBalanceUpdate(event: any) { this.emitNextAccountEvent('balanceUpdate', event, parseBalanceUpdate); }
 
-  /**
-   * {@link https://binance-docs.github.io/apidocs/spot/en/#payload-balance-update Payload: Balance Update}
-   * {@link https://binance-docs.github.io/apidocs/futures/en/#event-balance-and-position-update Event: Balance and Position Update}
-   */
-   protected parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate {
-    if (data.e === 'balanceUpdate') {
-      // spot
-      return {
-        eventType: 'balanceUpdate',
-        eventTime: data.E,
-        asset: data.a,
-        balanceDelta: +data.d,
-        clearTime: data.T,
-      }
-
-    } else if (data.e === 'ACCOUNT_UPDATE') {
-      // usdm
-      return {
-        eventType: 'ACCOUNT_UPDATE',
-        eventTime: data.E,
-        transactionId: data.T,
-        updateData: {
-          updateEventType: data.a.m,
-          updatedBalances: data.a.B.map(b => ({
-            asset: b.a,
-            balanceChange: +b.bc,
-            crossWalletBalance: +b.cw,
-            walletBalance: +b.wb,
-          })) as BinanceWsFuturesAccountUpdate['updateData']['updatedBalances'],
-          updatedPositions: data.a.P.map(p => ({
-            symbol: p.s,
-            marginAsset: undefined,  // (margin only)
-            positionAmount: +p.pa,
-            entryPrice: +p.ep,
-            accumulatedRealisedPreFee: +p.cr,
-            unrealisedPnl: +p.up,
-            marginType: p.mt,
-            isolatedWalletAmount: +p.iw,
-            positionSide: p.ps,
-          })) as BinanceWsFuturesAccountUpdate['updateData']['updatedPositions'],
-        },
-      };
-    }
-  }
-
-  // ---------------------------------------------------------------------------------------------------
   //  orderUpdate
   // ---------------------------------------------------------------------------------------------------
 
   orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate> { return this.registerAccountSubscription('orderUpdate'); }
 
-  protected emitOrderUpdate(event: any) { this.emitNextAccountEvent('orderUpdate', event, this.parseOrderUpdate); }
+  protected emitOrderUpdate(event: any) { this.emitNextAccountEvent('orderUpdate', event, parseOrderUpdate); }
 
-  /**
-   * {@link https://binance-docs.github.io/apidocs/spot/en/#payload-order-update Payload: Order Update}
-   * {@link https://binance-docs.github.io/apidocs/futures/en/#event-order-update Event: Order Update}
-   */
-  protected parseOrderUpdate(data: BinanceWsSpotOrderUpdateRaw | BinanceWsFuturesOrderUpdateRaw): BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate {
-    if (data.e === 'executionReport') {
-      // spot
-      return {
-        eventType: 'executionReport',
-        eventTime: data.E,
-        symbol: data.s,
-        newClientOrderId: data.c,
-        side: data.S,
-        orderType: data.o,
-        cancelType: data.f,
-        quantity: +data.q,
-        price: +data.p,
-        stopPrice: +data.P,
-        icebergQuantity: +data.F,
-        orderListId: data.g,
-        originalClientOrderId: data.C,
-        executionType: data.x,
-        orderStatus: data.X,
-        rejectReason: data.r,
-        orderId: data.i,
-        lastTradeQuantity: +data.l,
-        accumulatedQuantity: +data.z,
-        lastTradePrice: +data.L,
-        commission: +data.n,
-        commissionAsset: data.N,
-        tradeTime: data.T,
-        tradeId: data.t,
-        ignoreThis1: data.I,
-        isOrderOnBook: data.w,
-        isMaker: data.m,
-        ignoreThis2: data.M,
-        orderCreationTime: data.O,
-        cumulativeQuoteAssetTransactedQty: +data.Z,
-        lastQuoteAssetTransactedQty: +data.Y,
-        orderQuoteQty: +data.Q,
-      };
-    } else if (data.e === 'ORDER_TRADE_UPDATE') {
-      // usdm
-      return {
-        eventType: 'ORDER_TRADE_UPDATE',
-        eventTime: data.E,
-        transactionTime: data.T,
-        order: {
-          symbol: data.o.s,
-          clientOrderId: data.o.c,
-          orderSide: data.o.S,
-          orderType: data.o.o,
-          orderTimeInForce: data.o.f,
-          originalQuantity: +data.o.q,
-          originalPrice: +data.o.p,
-          averagePrice: +data.o.ap,
-          stopPrice: +data.o.sp,
-          executionType: data.o.x,
-          orderStatus: data.o.X,
-          orderId: data.o.i,
-          lastFilledQuantity: +data.o.l,
-          orderFilledAccumulatedQuantity: +data.o.z,
-          lastFilledPrice: +data.o.L,
-          commissionAsset: data.o.N,
-          commissionAmount: +data.o.n,
-          orderTradeTime: +data.o.T,
-          tradeId: data.o.t,
-          bidsNotional: +data.o.b,
-          asksNotional: +data.o.a,
-          isMakerTrade: data.o.m,
-          isReduceOnly: data.o.R,
-          stopPriceWorkingType: data.o.wt,
-          originalOrderType: data.o.ot,
-          positionSide: data.o.ps,
-          isCloseAll: data.o.cp,
-          trailingStopActivationPrice: +data.o.AP,
-          trailingStopCallbackRate: +data.o.cr,
-          realisedProfit: +data.o.rp,
-        }
-      };
-    }
-  }
 
 
   // ---------------------------------------------------------------------------------------------------
   //  MARKET STREAMS
   // ---------------------------------------------------------------------------------------------------
-
-  private subscriptionId = 0;
-
-  protected subscribeMarketStream(params: string[]) {
-    const id = ++this.subscriptionId;
-    const data = { method: "SUBSCRIBE", id, params };
-    console.log(this.wsId, '=> subscribeMarketStream => ', data);
-    this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error as any) : undefined);
-  }
-
-  protected unsubscribeMarketStream(params: string[]) {
-    const id = ++this.subscriptionId;
-    const data = { method: "UNSUBSCRIBE", id, params };
-    this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error as any) : undefined);
-  }
-
-  protected respawnMarketStreamSubscriptions() {
-    const params: string[] = [];
-    Object.keys(this.emitters).map(key => {
-      const stored = this.emitters[key];
-      if (this.isSubjectUnobserved(stored)) {
-        if (stored) { stored.complete(); }
-        delete this.emitters[key];
-      } else if (key.includes('@')) {
-        params.push(key);
-      }
-    });
-    if (params.length) {
-      this.subscribeMarketStream(params);
-    }
-  }
-
-  protected isSubjectUnobserved(emitter: Subject<any>): boolean {
-    return !emitter || emitter.closed || !emitter.observers?.length;
-  }
 
   protected registerMarketStreamSubscription(key: string) {
     if (this.streamType === 'user') { throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a un strem d'usuari.`); }
@@ -584,7 +384,41 @@ export class BinanceWebsocket extends EventEmitter {
     }
   }
 
-  // ---------------------------------------------------------------------------------------------------
+  private subscriptionId = 0;
+
+  protected respawnMarketStreamSubscriptions() {
+    const params: string[] = [];
+    Object.keys(this.emitters).map(key => {
+      const stored = this.emitters[key];
+      if (this.isSubjectUnobserved(stored)) {
+        if (stored) { stored.complete(); }
+        delete this.emitters[key];
+      } else if (key.includes('@')) {
+        params.push(key);
+      }
+    });
+    if (params.length) {
+      this.subscribeMarketStream(params);
+    }
+  }
+
+  protected isSubjectUnobserved(emitter: Subject<any>): boolean {
+    return !emitter || emitter.closed || !emitter.observers?.length;
+  }
+
+  protected subscribeMarketStream(params: string[]) {
+    const id = ++this.subscriptionId;
+    const data = { method: "SUBSCRIBE", id, params };
+    console.log(this.wsId, '=> subscribeMarketStream => ', data);
+    this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error as any) : undefined);
+  }
+
+  protected unsubscribeMarketStream(params: string[]) {
+    const id = ++this.subscriptionId;
+    const data = { method: "UNSUBSCRIBE", id, params };
+    this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error as any) : undefined);
+  }
+
   //  miniTicker
   // ---------------------------------------------------------------------------------------------------
 
@@ -595,29 +429,9 @@ export class BinanceWebsocket extends EventEmitter {
 
   protected emitMiniTicker(event: any) {
     const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@miniTicker` : event.stream;
-    this.emitNextMarketStreamEvent(key, event, this.parseMiniTicker);
+    this.emitNextMarketStreamEvent(key, event, parseMiniTicker);
   }
 
-  /**
-   * {@link https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-mini-ticker-stream Individual Symbol Mini Ticker Stream}
-   * {@link https://binance-docs.github.io/apidocs/futures/en/#individual-symbol-mini-ticker-stream Individual Symbol Mini Ticker Stream}
-   */
-  protected parseMiniTicker(data: BinanceWs24hrMiniTickerRaw): BinanceWs24hrMiniTicker {
-    return {
-      eventType: '24hrMiniTicker',
-      eventTime: data.E,
-      symbol: data.s,
-      contractSymbol: data.ps,
-      close: +data.c,
-      open: +data.o,
-      high: +data.h,
-      low: +data.l,
-      baseAssetVolume: +data.v,
-      quoteAssetVolume: +data.q,
-    };
-  }
-
-  // ---------------------------------------------------------------------------------------------------
   //  bookTicker
   // ---------------------------------------------------------------------------------------------------
 
@@ -628,26 +442,22 @@ export class BinanceWebsocket extends EventEmitter {
 
   protected emitBookTicker(event: any) {
     const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@bookTicker` : event.stream;
-    this.emitNextMarketStreamEvent(key, event, this.parseBookTicker);
+    this.emitNextMarketStreamEvent(key, event, parseBookTicker);
   }
 
-  /**
-   * {@link https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker Symbol Order Book Ticker}
-   * {@link https://binance-docs.github.io/apidocs/futures/en/#individual-symbol-book-ticker-streams Individual Symbol Book Ticker Streams}
-   */
-  protected parseBookTicker(data: BinanceWsBookTickerRaw): BinanceWsBookTicker {
-    return {
-      eventType: 'bookTicker',
-      updateId: data.u,
-      symbol: data.s,
-      bidPrice: +data.b,
-      bidQty: +data.B,
-      askPrice: +data.a,
-      askQty: +data.A,
-      // eventTime: data.E,  // (usmd only)
-      // transactionTime: data.T,  // (usmd only)
-    };
+  //  kline
+  // ---------------------------------------------------------------------------------------------------
+
+  kline(symbol: string, interval: BinanceKlineInterval): Subject<BinanceWsKline> {
+    const key = `${symbol.toLocaleLowerCase()}@kline_${interval}`;
+    return this.registerMarketStreamSubscription(key);
   }
+
+  protected emitKline(event: any) {
+    const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@kline_${event.k.i}` : event.stream;
+    this.emitNextMarketStreamEvent(key, event, parseKline);
+  }
+
 
 
   // ---------------------------------------------------------------------------------------------------
