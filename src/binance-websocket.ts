@@ -223,7 +223,7 @@ export class BinanceWebsocket extends EventEmitter {
       if (typeof this.ws.pong === 'function') {
         this.ws.pong();
       } else {
-        this.ws.send(0xA);
+        // this.ws.send(0xA);
       }
 
     } catch (error) {
