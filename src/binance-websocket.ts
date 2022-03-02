@@ -121,7 +121,7 @@ export class BinanceWebsocket extends EventEmitter {
       this.ws.on('ping', event => this.onWsPing(event));
       this.ws.on('pong', event => this.onWsPong(event));
     }
-    // Not sure these work in the browser, the traditional event listeners are required for ping/pong frames in node
+    // Not sure these work in the browser, the traditional event listeners are required for ping/pong frames in node.
     (this.ws as any).onping = (event: WebSocket.Event) => this.onWsPing(event);
     (this.ws as any).onpong = (event: WebSocket.Event) => this.onWsPong(event);
   }
@@ -204,9 +204,9 @@ export class BinanceWebsocket extends EventEmitter {
         this.reconnect();
       });
 
-      // Binance allows unsolicited pongs, so we send both (though we expect a pong in response to our ping if the connection is still alive).
       this.ws.ping();
-      this.ws.pong();
+      // // Binance allows unsolicited pongs, so we send both (though we expect a pong in response to our ping if the connection is still alive).
+      // this.ws.pong();
 
     } catch (error) {
       console.error(this.wsId, `=> Failed to send WS ping`, error);
