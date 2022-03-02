@@ -171,7 +171,7 @@ class BinanceWebsocket extends events_1.default {
             this.ws.pong();
         }
         catch (error) {
-            console.error(this.wsId, `=> Failed to send WS ping`);
+            console.error(this.wsId, `=> Failed to send WS ping`, error);
         }
     }
     onWsPing(event) {
