@@ -163,15 +163,15 @@ class BinanceWebsocket extends events_1.default {
             if (this.pongTimer) {
                 this.pongTimer.unsubscribe();
             }
-            this.pongTimer = rxjs_1.timer(this.pongPeriod).subscribe(() => {
-                console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
-                this.reconnect();
-            });
             if (typeof this.ws.ping === 'function') {
+                this.pongTimer = rxjs_1.timer(this.pongPeriod).subscribe(() => {
+                    console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
+                    this.reconnect();
+                });
                 this.ws.ping();
             }
             else {
-                this.ws.send(0x9);
+                this.ws.send(Buffer.alloc(0x09));
             }
         }
         catch (error) {

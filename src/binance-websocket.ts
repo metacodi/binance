@@ -199,15 +199,16 @@ export class BinanceWebsocket extends EventEmitter {
     console.log(this.wsId, `=> Sending ping...`);
     try {
       if (this.pongTimer) { this.pongTimer.unsubscribe(); }
-      this.pongTimer = timer(this.pongPeriod).subscribe(() => {
-        console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
-        this.reconnect();
-      });
-
+      
       if (typeof this.ws.ping === 'function') {
+        this.pongTimer = timer(this.pongPeriod).subscribe(() => {
+          console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
+          this.reconnect();
+        });
         this.ws.ping();
       } else {
-        this.ws.send(0x9);
+        // this.ws.send(0x09);
+        this.ws.send(Buffer.alloc(0x09));
       }
 
     } catch (error) {
