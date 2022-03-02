@@ -171,7 +171,6 @@ class BinanceWebsocket extends events_1.default {
                 this.ws.ping();
             }
             else {
-                this.ws.send(Buffer.alloc(0x09));
             }
         }
         catch (error) {

@@ -208,7 +208,7 @@ export class BinanceWebsocket extends EventEmitter {
         this.ws.ping();
       } else {
         // this.ws.send(0x09);
-        this.ws.send(Buffer.alloc(0x09));
+        // this.ws.send(Buffer.alloc(0x09));
       }
 
     } catch (error) {
