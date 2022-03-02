@@ -204,9 +204,11 @@ export class BinanceWebsocket extends EventEmitter {
         this.reconnect();
       });
 
-      this.ws.ping();
-      // // Binance allows unsolicited pongs, so we send both (though we expect a pong in response to our ping if the connection is still alive).
-      // this.ws.pong();
+      if (typeof this.ws.ping === 'function') {
+        this.ws.ping();
+      } else {
+        this.ws.send(0x9);
+      }
 
     } catch (error) {
       console.error(this.wsId, `=> Failed to send WS ping`, error);
@@ -215,8 +217,18 @@ export class BinanceWebsocket extends EventEmitter {
   }
 
   protected onWsPing(event: any) {
-    console.log(this.wsId, '=> Received ping, sending pong');
-    this.ws.pong();
+    try {
+      console.log(this.wsId, '=> Received ping, sending pong');
+      if (typeof this.ws.pong === 'function') {
+        this.ws.pong();
+      } else {
+        this.ws.send(0xA);
+      }
+
+    } catch (error) {
+      console.error(this.wsId, `=> Failed to send WS pong`, error);
+      // TODO: Notificar l'error.
+    }
   }
 
   protected onWsPong(event: any) {

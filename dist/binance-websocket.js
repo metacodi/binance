@@ -167,15 +167,30 @@ class BinanceWebsocket extends events_1.default {
                 console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
                 this.reconnect();
             });
-            this.ws.ping();
+            if (typeof this.ws.ping === 'function') {
+                this.ws.ping();
+            }
+            else {
+                this.ws.send(0x9);
+            }
         }
         catch (error) {
             console.error(this.wsId, `=> Failed to send WS ping`, error);
         }
     }
     onWsPing(event) {
-        console.log(this.wsId, '=> Received ping, sending pong');
-        this.ws.pong();
+        try {
+            console.log(this.wsId, '=> Received ping, sending pong');
+            if (typeof this.ws.pong === 'function') {
+                this.ws.pong();
+            }
+            else {
+                this.ws.send(0xA);
+            }
+        }
+        catch (error) {
+            console.error(this.wsId, `=> Failed to send WS pong`, error);
+        }
     }
     onWsPong(event) {
         console.log(this.wsId, '=> Received pong, clearing timer');
