@@ -8,6 +8,11 @@ import { interval } from 'rxjs';
 import { Resource, Terminal  } from '@metacodi/precode';
 import * as fs from 'fs';
 
+/**
+ * ```bash
+ * npx ts-node test/test.ts
+ * ```
+ */
 
 const setTestKeys = (options: any, market?: BinanceMarketType) => {
   if (options.isTest) {
@@ -169,14 +174,14 @@ const testMarketWs = async () => {
     
     const wsMarket = new BinanceWebsocket(marketOptions);
 
-    // const klineUSDT3m = wsMarket.kline('BNBUSDT', '3m').subscribe(data => console.log(data));
+    const klineUSDT = wsMarket.kline('BNBUSDT', '1m').subscribe(data => console.log(data));
     const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
-    const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
+    // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
     // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log(data));
     // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log(data));
     // const bookTickerUSDT = wsMarket.bookTicker('BNBUSDT').subscribe(data => console.log('bookTickerUSDT =>', data));
     
-    setTimeout(() => { console.log('Unsibscribe USDT miniTicker'); miniTickerUSDT.unsubscribe(); }, 10000);    
+    // setTimeout(() => { console.log('Unsibscribe USDT miniTicker'); miniTickerUSDT.unsubscribe(); }, 10000);    
     // setTimeout(() => { console.log('Reconnecting...'); wsMarket.reconnect(); }, 10000);
     // setTimeout(() => { console.log('Subscribing to orderUpdate...'); wsMarket.orderUpdate(); }, 10000);
 
@@ -194,6 +199,6 @@ function writeLog(variable: string, data: any) {
   fs.appendFileSync(url, `const ${variable} = ${value};\n\n`);
 }
 // testApi();
-testUserWs();
-// testMarketWs();
+// testUserWs();
+testMarketWs();
 

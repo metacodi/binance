@@ -39,9 +39,9 @@ class BinanceWebsocket extends events_1.default {
         return {
             isTest: false,
             streamFormat: 'stream',
-            reconnectPeriod: 500,
-            pingPeriod: 3 * 60 * 1000,
-            pongPeriod: 7500,
+            reconnectPeriod: 5 * 1000,
+            pingPeriod: 2 * 60 * 1000,
+            pongPeriod: 6 * 60 * 1000,
         };
     }
     getApiClient() {
