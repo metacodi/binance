@@ -134,14 +134,18 @@ const testUserWs = async () => {
       market: market,
       streamFormat: 'stream',
       // isTest: true,
-      apiKey: '6mjeCol48kgmK5diGfy90GynOW43RCQcOl6pXsJIPHpwtQWob6LIsW1Vw5vGv5Ax',
-      apiSecret: 'livWZ3R7HSkFQXmBoXF37o7RVxWRMQ2A1JfK4QzUu89srHEzknFaBhc51zw6xCqj',
+      // Binance keys Jordi.
+      // apiKey: '6mjeCol48kgmK5diGfy90GynOW43RCQcOl6pXsJIPHpwtQWob6LIsW1Vw5vGv5Ax',
+      // apiSecret: 'livWZ3R7HSkFQXmBoXF37o7RVxWRMQ2A1JfK4QzUu89srHEzknFaBhc51zw6xCqj',
+       // Binance keys Xavi.
+       apiKey: 'eL6y9S0jkEqqkSnT1hwnNQ9ipn4yW4yLZIojcTLoCLQw8ETiqgGGkEOM6de7jtOx',
+       apiSecret: '3uXfopHqLUAT4CTQ1rIL8B825NcfeVy4p5xCJZM67j23GRFV3UJcNF782IIHge0E',
     };
 
     const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
 
-    wsUser.balanceUpdate().subscribe(data => writeLog('exemple_4_balanceUpdate_', data));
-    wsUser.orderUpdate().subscribe(data => writeLog('exemple_4_orderUpdate_', data));
+    wsUser.balanceUpdate().subscribe(data => writeLog('exemple_6_balanceUpdate_', data));
+    wsUser.orderUpdate().subscribe(data => writeLog('exemple_6_orderUpdate_', data));
     // wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', JSON.stringify(data, null, '  ')));
     // wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', JSON.stringify(data, null, '  ')));
     // wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', JSON.stringify(data, null, '  ')));
@@ -190,7 +194,7 @@ const testMarketWs = async () => {
   }
 };
 
-const logFileName = 'exemple-5-futures-buy-sell-limit-1BNB.ts';
+const logFileName = 'exemple-6-futures-2buy-1sell-limit-1BNB.ts';
 
 function writeLog(variable: string, data: any) {
   const url = Resource.normalize(`./test/${logFileName}`);
@@ -199,6 +203,6 @@ function writeLog(variable: string, data: any) {
   fs.appendFileSync(url, `const ${variable} = ${value};\n\n`);
 }
 // testApi();
-// testUserWs();
-testMarketWs();
+testUserWs();
+// testMarketWs();
 
