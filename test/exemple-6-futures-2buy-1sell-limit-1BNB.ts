@@ -1,4 +1,4 @@
-const exemple_6_balanceUpdate_ = {
+const exemple_6_balanceUpdate_Inicial = {
  "eventType": "ACCOUNT_UPDATE",
  "eventTime": 1646384137973,
  "transactionId": 1646384137968,
@@ -16,7 +16,7 @@ const exemple_6_balanceUpdate_ = {
  }
 };
 
-const exemple_6_orderUpdate_ = {
+const exemple_6_orderUpdate_BuyLimit_New_1 = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646384340270,
  "transactionTime": 1646384340263,
@@ -53,7 +53,7 @@ const exemple_6_orderUpdate_ = {
  }
 };
 
-const exemple_6_balanceUpdate_ = {
+const exemple_6_balanceUpdate_BuyLimit_1 = {
  "eventType": "ACCOUNT_UPDATE",
  "eventTime": 1646384340270,
  "transactionId": 1646384340263,
@@ -82,7 +82,7 @@ const exemple_6_balanceUpdate_ = {
  }
 };
 
-const exemple_6_orderUpdate_ = {
+const exemple_6_orderUpdate_BuyLimit_Filled_1 = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646384340270,
  "transactionTime": 1646384340263,
@@ -120,81 +120,7 @@ const exemple_6_orderUpdate_ = {
  }
 };
 
-const exemple_6_orderUpdate_ = {
- "eventType": "ORDER_TRADE_UPDATE",
- "eventTime": 1646384349110,
- "transactionTime": 1646384349105,
- "order": {
-  "symbol": "BNBUSDT",
-  "clientOrderId": "web_jf8Xr54nzO34DuDscHuv",
-  "orderSide": "BUY",
-  "orderType": "LIMIT",
-  "orderTimeInForce": "GTC",
-  "originalQuantity": 0.02,
-  "originalPrice": 395,
-  "averagePrice": 0,
-  "stopPrice": 0,
-  "executionType": "NEW",
-  "orderStatus": "NEW",
-  "orderId": 37877240438,
-  "lastFilledQuantity": 0,
-  "orderFilledAccumulatedQuantity": 0,
-  "lastFilledPrice": 0,
-  "commissionAmount": null,
-  "orderTradeTime": 1646384349105,
-  "tradeId": 0,
-  "bidsNotional": 7.9,
-  "asksNotional": 0,
-  "isMakerTrade": false,
-  "isReduceOnly": false,
-  "stopPriceWorkingType": "CONTRACT_PRICE",
-  "originalOrderType": "LIMIT",
-  "positionSide": "BOTH",
-  "isCloseAll": false,
-  "trailingStopActivationPrice": null,
-  "trailingStopCallbackRate": null,
-  "realisedProfit": 0
- }
-};
-
-const exemple_6_orderUpdate_ = {
- "eventType": "ORDER_TRADE_UPDATE",
- "eventTime": 1646384470775,
- "transactionTime": 1646384470769,
- "order": {
-  "symbol": "BNBUSDT",
-  "clientOrderId": "web_jf8Xr54nzO34DuDscHuv",
-  "orderSide": "BUY",
-  "orderType": "LIMIT",
-  "orderTimeInForce": "GTC",
-  "originalQuantity": 0.02,
-  "originalPrice": 395,
-  "averagePrice": 0,
-  "stopPrice": 0,
-  "executionType": "CANCELED",
-  "orderStatus": "CANCELED",
-  "orderId": 37877240438,
-  "lastFilledQuantity": 0,
-  "orderFilledAccumulatedQuantity": 0,
-  "lastFilledPrice": 0,
-  "commissionAmount": null,
-  "orderTradeTime": 1646384470769,
-  "tradeId": 0,
-  "bidsNotional": 0,
-  "asksNotional": 0,
-  "isMakerTrade": false,
-  "isReduceOnly": false,
-  "stopPriceWorkingType": "CONTRACT_PRICE",
-  "originalOrderType": "LIMIT",
-  "positionSide": "BOTH",
-  "isCloseAll": false,
-  "trailingStopActivationPrice": null,
-  "trailingStopCallbackRate": null,
-  "realisedProfit": 0
- }
-};
-
-const exemple_6_orderUpdate_ = {
+const exemple_6_orderUpdate_BuyLimit_New_2 = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646384487545,
  "transactionTime": 1646384487537,
@@ -231,7 +157,7 @@ const exemple_6_orderUpdate_ = {
  }
 };
 
-const exemple_6_balanceUpdate_ = {
+const exemple_6_balanceUpdate_BuyLimit_2 = {
  "eventType": "ACCOUNT_UPDATE",
  "eventTime": 1646384503856,
  "transactionId": 1646384503849,
@@ -260,7 +186,7 @@ const exemple_6_balanceUpdate_ = {
  }
 };
 
-const exemple_6_orderUpdate_ = {
+const exemple_6_orderUpdate_BuyLimit_Filled_2 = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646384503856,
  "transactionTime": 1646384503849,
@@ -298,7 +224,7 @@ const exemple_6_orderUpdate_ = {
  }
 };
 
-const exemple_6_orderUpdate_ = {
+const exemple_6_orderUpdate_SellLimit_New = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646384638660,
  "transactionTime": 1646384638642,
@@ -335,7 +261,7 @@ const exemple_6_orderUpdate_ = {
  }
 };
 
-const exemple_6_balanceUpdate_ = {
+const exemple_6_balanceUpdate_SellLimit = {
  "eventType": "ACCOUNT_UPDATE",
  "eventTime": 1646384735706,
  "transactionId": 1646384735701,
@@ -364,7 +290,7 @@ const exemple_6_balanceUpdate_ = {
  }
 };
 
-const exemple_6_orderUpdate_ = {
+const exemple_6_orderUpdate_SellLimit_Filled = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646384735706,
  "transactionTime": 1646384735701,
