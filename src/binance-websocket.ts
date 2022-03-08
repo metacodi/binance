@@ -289,6 +289,7 @@ export class BinanceWebsocket extends EventEmitter {
       case 'kline': return this.emitKline(data);
       default:
         console.log(data);
+        console.log(JSON.stringify(data));
     }
   }
 

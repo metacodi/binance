@@ -280,3 +280,39 @@ const exemple_8_orderUpdate_ = {
  }
 };
 
+const exemple_8_balanceUpdate_ = {
+ "eventType": "ACCOUNT_UPDATE",
+ "eventTime": 1646753256852,
+ "transactionId": 1646753256845,
+ "updateData": {
+  "updateEventType": "WITHDRAW",
+  "updatedBalances": [
+   {
+    "asset": "USDT",
+    "balanceChange": -31.34460743,
+    "crossWalletBalance": 0,
+    "walletBalance": 0
+   }
+  ],
+  "updatedPositions": []
+ }
+};
+
+const exemple_8_balanceUpdate_ = {
+ "eventType": "ACCOUNT_UPDATE",
+ "eventTime": 1646753271772,
+ "transactionId": 1646753271768,
+ "updateData": {
+  "updateEventType": "DEPOSIT",
+  "updatedBalances": [
+   {
+    "asset": "USDT",
+    "balanceChange": 10,
+    "crossWalletBalance": 10,
+    "walletBalance": 10
+   }
+  ],
+  "updatedPositions": []
+ }
+};
+
