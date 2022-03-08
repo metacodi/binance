@@ -4,7 +4,8 @@ import WebSocket from 'isomorphic-ws';
 import EventEmitter from 'events';
 import { Subject, Subscription } from 'rxjs';
 import { BinanceApi } from './binance-api';
-import { BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceWs24hrMiniTicker, WsUserStreamEmitterType, BinanceWsSpotBalanceUpdate, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdate, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsFuturesOrderUpdate, BinanceWsKline, BinanceKlineInterval } from ".";
+import { BinanceMarketType, BinanceKlineInterval } from "./types/binance.types";
+import { BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, WsUserStreamEmitterType, BinanceWs24hrMiniTicker, BinanceWsSpotBalanceUpdate, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdate, BinanceWsSpotOrderUpdate, BinanceWsFuturesOrderUpdate, BinanceWsBookTicker, BinanceWsFuturesAccountConfigUpdate, BinanceWsFuturesMarginCall, BinanceWsKline } from './types/binance-websocket.types';
 export declare class BinanceWebsocket extends EventEmitter {
     protected options: BinanceWebsocketOptions;
     protected ws: WebSocket;
@@ -53,6 +54,10 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected emitAccountUpdate(event: any): void;
     balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate>;
     protected emitBalanceUpdate(event: any): void;
+    marginCall(): Subject<BinanceWsFuturesMarginCall>;
+    protected emitMarginCall(event: any): void;
+    accountConfigUpdate(): Subject<BinanceWsFuturesAccountConfigUpdate>;
+    protected emitAccountConfigUpdate(event: any): void;
     orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate>;
     protected emitOrderUpdate(event: any): void;
     protected registerMarketStreamSubscription(key: string): Subject<any>;

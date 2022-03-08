@@ -9,29 +9,11 @@ class BinanceApiSpot extends binance_api_1.BinanceApi {
         this.subdomain = 'api';
     }
     baseUrl() { return this.isTest ? 'testnet.binance.vision' : `${this.subdomain}.binance.com`; }
-    getUserDataListenKey() {
-        return this.post('api/v3/userDataStream', { createSignature: false });
-    }
-    keepAliveUserDataListenKey(listenKey) {
-        return this.put(`api/v3/userDataStream?listenKey=${listenKey}`, { createSignature: false });
-    }
-    closeUserDataListenKey(listenKey) {
-        return this.delete(`api/v3/userDataStream?listenKey=${listenKey}`, { createSignature: false });
-    }
     getExchangeInfo(params) {
         if (params === null || params === void 0 ? void 0 : params.symbols) {
             params.symbols = JSON.stringify(params.symbols);
         }
         return this.get('api/v3/exchangeInfo', { params, isPublic: true, baseUrlOverride: 'api.binance.com' });
-    }
-    getBalances() {
-        return this.get('sapi/v1/capital/config/getall');
-    }
-    getAccountInformation() {
-        return this.get('api/v3/account');
-    }
-    getAccountTradeList(params) {
-        return this.get('api/v3/myTrades', { params });
     }
     getSymbolPriceTicker(params) {
         return this.get('api/v3/ticker/price', { isPublic: true, params });
@@ -42,6 +24,21 @@ class BinanceApiSpot extends binance_api_1.BinanceApi {
     getSymbolKlines(params) {
         return this.get('api/v3/klines', { isPublic: true, params });
     }
+    getUserDataListenKey() {
+        return this.post('api/v3/userDataStream', { createSignature: false });
+    }
+    keepAliveUserDataListenKey(listenKey) {
+        return this.put(`api/v3/userDataStream?listenKey=${listenKey}`, { createSignature: false });
+    }
+    closeUserDataListenKey(listenKey) {
+        return this.delete(`api/v3/userDataStream?listenKey=${listenKey}`, { createSignature: false });
+    }
+    getAccountInformation() {
+        return this.get('api/v3/account');
+    }
+    getBalances() {
+        return this.get('sapi/v1/capital/config/getall');
+    }
     getAllOrders(params) {
         return this.get('api/v3/allOrders', { params });
     }
@@ -50,6 +47,9 @@ class BinanceApiSpot extends binance_api_1.BinanceApi {
     }
     getOrder(params) {
         return this.get('api/v3/order', { params });
+    }
+    getAccountTradeList(params) {
+        return this.get('api/v3/myTrades', { params });
     }
     postOrder(params) {
         return this.post('api/v3/order', { params });

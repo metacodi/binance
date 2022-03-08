@@ -9,26 +9,8 @@ class BinanceApiFutures extends binance_api_1.BinanceApi {
         this.subdomain = 'fapi';
     }
     baseUrl() { return this.isTest ? 'testnet.binancefuture.com' : `${this.subdomain}.binance.com`; }
-    getUserDataListenKey() {
-        return this.post('fapi/v1/listenKey', { createSignature: false });
-    }
-    keepAliveUserDataListenKey(listenKey) {
-        return this.put('fapi/v1/listenKey', { createSignature: false });
-    }
-    closeUserDataListenKey(listenKey) {
-        return this.delete('fapi/v1/listenKey', { createSignature: false });
-    }
     getExchangeInfo() {
         return this.get('fapi/v1/exchangeInfo', { isPublic: true });
-    }
-    getBalances() {
-        return this.get('fapi/v2/balance');
-    }
-    getAccountInformation() {
-        return this.get('fapi/v2/account');
-    }
-    getAccountTradeList(params) {
-        return this.get('fapi/v1/userTrades', { params });
     }
     getSymbolPriceTicker(params) {
         return this.get('fapi/v1/ticker/price', { isPublic: true, params });
@@ -39,6 +21,27 @@ class BinanceApiFutures extends binance_api_1.BinanceApi {
     getSymbolKlines(params) {
         return this.get('fapi/v1/klines', { isPublic: true, params });
     }
+    getUserDataListenKey() {
+        return this.post('fapi/v1/listenKey', { createSignature: false });
+    }
+    keepAliveUserDataListenKey(listenKey) {
+        return this.put('fapi/v1/listenKey', { createSignature: false });
+    }
+    closeUserDataListenKey(listenKey) {
+        return this.delete('fapi/v1/listenKey', { createSignature: false });
+    }
+    getAccountInformation() {
+        return this.get('fapi/v2/account');
+    }
+    getBalances() {
+        return this.get('fapi/v2/balance');
+    }
+    getSymbolLeverageBracket(params) {
+        return this.get('fapi/v1/leverageBracket', { params });
+    }
+    changeSymbolLeverage(params) {
+        return this.post('fapi/v1/leverage', { params });
+    }
     getAllOrders(params) {
         return this.get('fapi/v1/allOrders', { params });
     }
@@ -47,6 +50,12 @@ class BinanceApiFutures extends binance_api_1.BinanceApi {
     }
     getOrder(params) {
         return this.get('fapi/v1/order', { params });
+    }
+    getAccountTradeList(params) {
+        return this.get('fapi/v1/userTrades', { params });
+    }
+    getPositionRisk(params) {
+        return this.get('fapi/v2/positionRisk ', { params });
     }
     postOrder(params) {
         return this.post('fapi/v1/order', { params });

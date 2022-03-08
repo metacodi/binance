@@ -21,6 +21,9 @@ export type BinanceFuturesOrderType = 'LIMIT' | 'MARKET' | 'STOP' | 'STOP_MARKET
 
 export type BinanceFuturesWorkingType = "MARK_PRICE" | "CONTRACT_PRICE";
 
+export type BinanceMarginType = "ISOLATED" | "CROSSED";
+
+
 // ---------------------------------------------------------------------------------------------------
 //  getExchangeInfo
 // ---------------------------------------------------------------------------------------------------
@@ -180,6 +183,46 @@ export interface BinanceFuturesTradeList {
 
 
 // ---------------------------------------------------------------------------------------------------
+//  getSymbolLeverageBracket
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#notional-and-leverage-brackets-user_data Notional and Leverage Brackets (USER_DATA)} */
+export interface BinanceFuturesSymbolLeverageBracketRequest {
+  symbol?: string;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#notional-and-leverage-brackets-user_data Notional and Leverage Brackets (USER_DATA)} */
+export interface BinanceFuturesSymbolLeverageBracket {
+  symbol: string;
+  brackets: {
+    bracket: number;
+    initialLeverage: number;
+    notionalCap: number;
+    notionalFloor: number;
+    maintMarginRatio: number;
+    cum: number;
+  }[];
+}
+
+// ---------------------------------------------------------------------------------------------------
+//  changeSymbolLeverage
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#change-initial-leverage-trade Change Initial Leverage (TRADE)} */
+export interface BinanceFuturesChangeSymbolLeverageRequest {
+  symbol?: string;
+  leverage: number;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#change-initial-leverage-trade Change Initial Leverage (TRADE)} */
+export interface BinanceFuturesChangeSymbolLeverageResponse {
+  symbol?: string;
+  leverage: number;
+  maxNotionalValue: string,
+}
+
+
+// ---------------------------------------------------------------------------------------------------
 //  getSymbolPriceTicker
 // ---------------------------------------------------------------------------------------------------
 
@@ -285,6 +328,33 @@ export interface BinanceFuturesOrder {
   updateTime: number;
   workingType: BinanceFuturesWorkingType;
   priceProtect: boolean;
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  getPositionRisk
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data Position Information V2 (USER_DATA)} */
+export interface BinanceFuturesPositionRiskRequest {
+  symbol: string;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data Position Information V2 (USER_DATA)} */
+export interface BinanceFuturesPositionRisk {
+  entryPrice: string;
+  marginType: Lowercase<BinanceMarginType>;
+  isAutoAddMargin: 'false' | 'true';
+  isolatedMargin: string;
+  leverage: string;
+  liquidationPrice: string;
+  markPrice: string;
+  maxNotionalValue: string;
+  positionAmt: string;
+  symbol: string;
+  unRealizedProfit: string;
+  positionSide: BinancePositionSide;
+  updateTime: number;
 }
 
 

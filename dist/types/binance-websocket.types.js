@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseKline = exports.parseBookTicker = exports.parseMiniTicker = exports.parseOrderUpdate = exports.parseAccountUpdate = exports.parseBalanceUpdate = void 0;
+exports.parseKline = exports.parseBookTicker = exports.parseMiniTicker = exports.parseOrderUpdate = exports.parseAccountConfigUpdate = exports.parseMarginCall = exports.parseAccountUpdate = exports.parseBalanceUpdate = void 0;
 function parseBalanceUpdate(data) {
     if (data.e === 'balanceUpdate') {
         return {
@@ -82,6 +82,45 @@ function parseAccountUpdate(data) {
     }
 }
 exports.parseAccountUpdate = parseAccountUpdate;
+function parseMarginCall(data) {
+    var _a;
+    return {
+        eventType: 'MARGIN_CALL',
+        eventTime: data.E,
+        crossWalletBalance: +data.cw,
+        positions: ((_a = data.p) === null || _a === void 0 ? void 0 : _a.map(p => ({
+            symbol: p.s,
+            positionSide: p.ps,
+            positionAmount: +p.pa,
+            marginType: p.mt,
+            isolatedWalletAmount: +p.iw,
+            markPrice: +p.mp,
+            unrealisedPnl: +p.up,
+            maintenanceMarginRequired: +p.mm,
+        }))) || [],
+    };
+}
+exports.parseMarginCall = parseMarginCall;
+function parseAccountConfigUpdate(data) {
+    const parsed = {
+        eventType: 'ACCOUNT_CONFIG_UPDATE',
+        eventTime: data.E,
+        transactionTime: data.T,
+    };
+    if (data.ac) {
+        parsed.assetConfiguration = {
+            symbol: data.ac.s,
+            leverage: data.ac.l,
+        };
+    }
+    if (data.ac) {
+        parsed.accountConfiguration = {
+            isMultiAssetsMode: data.ai.j,
+        };
+    }
+    return parsed;
+}
+exports.parseAccountConfigUpdate = parseAccountConfigUpdate;
 function parseOrderUpdate(data) {
     if (data.e === 'executionReport') {
         return {

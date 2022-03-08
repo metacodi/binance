@@ -1,8 +1,9 @@
 import { BinanceFuturesOrderType, BinanceFuturesWorkingType, BinanceKlineInterval, BinanceMarketType, BinanceOrderExecutionType, BinanceOrderSide, BinanceOrderStatus, BinanceOrderTimeInForce, BinanceOrderType, BinancePositionSide } from '..';
+import { BinanceMarginType } from './binance-futures.types';
 export declare type WsConnectionState = 'initial' | 'connecting' | 'connected' | 'reconnecting' | 'closing';
 export declare type WsStreamType = 'user' | 'market';
 export declare type WsStreamFormat = 'raw' | 'stream';
-export declare type WsUserStreamEmitterType = 'accountUpdate' | 'balanceUpdate' | 'orderUpdate';
+export declare type WsUserStreamEmitterType = 'accountUpdate' | 'balanceUpdate' | 'marginCall' | 'accountConfigUpdate' | 'orderUpdate';
 export declare type WsMarketStreamEmitterType = 'symbolMiniTicker' | 'symbolTicker';
 export declare type WsStreamEmitterType = WsUserStreamEmitterType | WsMarketStreamEmitterType;
 export interface BinanceWebsocketOptions {
@@ -16,7 +17,7 @@ export interface BinanceWebsocketOptions {
     pingPeriod?: number;
     pongPeriod?: number;
 }
-export interface BinanceWsSpotBalanceUpdateRaw {
+interface BinanceWsSpotBalanceUpdateRaw {
     e: 'balanceUpdate';
     E: number;
     a: string;
@@ -31,7 +32,7 @@ export interface BinanceWsSpotBalanceUpdate {
     clearTime: number;
 }
 export declare function parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate;
-export interface BinanceWsSpotAccountUpdateRaw {
+interface BinanceWsSpotAccountUpdateRaw {
     e: 'outboundAccountPosition';
     E: number;
     u: number;
@@ -52,7 +53,7 @@ export interface BinanceWsSpotAccountUpdate {
     }[];
 }
 declare type BinanceAccountUpdateEventType = "DEPOSIT" | "WITHDRAW" | "ORDER" | "FUNDING_FEE" | "WITHDRAW_REJECT" | "ADJUSTMENT" | "INSURANCE_CLEAR" | "ADMIN_DEPOSIT" | "ADMIN_WITHDRAW" | "MARGIN_TRANSFER" | "MARGIN_TYPE_CHANGE" | "ASSET_TRANSFER" | "OPTIONS_PREMIUM_FEE" | "OPTIONS_SETTLE_PROFIT" | "AUTO_EXCHANGE";
-export interface BinanceWsFuturesAccountUpdateRaw {
+interface BinanceWsFuturesAccountUpdateRaw {
     e: 'ACCOUNT_UPDATE';
     E: number;
     T: number;
@@ -102,7 +103,63 @@ export interface BinanceWsFuturesAccountUpdate {
     };
 }
 export declare function parseAccountUpdate(data: BinanceWsSpotAccountUpdateRaw | BinanceWsFuturesAccountUpdateRaw): BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate;
-export interface BinanceWsSpotOrderUpdateRaw {
+interface BinanceWsFuturesMarginCallRaw {
+    e: 'MARGIN_CALL';
+    E: number;
+    cw: string;
+    p: {
+        s: string;
+        ps: BinancePositionSide;
+        pa: string;
+        mt: BinanceMarginType;
+        iw: string;
+        mp: string;
+        up: string;
+        mm: string;
+    }[];
+}
+export interface BinanceWsFuturesMarginCall {
+    eventType: 'MARGIN_CALL';
+    eventTime: number;
+    crossWalletBalance: number;
+    positions: {
+        symbol: string;
+        positionSide: BinancePositionSide;
+        positionAmount: number;
+        marginType: BinanceMarginType;
+        isolatedWalletAmount: number;
+        markPrice: number;
+        unrealisedPnl: number;
+        maintenanceMarginRequired: number;
+    }[];
+}
+export declare function parseMarginCall(data: BinanceWsFuturesMarginCallRaw): BinanceWsFuturesMarginCall;
+interface BinanceWsFuturesAccountConfigUpdateRaw {
+    e: 'ACCOUNT_CONFIG_UPDATE';
+    E: number;
+    T: number;
+    ac?: {
+        s: string;
+        l: number;
+    };
+    ai?: {
+        j: boolean;
+    };
+}
+export interface BinanceWsFuturesAccountConfigUpdate {
+    eventType: 'ACCOUNT_CONFIG_UPDATE';
+    eventTime: number;
+    transactionTime: number;
+    assetConfiguration?: {
+        symbol: string;
+        leverage: number;
+    };
+    accountConfiguration?: {
+        isMultiAssetsMode: boolean;
+    };
+}
+export declare function parseAccountConfigUpdate(data: BinanceWsFuturesAccountConfigUpdateRaw): BinanceWsFuturesAccountConfigUpdate;
+interface BinanceWsSpotOrderUpdateRaw {
     e: 'executionReport';
     E: number;
     s: string;
@@ -170,7 +227,7 @@ export interface BinanceWsSpotOrderUpdate {
     lastQuoteAssetTransactedQty: number;
     orderQuoteQty: number;
 }
-export interface BinanceWsFuturesOrderUpdateRaw {
+interface BinanceWsFuturesOrderUpdateRaw {
     e: 'ORDER_TRADE_UPDATE';
     E: number;
     T: number;
@@ -245,7 +302,7 @@ export interface BinanceWsFuturesOrderUpdate {
     };
 }
 export declare function parseOrderUpdate(data: BinanceWsSpotOrderUpdateRaw | BinanceWsFuturesOrderUpdateRaw): BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate;
-export interface BinanceWs24hrMiniTickerRaw {
+interface BinanceWs24hrMiniTickerRaw {
     e: '24hrMiniTicker';
     E: number;
     s: string;
@@ -270,7 +327,7 @@ export interface BinanceWs24hrMiniTicker {
     quoteAssetVolume: number;
 }
 export declare function parseMiniTicker(data: BinanceWs24hrMiniTickerRaw): BinanceWs24hrMiniTicker;
-export interface BinanceWsBookTickerRaw {
+interface BinanceWsBookTickerRaw {
     e: 'bookTicker';
     u: number;
     E?: number;
@@ -293,7 +350,7 @@ export interface BinanceWsBookTicker {
     askQty: number;
 }
 export declare function parseBookTicker(data: BinanceWsBookTickerRaw): BinanceWsBookTicker;
-export interface BinanceWsKlineRaw {
+interface BinanceWsKlineRaw {
     e: 'kline';
     E: number;
     s: string;

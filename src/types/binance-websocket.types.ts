@@ -2,6 +2,7 @@ import { Subject, Subscription } from 'rxjs';
 import WebSocket from 'isomorphic-ws';
 
 import { BinanceFuturesOrderType, BinanceFuturesWorkingType, BinanceKlineInterval, BinanceMarketType, BinanceOrderExecutionType, BinanceOrderSide, BinanceOrderStatus, BinanceOrderTimeInForce, BinanceOrderType, BinancePositionSide } from '..';
+import { BinanceMarginType } from './binance-futures.types';
 
 
 export type WsConnectionState = 'initial' | 'connecting' | 'connected' | 'reconnecting' | 'closing';
@@ -10,7 +11,7 @@ export type WsStreamType = 'user' | 'market';
 
 export type WsStreamFormat = 'raw' | 'stream';
 
-export type WsUserStreamEmitterType = 'accountUpdate' | 'balanceUpdate' | 'orderUpdate';
+export type WsUserStreamEmitterType = 'accountUpdate' | 'balanceUpdate' | 'marginCall' | 'accountConfigUpdate' | 'orderUpdate';
 
 export type WsMarketStreamEmitterType = 'symbolMiniTicker' | 'symbolTicker';
 
@@ -43,7 +44,7 @@ export interface BinanceWebsocketOptions {
 // ---------------------------------------------------------------------------------------------------
 
 /** {@link https://binance-docs.github.io/apidocs/spot/en/#payload-balance-update Payload: Balance Update} */
-export interface BinanceWsSpotBalanceUpdateRaw {
+interface BinanceWsSpotBalanceUpdateRaw {
   e: 'balanceUpdate';
   E: number;
   a: string;
@@ -111,7 +112,7 @@ export function parseBalanceUpdate(data: BinanceWsSpotBalanceUpdateRaw | Binance
 // ---------------------------------------------------------------------------------------------------
 
 /** {@link https://binance-docs.github.io/apidocs/spot/en/#payload-account-update Payload: Account Update} */
-export interface BinanceWsSpotAccountUpdateRaw {
+interface BinanceWsSpotAccountUpdateRaw {
   e: 'outboundAccountPosition';
   E: number;
   u: number;
@@ -138,7 +139,7 @@ export interface BinanceWsSpotAccountUpdate {
 type BinanceAccountUpdateEventType = "DEPOSIT" | "WITHDRAW" | "ORDER" | "FUNDING_FEE" | "WITHDRAW_REJECT" | "ADJUSTMENT" | "INSURANCE_CLEAR" | "ADMIN_DEPOSIT" | "ADMIN_WITHDRAW" | "MARGIN_TRANSFER" | "MARGIN_TYPE_CHANGE" | "ASSET_TRANSFER" | "OPTIONS_PREMIUM_FEE" | "OPTIONS_SETTLE_PROFIT" | "AUTO_EXCHANGE";
 
 /** {@link https://binance-docs.github.io/apidocs/futures/en/#event-balance-and-position-update Event: Balance and Position Update} */
-export interface BinanceWsFuturesAccountUpdateRaw {
+interface BinanceWsFuturesAccountUpdateRaw {
   e: 'ACCOUNT_UPDATE';
   E: number;
   T: number;
@@ -238,12 +239,125 @@ export function parseAccountUpdate(data: BinanceWsSpotAccountUpdateRaw | Binance
   }
 }
 
+
+// ---------------------------------------------------------------------------------------------------
+//  marginCall (futures only)
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#event-margin-call Event: Margin Call} */
+interface BinanceWsFuturesMarginCallRaw {
+  e: 'MARGIN_CALL';
+  E: number;
+  cw: string;
+  p: {
+    s: string;
+    ps: BinancePositionSide;
+    pa: string;
+    mt: BinanceMarginType;
+    iw: string;
+    mp: string;
+    up: string;
+    mm: string;  
+  }[];
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#event-margin-call Event: Margin Call} */
+export interface BinanceWsFuturesMarginCall {
+  eventType: 'MARGIN_CALL';
+  eventTime: number;
+  crossWalletBalance: number;
+  positions: {
+    symbol: string;
+    positionSide: BinancePositionSide;
+    positionAmount: number;
+    marginType: BinanceMarginType;
+    isolatedWalletAmount: number;
+    markPrice: number;
+    unrealisedPnl: number;
+    maintenanceMarginRequired: number;
+  }[];
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#event-margin-call Event: Margin Call} */
+export function parseMarginCall(data: BinanceWsFuturesMarginCallRaw): BinanceWsFuturesMarginCall {
+  return {
+    eventType: 'MARGIN_CALL',
+    eventTime: data.E,
+    crossWalletBalance: +data.cw,
+    positions: data.p?.map(p => ({
+      symbol: p.s,
+      positionSide: p.ps,
+      positionAmount: +p.pa,
+      marginType: p.mt,
+      isolatedWalletAmount: +p.iw,
+      markPrice: +p.mp,
+      unrealisedPnl: +p.up,
+      maintenanceMarginRequired: +p.mm,
+    })) || [],
+  };
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  accountConfigUpdate (futures only)
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#event-account-configuration-update-previous-leverage-update Event: Account Configuration Update previous Leverage Update} */
+interface BinanceWsFuturesAccountConfigUpdateRaw {
+  e: 'ACCOUNT_CONFIG_UPDATE';
+  E: number;
+  T: number;
+  ac?: {
+    s: string;
+    l: number;
+  };
+  ai?: {
+    j: boolean;
+  };
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#event-account-configuration-update-previous-leverage-update Event: Account Configuration Update previous Leverage Update} */
+export interface BinanceWsFuturesAccountConfigUpdate {
+  eventType: 'ACCOUNT_CONFIG_UPDATE';
+  eventTime: number;
+  transactionTime: number;
+  assetConfiguration?: {
+    symbol: string;
+    leverage: number;
+  };
+  accountConfiguration?: {
+    isMultiAssetsMode: boolean;
+  };
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#event-account-configuration-update-previous-leverage-update Event: Account Configuration Update previous Leverage Update} */
+export function parseAccountConfigUpdate(data: BinanceWsFuturesAccountConfigUpdateRaw): BinanceWsFuturesAccountConfigUpdate {
+  const parsed = {
+    eventType: 'ACCOUNT_CONFIG_UPDATE',
+    eventTime: data.E,
+    transactionTime: data.T,
+  } as BinanceWsFuturesAccountConfigUpdate;
+  if (data.ac) {
+    parsed.assetConfiguration = {
+      symbol: data.ac.s,
+      leverage: data.ac.l,
+    };
+  }
+  if (data.ac) {
+    parsed.accountConfiguration = {
+      isMultiAssetsMode: data.ai.j,
+    };
+  }
+  return parsed;
+}
+
+
 // ---------------------------------------------------------------------------------------------------
 //  orderUpdate
 // ---------------------------------------------------------------------------------------------------
 
 /** {@link https://binance-docs.github.io/apidocs/spot/en/#payload-order-update Payload: Order Update} */
-export interface BinanceWsSpotOrderUpdateRaw {
+interface BinanceWsSpotOrderUpdateRaw {
   e: 'executionReport';
   E: number;
   s: string;
@@ -315,7 +429,7 @@ export interface BinanceWsSpotOrderUpdate {
 }
 
 /** {@link https://binance-docs.github.io/apidocs/futures/en/#event-order-update Event: Order Update} */
-export interface BinanceWsFuturesOrderUpdateRaw {
+interface BinanceWsFuturesOrderUpdateRaw {
   e: 'ORDER_TRADE_UPDATE';
   E: number;
   T: number;
@@ -487,7 +601,7 @@ export function parseOrderUpdate(data: BinanceWsSpotOrderUpdateRaw | BinanceWsFu
  * {@link https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-mini-ticker-stream Individual Symbol Mini Ticker Stream}
  * {@link https://binance-docs.github.io/apidocs/futures/en/#individual-symbol-mini-ticker-stream Individual Symbol Mini Ticker Stream}
  */
-export interface BinanceWs24hrMiniTickerRaw {
+interface BinanceWs24hrMiniTickerRaw {
   e: '24hrMiniTicker';
   E: number;
   s: string;
@@ -544,7 +658,7 @@ export function parseMiniTicker(data: BinanceWs24hrMiniTickerRaw): BinanceWs24hr
  * {@link https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-book-ticker-streams Individual Symbol Book Ticker Streams }
  * {@link https://binance-docs.github.io/apidocs/futures/en/#individual-symbol-book-ticker-streams Individual Symbol Book Ticker Streams }
  */
-export interface BinanceWsBookTickerRaw {
+interface BinanceWsBookTickerRaw {
   e: 'bookTicker';
   u: number;
   E?: number;  // futures
@@ -598,7 +712,7 @@ export function parseBookTicker(data: BinanceWsBookTickerRaw): BinanceWsBookTick
  * {@link https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-streams Kline/Candlestick Streams}
  * {@link https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-streams Kline/Candlestick Streams}
  */
-export interface BinanceWsKlineRaw {
+interface BinanceWsKlineRaw {
   e: 'kline';
   E: number;
   s: string;

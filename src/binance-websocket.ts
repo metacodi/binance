@@ -3,7 +3,22 @@ import EventEmitter from 'events';
 import { Subject, interval, timer, Subscription } from 'rxjs';
 
 import { BinanceApi } from './binance-api';
-import { BinanceApiOptions, BinanceApiFutures, BinanceMarketType, BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, BinanceApiSpot, BinanceWs24hrMiniTicker, BinanceWs24hrMiniTickerRaw, WsUserStreamEmitterType, BinanceWsSpotBalanceUpdate, BinanceWsSpotBalanceUpdateRaw, BinanceWsSpotAccountUpdateRaw, BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdateRaw, BinanceWsFuturesAccountUpdate, BinanceWsBookTickerRaw, BinanceWsBookTicker, BinanceWsSpotOrderUpdate, BinanceWsSpotOrderUpdateRaw, BinanceWsFuturesOrderUpdateRaw, BinanceWsFuturesOrderUpdate, BinanceWsKlineRaw, BinanceWsKline, BinanceKlineInterval, parseKline, parseBookTicker, parseMiniTicker, parseAccountUpdate, parseBalanceUpdate, parseOrderUpdate } from ".";
+import { BinanceApiSpot } from "./binance-api-spot";
+import { BinanceApiFutures } from "./binance-api-futures";
+import { BinanceMarketType, BinanceKlineInterval } from "./types/binance.types";
+import {
+  BinanceWebsocketOptions, WsConnectionState, WsStreamType, WsStreamFormat, WsUserStreamEmitterType,
+  BinanceWs24hrMiniTicker, parseMiniTicker,
+  BinanceWsSpotBalanceUpdate, parseBalanceUpdate,
+  BinanceWsSpotAccountUpdate, BinanceWsFuturesAccountUpdate, parseAccountUpdate,
+  parseAccountConfigUpdate,
+  BinanceWsSpotOrderUpdate, BinanceWsFuturesOrderUpdate, parseOrderUpdate,
+  BinanceWsBookTicker, parseBookTicker,
+  BinanceWsFuturesAccountConfigUpdate,
+  BinanceWsFuturesMarginCall,
+  BinanceWsKline, parseKline,
+  parseMarginCall,
+} from './types/binance-websocket.types';
 
 
 export class BinanceWebsocket extends EventEmitter {
@@ -279,6 +294,8 @@ export class BinanceWebsocket extends EventEmitter {
       case 'balanceUpdate': return this.emitBalanceUpdate(data);
       case 'outboundAccountPosition': return this.emitAccountUpdate(data);
       case 'ACCOUNT_UPDATE': this.emitBalanceUpdate(data); this.emitAccountUpdate(data); break;
+      case 'MARGIN_CALL': return this.emitMarginCall(data);
+      case 'ACCOUNT_CONFIG_UPDATE': return this.emitAccountConfigUpdate(data);
       case 'executionReport': case 'ORDER_TRADE_UPDATE': return this.emitOrderUpdate(data);
       case 'listenKeyExpired':
         if (this.status !== 'closing' && this.status !== 'initial') { this.reconnect(); }
@@ -351,7 +368,9 @@ export class BinanceWebsocket extends EventEmitter {
   //  accountUpdate
   // ---------------------------------------------------------------------------------------------------
 
-  accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate> { return this.registerAccountSubscription('accountUpdate'); }
+  accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate> {
+    return this.registerAccountSubscription('accountUpdate');
+  }
 
   protected emitAccountUpdate(event: any) { this.emitNextAccountEvent('accountUpdate', event, parseAccountUpdate); }
 
@@ -359,14 +378,39 @@ export class BinanceWebsocket extends EventEmitter {
   //  balanceUpdate
   // ---------------------------------------------------------------------------------------------------
 
-  balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate> { return this.registerAccountSubscription('balanceUpdate'); }
+  balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate> {
+    return this.registerAccountSubscription('balanceUpdate');
+  }
 
   protected emitBalanceUpdate(event: any) { this.emitNextAccountEvent('balanceUpdate', event, parseBalanceUpdate); }
+
+
+  //  marginCall
+  // ---------------------------------------------------------------------------------------------------
+
+  marginCall(): Subject<BinanceWsFuturesMarginCall> {
+    return this.registerAccountSubscription('marginCall');
+  }
+
+  protected emitMarginCall(event: any) { this.emitNextAccountEvent('marginCall', event, parseMarginCall); }
+
+
+  //  accountConfigUpdate
+  // ---------------------------------------------------------------------------------------------------
+
+  accountConfigUpdate(): Subject<BinanceWsFuturesAccountConfigUpdate> {
+    return this.registerAccountSubscription('accountConfigUpdate');
+  }
+
+  protected emitAccountConfigUpdate(event: any) { this.emitNextAccountEvent('accountConfigUpdate', event, parseAccountConfigUpdate); }
+
 
   //  orderUpdate
   // ---------------------------------------------------------------------------------------------------
 
-  orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate> { return this.registerAccountSubscription('orderUpdate'); }
+  orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate> {
+    return this.registerAccountSubscription('orderUpdate');
+  }
 
   protected emitOrderUpdate(event: any) { this.emitNextAccountEvent('orderUpdate', event, parseOrderUpdate); }
 
