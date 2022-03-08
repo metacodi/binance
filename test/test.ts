@@ -144,8 +144,8 @@ const testUserWs = async () => {
 
     const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
 
-    wsUser.balanceUpdate().subscribe(data => writeLog('exemple_7_balanceUpdate_', data));
-    wsUser.orderUpdate().subscribe(data => writeLog('exemple_7_orderUpdate_', data));
+    wsUser.balanceUpdate().subscribe(data => writeLog('exemple_8_balanceUpdate_', data));
+    wsUser.orderUpdate().subscribe(data => writeLog('exemple_8_orderUpdate_', data));
     // wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', JSON.stringify(data, null, '  ')));
     // wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', JSON.stringify(data, null, '  ')));
     // wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', JSON.stringify(data, null, '  ')));
@@ -194,7 +194,7 @@ const testMarketWs = async () => {
   }
 };
 
-const logFileName = 'exemple-7-futures-2buy-1sell-limit-1BNB.ts';
+const logFileName = 'exemple-8-75_leverage.ts';
 
 function writeLog(variable: string, data: any) {
   const url = Resource.normalize(`./test/${logFileName}`);
