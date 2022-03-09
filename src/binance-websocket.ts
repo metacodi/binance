@@ -349,6 +349,46 @@ export class BinanceWebsocket extends EventEmitter {
   //  USER DATA
   // ---------------------------------------------------------------------------------------------------
 
+  accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate> {
+    return this.registerAccountSubscription('accountUpdate');
+  }
+  
+  balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate> {
+    return this.registerAccountSubscription('balanceUpdate');
+  }
+  
+  marginCall(): Subject<BinanceWsFuturesMarginCall> {
+    return this.registerAccountSubscription('marginCall');
+  }
+
+  accountConfigUpdate(): Subject<BinanceWsFuturesAccountConfigUpdate> {
+    return this.registerAccountSubscription('accountConfigUpdate');
+  }
+
+  orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate> {
+    return this.registerAccountSubscription('orderUpdate');
+  }
+
+  protected emitAccountUpdate(event: any)
+  { this.emitNextAccountEvent('accountUpdate', event, parseAccountUpdate);
+}
+
+  protected emitBalanceUpdate(event: any) {
+    this.emitNextAccountEvent('balanceUpdate', event, parseBalanceUpdate);
+  }
+
+  protected emitMarginCall(event: any) {
+    this.emitNextAccountEvent('marginCall', event, parseMarginCall);
+  }
+
+  protected emitAccountConfigUpdate(event: any) {
+    this.emitNextAccountEvent('accountConfigUpdate', event, parseAccountConfigUpdate);
+  }
+
+  protected emitOrderUpdate(event: any) {
+    this.emitNextAccountEvent('orderUpdate', event, parseOrderUpdate);
+  }
+
   protected registerAccountSubscription(key: WsUserStreamEmitterType) {
     if (this.streamType === 'market') { throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat un stream de mercat.`); }
     const stored = this.emitters[key];
@@ -366,60 +406,40 @@ export class BinanceWebsocket extends EventEmitter {
     }
   }
 
-  //  accountUpdate
-  // ---------------------------------------------------------------------------------------------------
-
-  accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate> {
-    return this.registerAccountSubscription('accountUpdate');
-  }
-
-  protected emitAccountUpdate(event: any) { this.emitNextAccountEvent('accountUpdate', event, parseAccountUpdate); }
-
-
-  //  balanceUpdate
-  // ---------------------------------------------------------------------------------------------------
-
-  balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate> {
-    return this.registerAccountSubscription('balanceUpdate');
-  }
-
-  protected emitBalanceUpdate(event: any) { this.emitNextAccountEvent('balanceUpdate', event, parseBalanceUpdate); }
-
-
-  //  marginCall
-  // ---------------------------------------------------------------------------------------------------
-
-  marginCall(): Subject<BinanceWsFuturesMarginCall> {
-    return this.registerAccountSubscription('marginCall');
-  }
-
-  protected emitMarginCall(event: any) { this.emitNextAccountEvent('marginCall', event, parseMarginCall); }
-
-
-  //  accountConfigUpdate
-  // ---------------------------------------------------------------------------------------------------
-
-  accountConfigUpdate(): Subject<BinanceWsFuturesAccountConfigUpdate> {
-    return this.registerAccountSubscription('accountConfigUpdate');
-  }
-
-  protected emitAccountConfigUpdate(event: any) { this.emitNextAccountEvent('accountConfigUpdate', event, parseAccountConfigUpdate); }
-
-
-  //  orderUpdate
-  // ---------------------------------------------------------------------------------------------------
-
-  orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate> {
-    return this.registerAccountSubscription('orderUpdate');
-  }
-
-  protected emitOrderUpdate(event: any) { this.emitNextAccountEvent('orderUpdate', event, parseOrderUpdate); }
-
-
 
   // ---------------------------------------------------------------------------------------------------
   //  MARKET STREAMS
   // ---------------------------------------------------------------------------------------------------
+
+  miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker> {
+    const key = `${symbol.toLocaleLowerCase()}@miniTicker`;
+    return this.registerMarketStreamSubscription(key);
+  }
+
+  bookTicker(symbol: string): Subject<BinanceWsBookTicker> {
+    const key = `${symbol.toLocaleLowerCase()}@bookTicker`;
+    return this.registerMarketStreamSubscription(key);
+  }
+
+  kline(symbol: string, interval: BinanceKlineInterval): Subject<BinanceWsKline> {
+    const key = `${symbol.toLocaleLowerCase()}@kline_${interval}`;
+    return this.registerMarketStreamSubscription(key);
+  }
+
+  protected emitMiniTicker(event: any) {
+    const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@miniTicker` : event.stream;
+    this.emitNextMarketStreamEvent(key, event, parseMiniTicker);
+  }
+
+  protected emitBookTicker(event: any) {
+    const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@bookTicker` : event.stream;
+    this.emitNextMarketStreamEvent(key, event, parseBookTicker);
+  }
+
+  protected emitKline(event: any) {
+    const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@kline_${event.k.i}` : event.stream;
+    this.emitNextMarketStreamEvent(key, event, parseKline);
+  }
 
   protected registerMarketStreamSubscription(key: string) {
     if (this.streamType === 'user') { throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a un strem d'usuari.`); }
@@ -477,46 +497,6 @@ export class BinanceWebsocket extends EventEmitter {
     const data = { method: "UNSUBSCRIBE", id, params };
     this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error as any) : undefined);
   }
-
-  //  miniTicker
-  // ---------------------------------------------------------------------------------------------------
-
-  miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker> {
-    const key = `${symbol.toLocaleLowerCase()}@miniTicker`;
-    return this.registerMarketStreamSubscription(key);
-  }
-
-  protected emitMiniTicker(event: any) {
-    const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@miniTicker` : event.stream;
-    this.emitNextMarketStreamEvent(key, event, parseMiniTicker);
-  }
-
-  //  bookTicker
-  // ---------------------------------------------------------------------------------------------------
-
-  bookTicker(symbol: string): Subject<BinanceWsBookTicker> {
-    const key = `${symbol.toLocaleLowerCase()}@bookTicker`;
-    return this.registerMarketStreamSubscription(key);
-  }
-
-  protected emitBookTicker(event: any) {
-    const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@bookTicker` : event.stream;
-    this.emitNextMarketStreamEvent(key, event, parseBookTicker);
-  }
-
-  //  kline
-  // ---------------------------------------------------------------------------------------------------
-
-  kline(symbol: string, interval: BinanceKlineInterval): Subject<BinanceWsKline> {
-    const key = `${symbol.toLocaleLowerCase()}@kline_${interval}`;
-    return this.registerMarketStreamSubscription(key);
-  }
-
-  protected emitKline(event: any) {
-    const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@kline_${event.k.i}` : event.stream;
-    this.emitNextMarketStreamEvent(key, event, parseKline);
-  }
-
 
 
   // ---------------------------------------------------------------------------------------------------
