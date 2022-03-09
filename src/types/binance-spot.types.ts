@@ -17,6 +17,7 @@ type Uppercase<S extends string> = string;
 /** Compatibilitat amb inferiors a versions ^4.0 */
 type Lowercase<S extends string> = string;
 
+
 // ---------------------------------------------------------------------------------------------------
 //  getExchangeInfo
 // ---------------------------------------------------------------------------------------------------
@@ -52,107 +53,6 @@ export interface BinanceSpotSymbolExchangeInfo {
   isMarginTradingAllowed: boolean;
   filters: BinanceSymbolFilter[];
   permissions: ('SPOT' | 'MARGIN')[];
-}
-
-
-// ---------------------------------------------------------------------------------------------------
-//  getBalances
-// ---------------------------------------------------------------------------------------------------
-
-/** {@link https://binance-docs.github.io/apidocs/spot/en/#all-coins-39-information-user_data All Coins' Information (USER_DATA)} */
-export interface BinanceSpotAccountBalance {
-  coin: string;
-  depositAllEnable: boolean;
-  free: string;
-  freeze: string;
-  ipoable: string;
-  isLegalMoney: boolean;
-  locked: string;
-  name: string;
-  networkList: BinanceSpotCoinNetwork[];
-  storage: string;
-  trading: boolean;
-  withdrawAllEnable: boolean;
-  withdrawing: string;
-}
-
-/** {@link https://binance-docs.github.io/apidocs/spot/en/#all-coins-39-information-user_data All Coins' Information (USER_DATA)} */
-export interface BinanceSpotCoinNetwork {
-  addressRegex: string;
-  coin: string;
-  depositDesc: string;
-  depositEnable: boolean;
-  isDefault: boolean;
-  memoRegex: string;
-  minConfirm: number;
-  name: string;
-  network: string;
-  resetAddressStatus: boolean;
-  specialTips: string;
-  unlockConfirm: number;
-  withdrawDesc: string;
-  withdrawEnable: boolean;
-  withdrawFee: string;
-  withdrawMin: string;
-}
-
-
-// ---------------------------------------------------------------------------------------------------
-//  getAccountInformation
-// ---------------------------------------------------------------------------------------------------
-
-/** {@link https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data Account Information (USER_DATA)} */
-export interface BinanceSpotAccountInformation {
-  makerCommission: number;
-  takerCommission: number;
-  buyerCommission: number;
-  sellerCommission: number;
-  canTrade: boolean;
-  canWithdraw: boolean;
-  canDeposit: boolean;
-  updateTime: number;
-  accountType: Uppercase<BinanceMarketType>;
-  balances: BinanceSpotAssetInfo[];
-  permissions: Uppercase<BinanceMarketType>[];
-}
-
-/** {@link https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data Account Information (USER_DATA)} */
-export interface BinanceSpotAssetInfo {
-  asset: string;
-  free: string;
-  locked: string;
-}
-
-
-// ---------------------------------------------------------------------------------------------------
-//  getAccountTradeList
-// ---------------------------------------------------------------------------------------------------
-
-/** {@link https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
-export interface BinanceSpotTradeListRequest {
-  symbol: string;
-  orderId?: number;
-  startTime?: number;
-  endTime?: number;
-  /** Results per page. Default 500; max 1000. */
-  limit?: number;
-}
-
-/** {@link https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
-export interface BinanceSpotTradeList {
-  symbol: string;
-  id: number;
-  orderId: number;
-  orderListId: number;
-  price: string;
-  qty: string;
-  quoteQty: string;
-  commission: string;
-  commissionAsset: string;
-  time: number;
-  isBuyer: boolean;
-  isMaker: boolean;
-  isBestMatch: boolean;
 }
 
 
@@ -206,6 +106,76 @@ export interface BinanceSpotSymbolKlinesRequest {
 
 
 // ---------------------------------------------------------------------------------------------------
+//  getAccountInformation
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data Account Information (USER_DATA)} */
+export interface BinanceSpotAccountInformation {
+  makerCommission: number;
+  takerCommission: number;
+  buyerCommission: number;
+  sellerCommission: number;
+  canTrade: boolean;
+  canWithdraw: boolean;
+  canDeposit: boolean;
+  updateTime: number;
+  accountType: Uppercase<BinanceMarketType>;
+  balances: BinanceSpotAssetInfo[];
+  permissions: Uppercase<BinanceMarketType>[];
+}
+
+/** {@link https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data Account Information (USER_DATA)} */
+export interface BinanceSpotAssetInfo {
+  asset: string;
+  free: string;
+  locked: string;
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  getBalances
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/spot/en/#all-coins-39-information-user_data All Coins' Information (USER_DATA)} */
+export interface BinanceSpotAccountBalance {
+  coin: string;
+  depositAllEnable: boolean;
+  free: string;
+  freeze: string;
+  ipoable: string;
+  isLegalMoney: boolean;
+  locked: string;
+  name: string;
+  networkList: BinanceSpotCoinNetwork[];
+  storage: string;
+  trading: boolean;
+  withdrawAllEnable: boolean;
+  withdrawing: string;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/spot/en/#all-coins-39-information-user_data All Coins' Information (USER_DATA)} */
+export interface BinanceSpotCoinNetwork {
+  addressRegex: string;
+  coin: string;
+  depositDesc: string;
+  depositEnable: boolean;
+  isDefault: boolean;
+  memoRegex: string;
+  minConfirm: number;
+  name: string;
+  network: string;
+  resetAddressStatus: boolean;
+  specialTips: string;
+  unlockConfirm: number;
+  withdrawDesc: string;
+  withdrawEnable: boolean;
+  withdrawFee: string;
+  withdrawMin: string;
+}
+
+
+
+// ---------------------------------------------------------------------------------------------------
 //  getAllOrders . getOpenOrders . getOrder
 // ---------------------------------------------------------------------------------------------------
 
@@ -255,6 +225,38 @@ export interface BinanceSpotGetOrderRequest {
   updateTime: number;
   isWorking: boolean;
   origQuoteOrderQty: string;
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  getAccountTradeList
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
+export interface BinanceSpotTradeListRequest {
+  symbol: string;
+  orderId?: number;
+  startTime?: number;
+  endTime?: number;
+  /** Results per page. Default 500; max 1000. */
+  limit?: number;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
+export interface BinanceSpotTradeList {
+  symbol: string;
+  id: number;
+  orderId: number;
+  orderListId: number;
+  price: string;
+  qty: string;
+  quoteQty: string;
+  commission: string;
+  commissionAsset: string;
+  time: number;
+  isBuyer: boolean;
+  isMaker: boolean;
+  isBestMatch: boolean;
 }
 
 

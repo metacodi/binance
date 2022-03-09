@@ -44,7 +44,7 @@ export class BinanceApiFutures extends BinanceApi {
 
   
   // ---------------------------------------------------------------------------------------------------
-  //  Market
+  //  Market STREAM
   // ---------------------------------------------------------------------------------------------------
 
   /** {@link https://binance-docs.github.io/apidocs/futures/en/#exchange-information Exchange Information} */
@@ -69,7 +69,7 @@ export class BinanceApiFutures extends BinanceApi {
 
 
   // ---------------------------------------------------------------------------------------------------
-  //  Account: USER_DATA . USER_STREAM . TRADE
+  //  Account STREAMS
   // ---------------------------------------------------------------------------------------------------
 
   //  Listen Key
@@ -81,12 +81,12 @@ export class BinanceApiFutures extends BinanceApi {
   }
   
   /** {@link https://binance-docs.github.io/apidocs/futures/en/#keepalive-user-data-stream-user_stream Keepalive User Data Stream (USER_STREAM)} */
-  keepAliveUserDataListenKey(listenKey?: string): Promise<{}> {
+  keepAliveUserDataListenKey(): Promise<{}> {
     return this.put('fapi/v1/listenKey', { createSignature: false });
   }
   
   /** {@link https://binance-docs.github.io/apidocs/futures/en/#close-user-data-stream-user_stream Close User Data Stream (USER_STREAM)} */
-  closeUserDataListenKey(listenKey?: string): Promise<{}> {
+  closeUserDataListenKey(): Promise<{}> {
     return this.delete('fapi/v1/listenKey', { createSignature: false });
   }
 

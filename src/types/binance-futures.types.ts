@@ -68,20 +68,53 @@ export interface BinanceFuturesSymbolExchangeInfo {
 
 
 // ---------------------------------------------------------------------------------------------------
-//  getBalances
+//  getSymbolPriceTicker
 // ---------------------------------------------------------------------------------------------------
 
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#futures-account-balance-v2-user_data Futures Account Balance V2 (USER_DATA)} */
-export interface BinanceFuturesAccountBalance {
-  accountAlias: string;
-  asset: string;
-  balance: string;
-  crossWalletBalance: string;
-  crossUnPnl: string;
-  availableBalance: string;
-  maxWithdrawAmount: string;
-  marginAvailable: boolean;
-  updateTime: number;
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
+export interface BinanceFuturesSymbolPriceTickerRequest {
+  symbol?: string;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
+export interface BinanceFuturesSymbolPriceTicker {
+  symbol: string;
+  price: string;
+  time: number;
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  getSymbolOrderBookTicker
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker Symbol Order Book Ticker} */
+export interface BinanceFuturesSymbolOrderBookTickerRequest {
+  symbol?: string;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker Symbol Order Book Ticker} */
+export interface BinanceFuturesSymbolOrderBookTicker {
+  symbol: string;
+  bidPrice: string;
+  bidQty: string;
+  askPrice: string;
+  askQty: string;
+  time: number;
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  getSymbolKlines
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data Kline/Candlestick Data} */
+export interface BinanceFuturesSymbolKlinesRequest {
+  symbol: string;
+  interval: BinanceKlineInterval;
+  startTime?: number;
+  endTime?: number;
+  limit?: number;
 }
 
 
@@ -150,40 +183,25 @@ export interface BinanceFuturesPosition {
 
 
 // ---------------------------------------------------------------------------------------------------
-//  getAccountTradeList
+//  getBalances
 // ---------------------------------------------------------------------------------------------------
 
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
-export interface BinanceFuturesTradeListRequest {
-  symbol: string;
-  fromId?: number;
-  startTime?: number;
-  endTime?: number;
-  /** Results per page. Default 500; max 1000. */
-  limit?: number;
-}
-
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
-export interface BinanceFuturesTradeList {
-  symbol: string;
-  id: number;
-  orderId: number;
-  price: string;
-  qty: string;
-  quoteQty: string;
-  commission: string;
-  commissionAsset: string;
-  realizedPnl: string;
-  side: BinanceOrderSide;
-  positionSide: BinancePositionSide;
-  time: number;
-  buyer: boolean;
-  maker: boolean;
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#futures-account-balance-v2-user_data Futures Account Balance V2 (USER_DATA)} */
+export interface BinanceFuturesAccountBalance {
+  accountAlias: string;
+  asset: string;
+  balance: string;
+  crossWalletBalance: string;
+  crossUnPnl: string;
+  availableBalance: string;
+  maxWithdrawAmount: string;
+  marginAvailable: boolean;
+  updateTime: number;
 }
 
 
 // ---------------------------------------------------------------------------------------------------
-//  getSymbolLeverageBracket
+//  getSymbolLeverageBracket . changeSymbolLeverage
 // ---------------------------------------------------------------------------------------------------
 
 /** {@link https://binance-docs.github.io/apidocs/futures/en/#notional-and-leverage-brackets-user_data Notional and Leverage Brackets (USER_DATA)} */
@@ -204,10 +222,6 @@ export interface BinanceFuturesSymbolLeverageBracket {
   }[];
 }
 
-// ---------------------------------------------------------------------------------------------------
-//  changeSymbolLeverage
-// ---------------------------------------------------------------------------------------------------
-
 /** {@link https://binance-docs.github.io/apidocs/futures/en/#change-initial-leverage-trade Change Initial Leverage (TRADE)} */
 export interface BinanceFuturesChangeSymbolLeverageRequest {
   symbol?: string;
@@ -219,57 +233,6 @@ export interface BinanceFuturesChangeSymbolLeverageResponse {
   symbol?: string;
   leverage: number;
   maxNotionalValue: string,
-}
-
-
-// ---------------------------------------------------------------------------------------------------
-//  getSymbolPriceTicker
-// ---------------------------------------------------------------------------------------------------
-
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
-export interface BinanceFuturesSymbolPriceTickerRequest {
-  symbol?: string;
-}
-
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics Symbol Price Ticker} */
-export interface BinanceFuturesSymbolPriceTicker {
-  symbol: string;
-  price: string;
-  time: number;
-}
-
-
-// ---------------------------------------------------------------------------------------------------
-//  getSymbolOrderBookTicker
-// ---------------------------------------------------------------------------------------------------
-
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker Symbol Order Book Ticker} */
-export interface BinanceFuturesSymbolOrderBookTickerRequest {
-  symbol?: string;
-}
-
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker Symbol Order Book Ticker} */
-export interface BinanceFuturesSymbolOrderBookTicker {
-  symbol: string;
-  bidPrice: string;
-  bidQty: string;
-  askPrice: string;
-  askQty: string;
-  time: number;
-}
-
-
-// ---------------------------------------------------------------------------------------------------
-//  getSymbolKlines
-// ---------------------------------------------------------------------------------------------------
-
-/** {@link https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data Kline/Candlestick Data} */
-export interface BinanceFuturesSymbolKlinesRequest {
-  symbol: string;
-  interval: BinanceKlineInterval;
-  startTime?: number;
-  endTime?: number;
-  limit?: number;
 }
 
 
@@ -328,6 +291,39 @@ export interface BinanceFuturesOrder {
   updateTime: number;
   workingType: BinanceFuturesWorkingType;
   priceProtect: boolean;
+}
+
+
+// ---------------------------------------------------------------------------------------------------
+//  getAccountTradeList
+// ---------------------------------------------------------------------------------------------------
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
+export interface BinanceFuturesTradeListRequest {
+  symbol: string;
+  fromId?: number;
+  startTime?: number;
+  endTime?: number;
+  /** Results per page. Default 500; max 1000. */
+  limit?: number;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data Account Trade List (USER_DATA)} */
+export interface BinanceFuturesTradeList {
+  symbol: string;
+  id: number;
+  orderId: number;
+  price: string;
+  qty: string;
+  quoteQty: string;
+  commission: string;
+  commissionAsset: string;
+  realizedPnl: string;
+  side: BinanceOrderSide;
+  positionSide: BinancePositionSide;
+  time: number;
+  buyer: boolean;
+  maker: boolean;
 }
 
 

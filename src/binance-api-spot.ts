@@ -39,7 +39,7 @@ export class BinanceApiSpot extends BinanceApi {
 
   
   // ---------------------------------------------------------------------------------------------------
-  //  Market
+  //  Market STREAM
   // ---------------------------------------------------------------------------------------------------
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#exchange-information Exchange Information} */
@@ -65,7 +65,7 @@ export class BinanceApiSpot extends BinanceApi {
 
 
   // ---------------------------------------------------------------------------------------------------
-  //  Account : USER_DATA . USER_STREAAM . TRADE
+  //  Account STREAMS
   // ---------------------------------------------------------------------------------------------------
 
   //  Listen Key
