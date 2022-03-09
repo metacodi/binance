@@ -346,7 +346,7 @@ export class BinanceWebsocket extends EventEmitter {
 
 
   // ---------------------------------------------------------------------------------------------------
-  //  USER DATA
+  //  Account STREAMS
   // ---------------------------------------------------------------------------------------------------
 
   accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate> {
@@ -408,7 +408,7 @@ export class BinanceWebsocket extends EventEmitter {
 
 
   // ---------------------------------------------------------------------------------------------------
-  //  MARKET STREAMS
+  //  Market STREAM
   // ---------------------------------------------------------------------------------------------------
 
   miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker> {

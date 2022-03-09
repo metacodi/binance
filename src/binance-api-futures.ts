@@ -1,6 +1,7 @@
 import { BinanceApi } from './binance-api';
 import { BinanceApiOptions, BinanceFuturesSubdomain, BinanceMarketType } from './types/binance.types';
-import { BinanceFuturesTradeListRequest,
+import {
+  BinanceFuturesTradeListRequest,
   BinanceFuturesTradeList,
   BinanceFuturesAccountInformation,
   BinanceFuturesExchangeInfo,
