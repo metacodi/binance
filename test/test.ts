@@ -134,12 +134,14 @@ const testUserWs = async () => {
       market: market,
       streamFormat: 'stream',
       // isTest: true,
+      
       // Binance keys Jordi.
-      // apiKey: '6mjeCol48kgmK5diGfy90GynOW43RCQcOl6pXsJIPHpwtQWob6LIsW1Vw5vGv5Ax',
-      // apiSecret: 'livWZ3R7HSkFQXmBoXF37o7RVxWRMQ2A1JfK4QzUu89srHEzknFaBhc51zw6xCqj',
-       // Binance keys Xavi.
-       apiKey: 'eL6y9S0jkEqqkSnT1hwnNQ9ipn4yW4yLZIojcTLoCLQw8ETiqgGGkEOM6de7jtOx',
-       apiSecret: '3uXfopHqLUAT4CTQ1rIL8B825NcfeVy4p5xCJZM67j23GRFV3UJcNF782IIHge0E',
+      apiKey: '6mjeCol48kgmK5diGfy90GynOW43RCQcOl6pXsJIPHpwtQWob6LIsW1Vw5vGv5Ax',
+      apiSecret: 'livWZ3R7HSkFQXmBoXF37o7RVxWRMQ2A1JfK4QzUu89srHEzknFaBhc51zw6xCqj',
+      
+      // Binance keys Xavi.
+      // apiKey: 'eL6y9S0jkEqqkSnT1hwnNQ9ipn4yW4yLZIojcTLoCLQw8ETiqgGGkEOM6de7jtOx',
+      // apiSecret: '3uXfopHqLUAT4CTQ1rIL8B825NcfeVy4p5xCJZM67j23GRFV3UJcNF782IIHge0E',
     };
 
     const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
@@ -202,6 +204,8 @@ function writeLog(variable: string, data: any) {
   console.log(value);
   fs.appendFileSync(url, `const ${variable} = ${value};\n\n`);
 }
+
+
 // testApi();
 testUserWs();
 // testMarketWs();
