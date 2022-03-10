@@ -142,7 +142,7 @@ class BinanceWebsocket extends events_1.default {
         if (this.pingInterval) {
             this.pingInterval.unsubscribe();
         }
-        this.pingInterval = rxjs_1.interval(this.pingPeriod).subscribe(() => this.ping());
+        this.pingInterval = (0, rxjs_1.interval)(this.pingPeriod).subscribe(() => this.ping());
         this.respawnMarketStreamSubscriptions();
     }
     onWsClose(event) {
@@ -166,7 +166,7 @@ class BinanceWebsocket extends events_1.default {
                 this.pongTimer.unsubscribe();
             }
             if (typeof this.ws.ping === 'function') {
-                this.pongTimer = rxjs_1.timer(this.pongPeriod).subscribe(() => {
+                this.pongTimer = (0, rxjs_1.timer)(this.pongPeriod).subscribe(() => {
                     console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
                     this.reconnect();
                 });
@@ -207,7 +207,7 @@ class BinanceWebsocket extends events_1.default {
                 const response = yield this.api.getUserDataListenKey();
                 this.listenKey = response.listenKey;
                 console.log(this.wsId, '=> listenKey: ', this.listenKey);
-                this.listenKeyTimer = rxjs_1.timer(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
+                this.listenKeyTimer = (0, rxjs_1.timer)(30 * 60 * 1000).subscribe(() => this.api.keepAliveUserDataListenKey(this.listenKey));
                 return Promise.resolve();
             }
             catch (error) {
@@ -282,6 +282,36 @@ class BinanceWebsocket extends events_1.default {
         const keys = Object.keys(data);
         return keys.length === match.length && keys.every(key => match.includes(key));
     }
+    accountUpdate() {
+        return this.registerAccountSubscription('accountUpdate');
+    }
+    balanceUpdate() {
+        return this.registerAccountSubscription('balanceUpdate');
+    }
+    marginCall() {
+        return this.registerAccountSubscription('marginCall');
+    }
+    accountConfigUpdate() {
+        return this.registerAccountSubscription('accountConfigUpdate');
+    }
+    orderUpdate() {
+        return this.registerAccountSubscription('orderUpdate');
+    }
+    emitAccountUpdate(event) {
+        this.emitNextAccountEvent('accountUpdate', event, binance_websocket_types_1.parseAccountUpdate);
+    }
+    emitBalanceUpdate(event) {
+        this.emitNextAccountEvent('balanceUpdate', event, binance_websocket_types_1.parseBalanceUpdate);
+    }
+    emitMarginCall(event) {
+        this.emitNextAccountEvent('marginCall', event, binance_websocket_types_1.parseMarginCall);
+    }
+    emitAccountConfigUpdate(event) {
+        this.emitNextAccountEvent('accountConfigUpdate', event, binance_websocket_types_1.parseAccountConfigUpdate);
+    }
+    emitOrderUpdate(event) {
+        this.emitNextAccountEvent('orderUpdate', event, binance_websocket_types_1.parseOrderUpdate);
+    }
     registerAccountSubscription(key) {
         if (this.streamType === 'market') {
             throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat un stream de mercat.`);
@@ -301,26 +331,30 @@ class BinanceWebsocket extends events_1.default {
             stored.next(parser(data));
         }
     }
-    accountUpdate() {
-        return this.registerAccountSubscription('accountUpdate');
+    miniTicker(symbol) {
+        const key = `${symbol.toLocaleLowerCase()}@miniTicker`;
+        return this.registerMarketStreamSubscription(key);
     }
-    emitAccountUpdate(event) { this.emitNextAccountEvent('accountUpdate', event, binance_websocket_types_1.parseAccountUpdate); }
-    balanceUpdate() {
-        return this.registerAccountSubscription('balanceUpdate');
+    bookTicker(symbol) {
+        const key = `${symbol.toLocaleLowerCase()}@bookTicker`;
+        return this.registerMarketStreamSubscription(key);
     }
-    emitBalanceUpdate(event) { this.emitNextAccountEvent('balanceUpdate', event, binance_websocket_types_1.parseBalanceUpdate); }
-    marginCall() {
-        return this.registerAccountSubscription('marginCall');
+    kline(symbol, interval) {
+        const key = `${symbol.toLocaleLowerCase()}@kline_${interval}`;
+        return this.registerMarketStreamSubscription(key);
     }
-    emitMarginCall(event) { this.emitNextAccountEvent('marginCall', event, binance_websocket_types_1.parseMarginCall); }
-    accountConfigUpdate() {
-        return this.registerAccountSubscription('accountConfigUpdate');
+    emitMiniTicker(event) {
+        const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@miniTicker` : event.stream;
+        this.emitNextMarketStreamEvent(key, event, binance_websocket_types_1.parseMiniTicker);
     }
-    emitAccountConfigUpdate(event) { this.emitNextAccountEvent('accountConfigUpdate', event, binance_websocket_types_1.parseAccountConfigUpdate); }
-    orderUpdate() {
-        return this.registerAccountSubscription('orderUpdate');
+    emitBookTicker(event) {
+        const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@bookTicker` : event.stream;
+        this.emitNextMarketStreamEvent(key, event, binance_websocket_types_1.parseBookTicker);
     }
-    emitOrderUpdate(event) { this.emitNextAccountEvent('orderUpdate', event, binance_websocket_types_1.parseOrderUpdate); }
+    emitKline(event) {
+        const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@kline_${event.k.i}` : event.stream;
+        this.emitNextMarketStreamEvent(key, event, binance_websocket_types_1.parseKline);
+    }
     registerMarketStreamSubscription(key) {
         if (this.streamType === 'user') {
             throw (`No es pot subscriure a '${key}' perquè aquest websocket (${this.wsId}) està connectat a un strem d'usuari.`);
@@ -382,30 +416,6 @@ class BinanceWebsocket extends events_1.default {
         const id = ++this.subscriptionId;
         const data = { method: "UNSUBSCRIBE", id, params };
         this.ws.send(JSON.stringify(data), error => error ? this.onWsError(error) : undefined);
-    }
-    miniTicker(symbol) {
-        const key = `${symbol.toLocaleLowerCase()}@miniTicker`;
-        return this.registerMarketStreamSubscription(key);
-    }
-    emitMiniTicker(event) {
-        const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@miniTicker` : event.stream;
-        this.emitNextMarketStreamEvent(key, event, binance_websocket_types_1.parseMiniTicker);
-    }
-    bookTicker(symbol) {
-        const key = `${symbol.toLocaleLowerCase()}@bookTicker`;
-        return this.registerMarketStreamSubscription(key);
-    }
-    emitBookTicker(event) {
-        const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@bookTicker` : event.stream;
-        this.emitNextMarketStreamEvent(key, event, binance_websocket_types_1.parseBookTicker);
-    }
-    kline(symbol, interval) {
-        const key = `${symbol.toLocaleLowerCase()}@kline_${interval}`;
-        return this.registerMarketStreamSubscription(key);
-    }
-    emitKline(event) {
-        const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@kline_${event.k.i}` : event.stream;
-        this.emitNextMarketStreamEvent(key, event, binance_websocket_types_1.parseKline);
     }
     get wsId() { return `${this.market}-${this.streamType}-ws`; }
 }

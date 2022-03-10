@@ -48,18 +48,24 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected parseWsMessage(event: any): any;
     protected discoverEventType(data: any): string;
     private isBookTickerEventType;
+    accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate>;
+    balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate>;
+    marginCall(): Subject<BinanceWsFuturesMarginCall>;
+    accountConfigUpdate(): Subject<BinanceWsFuturesAccountConfigUpdate>;
+    orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate>;
+    protected emitAccountUpdate(event: any): void;
+    protected emitBalanceUpdate(event: any): void;
+    protected emitMarginCall(event: any): void;
+    protected emitAccountConfigUpdate(event: any): void;
+    protected emitOrderUpdate(event: any): void;
     protected registerAccountSubscription(key: WsUserStreamEmitterType): Subject<any>;
     protected emitNextAccountEvent(key: string, event: any, parser: (data: any) => any): void;
-    accountUpdate(): Subject<BinanceWsSpotAccountUpdate | BinanceWsFuturesAccountUpdate>;
-    protected emitAccountUpdate(event: any): void;
-    balanceUpdate(): Subject<BinanceWsSpotBalanceUpdate | BinanceWsFuturesAccountUpdate>;
-    protected emitBalanceUpdate(event: any): void;
-    marginCall(): Subject<BinanceWsFuturesMarginCall>;
-    protected emitMarginCall(event: any): void;
-    accountConfigUpdate(): Subject<BinanceWsFuturesAccountConfigUpdate>;
-    protected emitAccountConfigUpdate(event: any): void;
-    orderUpdate(): Subject<BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate>;
-    protected emitOrderUpdate(event: any): void;
+    miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker>;
+    bookTicker(symbol: string): Subject<BinanceWsBookTicker>;
+    kline(symbol: string, interval: BinanceKlineInterval): Subject<BinanceWsKline>;
+    protected emitMiniTicker(event: any): void;
+    protected emitBookTicker(event: any): void;
+    protected emitKline(event: any): void;
     protected registerMarketStreamSubscription(key: string): Subject<any>;
     protected emitNextMarketStreamEvent(key: string, event: any, parser: (data: any) => any): void;
     private subscriptionId;
@@ -67,12 +73,6 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected isSubjectUnobserved(emitter: Subject<any>): boolean;
     protected subscribeMarketStream(params: string[]): void;
     protected unsubscribeMarketStream(params: string[]): void;
-    miniTicker(symbol: string): Subject<BinanceWs24hrMiniTicker>;
-    protected emitMiniTicker(event: any): void;
-    bookTicker(symbol: string): Subject<BinanceWsBookTicker>;
-    protected emitBookTicker(event: any): void;
-    kline(symbol: string, interval: BinanceKlineInterval): Subject<BinanceWsKline>;
-    protected emitKline(event: any): void;
     protected get wsId(): string;
 }
 //# sourceMappingURL=binance-websocket.d.ts.map

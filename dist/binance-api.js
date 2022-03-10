@@ -73,7 +73,7 @@ class BinanceApi {
             else {
                 config.data = this.serialiseParams(requestBody, { encodeValues: true, strictValidation: false });
             }
-            return axios_1.default(config).then(response => {
+            return (0, axios_1.default)(config).then(response => {
                 if (response.status !== 200) {
                     throw response;
                 }
@@ -115,7 +115,7 @@ class BinanceApi {
     signMessage(message, secret) {
         return __awaiter(this, void 0, void 0, function* () {
             if (typeof crypto_1.createHmac === 'function') {
-                return crypto_1.createHmac('sha256', secret).update(message).digest('hex');
+                return (0, crypto_1.createHmac)('sha256', secret).update(message).digest('hex');
             }
             const encoder = new TextEncoder();
             const keyData = encoder.encode(secret);

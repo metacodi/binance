@@ -26,6 +26,48 @@ export interface BinanceSpotSymbolExchangeInfo {
     filters: BinanceSymbolFilter[];
     permissions: ('SPOT' | 'MARGIN')[];
 }
+export interface BinanceSpotSymbolPriceTickerRequest {
+    symbol?: string;
+}
+export interface BinanceSpotSymbolPriceTicker {
+    symbol: string;
+    price: string;
+}
+export interface BinanceSpotSymbolOrderBookTickerRequest {
+    symbol?: string;
+}
+export interface BinanceSpotSymbolOrderBookTicker {
+    symbol: string;
+    bidPrice: string;
+    bidQty: string;
+    askPrice: string;
+    askQty: string;
+}
+export interface BinanceSpotSymbolKlinesRequest {
+    symbol: string;
+    interval: BinanceKlineInterval;
+    startTime?: number;
+    endTime?: number;
+    limit?: number;
+}
+export interface BinanceSpotAccountInformation {
+    makerCommission: number;
+    takerCommission: number;
+    buyerCommission: number;
+    sellerCommission: number;
+    canTrade: boolean;
+    canWithdraw: boolean;
+    canDeposit: boolean;
+    updateTime: number;
+    accountType: Uppercase<BinanceMarketType>;
+    balances: BinanceSpotAssetInfo[];
+    permissions: Uppercase<BinanceMarketType>[];
+}
+export interface BinanceSpotAssetInfo {
+    asset: string;
+    free: string;
+    locked: string;
+}
 export interface BinanceSpotAccountBalance {
     coin: string;
     depositAllEnable: boolean;
@@ -58,70 +100,6 @@ export interface BinanceSpotCoinNetwork {
     withdrawEnable: boolean;
     withdrawFee: string;
     withdrawMin: string;
-}
-export interface BinanceSpotAccountInformation {
-    makerCommission: number;
-    takerCommission: number;
-    buyerCommission: number;
-    sellerCommission: number;
-    canTrade: boolean;
-    canWithdraw: boolean;
-    canDeposit: boolean;
-    updateTime: number;
-    accountType: Uppercase<BinanceMarketType>;
-    balances: BinanceSpotAssetInfo[];
-    permissions: Uppercase<BinanceMarketType>[];
-}
-export interface BinanceSpotAssetInfo {
-    asset: string;
-    free: string;
-    locked: string;
-}
-export interface BinanceSpotTradeListRequest {
-    symbol: string;
-    orderId?: number;
-    startTime?: number;
-    endTime?: number;
-    limit?: number;
-}
-export interface BinanceSpotTradeList {
-    symbol: string;
-    id: number;
-    orderId: number;
-    orderListId: number;
-    price: string;
-    qty: string;
-    quoteQty: string;
-    commission: string;
-    commissionAsset: string;
-    time: number;
-    isBuyer: boolean;
-    isMaker: boolean;
-    isBestMatch: boolean;
-}
-export interface BinanceSpotSymbolPriceTickerRequest {
-    symbol?: string;
-}
-export interface BinanceSpotSymbolPriceTicker {
-    symbol: string;
-    price: string;
-}
-export interface BinanceSpotSymbolOrderBookTickerRequest {
-    symbol?: string;
-}
-export interface BinanceSpotSymbolOrderBookTicker {
-    symbol: string;
-    bidPrice: string;
-    bidQty: string;
-    askPrice: string;
-    askQty: string;
-}
-export interface BinanceSpotSymbolKlinesRequest {
-    symbol: string;
-    interval: BinanceKlineInterval;
-    startTime?: number;
-    endTime?: number;
-    limit?: number;
 }
 export interface BinanceSpotGetAllOrdersRequest {
     symbol: string;
@@ -157,6 +135,28 @@ export interface BinanceSpotOrder {
     updateTime: number;
     isWorking: boolean;
     origQuoteOrderQty: string;
+}
+export interface BinanceSpotTradeListRequest {
+    symbol: string;
+    orderId?: number;
+    startTime?: number;
+    endTime?: number;
+    limit?: number;
+}
+export interface BinanceSpotTradeList {
+    symbol: string;
+    id: number;
+    orderId: number;
+    orderListId: number;
+    price: string;
+    qty: string;
+    quoteQty: string;
+    commission: string;
+    commissionAsset: string;
+    time: number;
+    isBuyer: boolean;
+    isMaker: boolean;
+    isBestMatch: boolean;
 }
 export interface BinanceSpotPostOrderRequest {
     symbol: string;

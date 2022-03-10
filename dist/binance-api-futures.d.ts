@@ -13,8 +13,8 @@ export declare class BinanceApiFutures extends BinanceApi {
     getUserDataListenKey(): Promise<{
         listenKey: string;
     }>;
-    keepAliveUserDataListenKey(listenKey?: string): Promise<{}>;
-    closeUserDataListenKey(listenKey?: string): Promise<{}>;
+    keepAliveUserDataListenKey(): Promise<{}>;
+    closeUserDataListenKey(): Promise<{}>;
     getAccountInformation(): Promise<BinanceFuturesAccountInformation>;
     getBalances(): Promise<BinanceFuturesAccountBalance[]>;
     getSymbolLeverageBracket(params?: BinanceFuturesSymbolLeverageBracketRequest): Promise<BinanceFuturesSymbolLeverageBracket | BinanceFuturesSymbolLeverageBracket[]>;

@@ -24,10 +24,10 @@ class BinanceApiFutures extends binance_api_1.BinanceApi {
     getUserDataListenKey() {
         return this.post('fapi/v1/listenKey', { createSignature: false });
     }
-    keepAliveUserDataListenKey(listenKey) {
+    keepAliveUserDataListenKey() {
         return this.put('fapi/v1/listenKey', { createSignature: false });
     }
-    closeUserDataListenKey(listenKey) {
+    closeUserDataListenKey() {
         return this.delete('fapi/v1/listenKey', { createSignature: false });
     }
     getAccountInformation() {
