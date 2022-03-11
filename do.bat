@@ -6,3 +6,7 @@ if [%1]==[pub] (
     npx ts-node precode\publish.ts -c \"%2 %4 %4 %5 %6 %7 %8 %9\"
   )
 )
+
+if [%1]==[test] (
+  npx ts-node test/test.ts
+)

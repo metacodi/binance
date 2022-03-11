@@ -11,3 +11,8 @@ then
   npx ts-node precode/publish.ts
 fi
 
+if [ $FIRST_ARGUMENT == "test" ] 
+then
+  npx ts-node test/test.ts
+fi
+

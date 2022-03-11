@@ -15,7 +15,6 @@ import { apiKeys, setTestKeys } from './api-keys';
  * ```
  */
 
-
 const testApi = async () => {
   try {
     
@@ -179,8 +178,6 @@ function writeLog(variable: string, data: any) {
   fs.appendFileSync(url, `const ${variable} = ${value};\n\n`);
 }
 
-
 // testApi();
 testUserWs();
 // testMarketWs();
-
