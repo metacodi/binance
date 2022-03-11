@@ -35,5 +35,4 @@ npm-debug.log*
 
 node_modules
 precode
-test
-/test
+/test/api-keys.ts
