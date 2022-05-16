@@ -26,8 +26,8 @@ export declare class BinanceWebsocket extends EventEmitter {
     get apiSecret(): string;
     get isTest(): boolean;
     get reconnectPeriod(): number;
-    get pingPeriod(): number;
-    get pongPeriod(): number;
+    get pingInterval(): number;
+    get pingTimeout(): number;
     get defaultOptions(): Partial<BinanceWebsocketOptions>;
     protected getApiClient(): BinanceApi;
     protected initialize(): Promise<void>;

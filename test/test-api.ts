@@ -3,15 +3,12 @@ import * as fs from 'fs';
 import { BinanceApiSpot } from '../src/binance-api-spot';
 import { BinanceApiFutures } from '../src/binance-api-futures';
 import { BinanceApiOptions, BinanceMarketType } from '../src/types/binance.types';
-import { BinanceWebsocketOptions } from '../src/types/binance-websocket.types';
-import { BinanceWebsocket } from '../src';
 
-import { Resource, Terminal  } from '@metacodi/precode';
 import { apiKeys, setTestKeys } from './api-keys';
 
 /**
  * ```bash
- * npx ts-node test/test.ts
+ * npx ts-node test/test-api.ts
  * ```
  */
 
@@ -101,83 +98,4 @@ const testApi = async () => {
   }
 };
 
-const testUserWs = async () => {
-  try {
-
-    console.log('---------------- User WebSocket TEST ----------------------');
- 
-    // const market: BinanceMarketType = 'spot';
-    const market: BinanceMarketType = 'usdm';
-
-    const userOptions: BinanceWebsocketOptions = {
-      streamType: 'user',
-      market: market,
-      streamFormat: 'stream',
-      // isTest: true,
-      ...apiKeys,
-    };
-
-    const wsUser = new BinanceWebsocket(setTestKeys(userOptions));
-
-    wsUser.balanceUpdate().subscribe(data => writeLog('exemple_10_balanceUpdate_', data));
-    wsUser.orderUpdate().subscribe(data => writeLog('exemple_10_orderUpdate_', data));
-    // wsUser.balanceUpdate().subscribe(data => console.log('wsUser.balanceUpdate =>', JSON.stringify(data, null, '  ')));
-    // wsUser.accountUpdate().subscribe(data => console.log('wsUser.accountUpdate =>', JSON.stringify(data, null, '  ')));
-    // wsUser.orderUpdate().subscribe(data => console.log('wsUser.orderUpdate =>', JSON.stringify(data, null, '  ')));
-
-    // setTimeout(() => { console.log('Reconnecting...'); wsUser.reconnect(); }, 10000);
-    
-    // setTimeout(() => { console.log('Subscribing to miniTicker...'); wsUser.miniTicker('BNBUSDT'); }, 10000);
-    
-    // interval(10000).subscribe(() => { console.log('Reconnecting...'); wsUser.reconnect(); });
-    
-  } catch (error) {
-    console.error('Websocket ERROR', error);
-  }
-};
-
-const testMarketWs = async () => {
-  try {
-
-    console.log('---------------- Market WebSocket TEST ----------------------');
- 
-    const market: BinanceMarketType = 'spot';
-    // const market: BinanceMarketType = 'usdm';
-
-    const marketOptions: BinanceWebsocketOptions = {
-      streamType: 'market',
-      market: market,
-      streamFormat: 'stream',
-      // isTest: true,
-    };
-    
-    const wsMarket = new BinanceWebsocket(marketOptions);
-
-    const klineUSDT = wsMarket.kline('BNBUSDT', '1m').subscribe(data => console.log(data));
-    const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
-    // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
-    // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log(data));
-    // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log(data));
-    // const bookTickerUSDT = wsMarket.bookTicker('BNBUSDT').subscribe(data => console.log('bookTickerUSDT =>', data));
-    
-    // setTimeout(() => { console.log('Unsibscribe USDT miniTicker'); miniTickerUSDT.unsubscribe(); }, 10000);    
-    // setTimeout(() => { console.log('Reconnecting...'); wsMarket.reconnect(); }, 10000);
-    // setTimeout(() => { console.log('Subscribing to orderUpdate...'); wsMarket.orderUpdate(); }, 10000);
-
-  } catch (error) {
-    console.error('Websocket ERROR', error);
-  }
-};
-
-const logFileName = 'exemple-10-75_leverage.ts';
-
-function writeLog(variable: string, data: any) {
-  const url = Resource.normalize(`./test/${logFileName}`);
-  const value = JSON.stringify(data, null, ' ');
-  console.log(value);
-  fs.appendFileSync(url, `const ${variable} = ${value};\n\n`);
-}
-
-// testApi();
-testUserWs();
-// testMarketWs();
+testApi();

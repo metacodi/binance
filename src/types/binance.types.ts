@@ -16,7 +16,7 @@ export interface BinanceApiOptions {
 
 /**
  * ```typescript
- * { params?: any, isPrivate?: boolean, baseUrlOverride?: string }
+ * { params?: any; headers?: { [key: string]: string | number }; isPublic?: boolean; createSignature?: boolean; baseUrlOverride?: string } * ```
  * ```
  */
 export interface BinanceApiResquestOptions {

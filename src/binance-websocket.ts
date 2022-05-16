@@ -69,17 +69,17 @@ export class BinanceWebsocket extends EventEmitter {
 
   get reconnectPeriod(): number { return this.options?.reconnectPeriod; }
 
-  get pingPeriod(): number { return this.options?.pingPeriod; }
+  get pingInterval(): number { return this.options?.pingInterval; }
 
-  get pongPeriod(): number { return this.options?.pongPeriod; }
+  get pingTimeout(): number { return this.options?.pingTimeout; }
 
   get defaultOptions(): Partial<BinanceWebsocketOptions> {
     return {
       isTest: false,
       streamFormat: 'stream',
       reconnectPeriod: 5 * 1000,
-      pingPeriod: 2 * 60 * 1000,
-      pongPeriod: 6 * 60 * 1000,
+      pingInterval: 2 * 60 * 1000,
+      pingTimeout: 6 * 60 * 1000,
     }
   }
 
@@ -185,7 +185,7 @@ export class BinanceWebsocket extends EventEmitter {
     this.status = 'connected';
     // Iniciem la comunicació ping-pong.
     if (this.pingInterval) { this.pingInterval.unsubscribe(); }
-    this.pingInterval = interval(this.pingPeriod).subscribe(() => this.ping());
+    this.pingInterval = interval(this.pingInterval).subscribe(() => this.ping());
     // Establim les subscripcions dels emisors de market.
     this.respawnMarketStreamSubscriptions();
   }
@@ -216,7 +216,7 @@ export class BinanceWebsocket extends EventEmitter {
       if (this.pongTimer) { this.pongTimer.unsubscribe(); }
       
       if (typeof this.ws.ping === 'function') {
-        this.pongTimer = timer(this.pongPeriod).subscribe(() => {
+        this.pongTimer = timer(this.pingTimeout).subscribe(() => {
           console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
           this.reconnect();
         });

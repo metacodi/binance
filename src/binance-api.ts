@@ -109,7 +109,7 @@ export abstract class BinanceApi {
     
     if (!isPublic && createSignature) {
       const concat = config.url.includes('?') ? (config.url.endsWith('?') ? '' : '&') : '?';
-      const query = [serialisedParams, 'signature=' + signature].join('&');
+      const query = [serialisedParams, `signature=${signature}`].join('&');
       config.url += concat + query;
     } else if (method === 'GET' || method === 'DELETE') {
       config.params = params;

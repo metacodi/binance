@@ -33,9 +33,9 @@ export interface BinanceWebsocketOptions {
   /** Indica el periode de delay abans de tornar a connectar. */
   reconnectPeriod?: number;
   /** Temps en milisegons per l'interval qua ha de manetenir viva la connexió. */
-  pingPeriod?: number;
+  pingInterval?: number;
   /** Temps en milisegons pel timeout si no hi ha la resposta per part del servidor. */
-  pongPeriod?: number;
+  pingTimeout?: number;
 }
 
 

@@ -14,8 +14,8 @@ export interface BinanceWebsocketOptions {
     apiSecret?: string;
     isTest?: boolean;
     reconnectPeriod?: number;
-    pingPeriod?: number;
-    pongPeriod?: number;
+    pingInterval?: number;
+    pingTimeout?: number;
 }
 interface BinanceWsSpotBalanceUpdateRaw {
     e: 'balanceUpdate';

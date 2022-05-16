@@ -35,15 +35,15 @@ class BinanceWebsocket extends events_1.default {
     get apiSecret() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.apiSecret; }
     get isTest() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.isTest; }
     get reconnectPeriod() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.reconnectPeriod; }
-    get pingPeriod() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.pingPeriod; }
-    get pongPeriod() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.pongPeriod; }
+    get pingInterval() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.pingInterval; }
+    get pingTimeout() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.pingTimeout; }
     get defaultOptions() {
         return {
             isTest: false,
             streamFormat: 'stream',
             reconnectPeriod: 5 * 1000,
-            pingPeriod: 2 * 60 * 1000,
-            pongPeriod: 6 * 60 * 1000,
+            pingInterval: 2 * 60 * 1000,
+            pingTimeout: 6 * 60 * 1000,
         };
     }
     getApiClient() {
@@ -142,7 +142,7 @@ class BinanceWebsocket extends events_1.default {
         if (this.pingInterval) {
             this.pingInterval.unsubscribe();
         }
-        this.pingInterval = (0, rxjs_1.interval)(this.pingPeriod).subscribe(() => this.ping());
+        this.pingInterval = (0, rxjs_1.interval)(this.pingInterval).subscribe(() => this.ping());
         this.respawnMarketStreamSubscriptions();
     }
     onWsClose(event) {
@@ -166,7 +166,7 @@ class BinanceWebsocket extends events_1.default {
                 this.pongTimer.unsubscribe();
             }
             if (typeof this.ws.ping === 'function') {
-                this.pongTimer = (0, rxjs_1.timer)(this.pongPeriod).subscribe(() => {
+                this.pongTimer = (0, rxjs_1.timer)(this.pingTimeout).subscribe(() => {
                     console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
                     this.reconnect();
                 });
