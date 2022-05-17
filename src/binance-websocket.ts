@@ -31,7 +31,7 @@ export class BinanceWebsocket extends EventEmitter {
   /** Estat de la connexió. */
   protected status: WsConnectionState = 'initial';
   /** Subscripció al interval que envia un ping al servidor per mantenir viva la connexió.  */
-  protected pingInterval?: Subscription;
+  protected pingTimer?: Subscription;
   /** Subscriptor al timer que controla la resposta del servidor. */
   protected pongTimer?: Subscription;
   /** Clau associada amb l'stream d'usuari. */
@@ -71,7 +71,7 @@ export class BinanceWebsocket extends EventEmitter {
 
   get pingInterval(): number { return this.options?.pingInterval; }
 
-  get pingTimeout(): number { return this.options?.pingTimeout; }
+  get pongTimeout(): number { return this.options?.pongTimeout; }
 
   get defaultOptions(): Partial<BinanceWebsocketOptions> {
     return {
@@ -79,7 +79,7 @@ export class BinanceWebsocket extends EventEmitter {
       streamFormat: 'stream',
       reconnectPeriod: 5 * 1000,
       pingInterval: 2 * 60 * 1000,
-      pingTimeout: 6 * 60 * 1000,
+      pongTimeout: 6 * 60 * 1000,
     }
   }
 
@@ -151,7 +151,7 @@ export class BinanceWebsocket extends EventEmitter {
   async close() {
     try {
       if (this.status !== 'reconnecting') { this.status = 'closing'; }
-      if (this.pingInterval) { this.pingInterval.unsubscribe(); }
+      if (this.pingTimer) { this.pingTimer.unsubscribe(); }
       if (this.pongTimer) { this.pongTimer.unsubscribe(); }
       if (this.listenKeyTimer) { this.listenKeyTimer.unsubscribe(); }
       if (this.streamType === 'user') { await this.api.closeUserDataListenKey(this.listenKey); }
@@ -184,8 +184,8 @@ export class BinanceWebsocket extends EventEmitter {
     }
     this.status = 'connected';
     // Iniciem la comunicació ping-pong.
-    if (this.pingInterval) { this.pingInterval.unsubscribe(); }
-    this.pingInterval = interval(this.pingInterval).subscribe(() => this.ping());
+    if (this.pingTimer) { this.pingTimer.unsubscribe(); }
+    this.pingTimer = interval(this.pingInterval).subscribe(() => this.ping());
     // Establim les subscripcions dels emisors de market.
     this.respawnMarketStreamSubscriptions();
   }
@@ -216,7 +216,7 @@ export class BinanceWebsocket extends EventEmitter {
       if (this.pongTimer) { this.pongTimer.unsubscribe(); }
       
       if (typeof this.ws.ping === 'function') {
-        this.pongTimer = timer(this.pingTimeout).subscribe(() => {
+        this.pongTimer = timer(this.pongTimeout).subscribe(() => {
           console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
           this.reconnect();
         });

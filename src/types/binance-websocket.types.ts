@@ -35,7 +35,7 @@ export interface BinanceWebsocketOptions {
   /** Temps en milisegons per l'interval qua ha de manetenir viva la connexió. */
   pingInterval?: number;
   /** Temps en milisegons pel timeout si no hi ha la resposta per part del servidor. */
-  pingTimeout?: number;
+  pongTimeout?: number;
 }
 
 

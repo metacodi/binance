@@ -36,14 +36,14 @@ class BinanceWebsocket extends events_1.default {
     get isTest() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.isTest; }
     get reconnectPeriod() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.reconnectPeriod; }
     get pingInterval() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.pingInterval; }
-    get pingTimeout() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.pingTimeout; }
+    get pongTimeout() { var _a; return (_a = this.options) === null || _a === void 0 ? void 0 : _a.pongTimeout; }
     get defaultOptions() {
         return {
             isTest: false,
             streamFormat: 'stream',
             reconnectPeriod: 5 * 1000,
             pingInterval: 2 * 60 * 1000,
-            pingTimeout: 6 * 60 * 1000,
+            pongTimeout: 6 * 60 * 1000,
         };
     }
     getApiClient() {
@@ -166,7 +166,7 @@ class BinanceWebsocket extends events_1.default {
                 this.pongTimer.unsubscribe();
             }
             if (typeof this.ws.ping === 'function') {
-                this.pongTimer = (0, rxjs_1.timer)(this.pingTimeout).subscribe(() => {
+                this.pongTimer = (0, rxjs_1.timer)(this.pongTimeout).subscribe(() => {
                     console.log(this.wsId, `=> Pong timeout - closing socket to reconnect`);
                     this.reconnect();
                 });
