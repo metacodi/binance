@@ -767,7 +767,7 @@ export interface BinanceWsKline {
  * {@link https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-streams Kline/Candlestick Streams}
  * {@link https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-streams Kline/Candlestick Streams}
  */
-export function parseKline(data: BinanceWsKlineRaw): BinanceWsKline {
+export function parseBinanceWsKline(data: BinanceWsKlineRaw): BinanceWsKline {
   return {
     eventType: 'kline',
     symbol: data.s,

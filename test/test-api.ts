@@ -2,9 +2,10 @@ import * as fs from 'fs';
 
 import { BinanceApiSpot } from '../src/binance-api-spot';
 import { BinanceApiFutures } from '../src/binance-api-futures';
-import { BinanceApiOptions, BinanceMarketType } from '../src/types/binance.types';
+import { BinanceApiOptions, BinanceKlineInterval, BinanceMarketType } from '../src/types/binance.types';
 
 import { apiKeys, setTestKeys } from './api-keys';
+import { Resource } from '@metacodi/precode';
 
 /**
  * ```bash
@@ -12,13 +13,25 @@ import { apiKeys, setTestKeys } from './api-keys';
  * ```
  */
 
+
+/** Archivo donde se escribirá la salida. */
+const logFileName = 'results/klines-1m.json';
+
+/** Escribe en el archivo `logFileName`. */
+function writeLog(variable: string, data: any) {
+  const url = Resource.normalize(`./test/${logFileName}`);
+  const value = JSON.stringify(data, null, ' ');
+  console.log(value);
+  fs.appendFileSync(url, `const ${variable} = ${value};\n\n`);
+}
+
 const testApi = async () => {
   try {
     
     console.log('---------------- API TEST ----------------------');
  
-    const market: BinanceMarketType = 'spot';
-    // const market: BinanceMarketType = 'usdm';
+    // const market: BinanceMarketType = 'spot';
+    const market: BinanceMarketType = 'usdm';
 
     const options: BinanceApiOptions = {
       ...apiKeys,
@@ -82,7 +95,16 @@ const testApi = async () => {
 
       // console.log('getBalances() =>', await api.getBalances());
       // console.log('getAccountInformation() =>', await api.getAccountInformation());
-      console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
+      // console.log('getAccountTradeList() =>', await api.getAccountTradeList({ symbol: 'BNBUSDT' }));
+      const interval: BinanceKlineInterval = '1m';
+      const params = {
+        symbol: 'BTCUSDT',
+        interval,
+        startTime: 1663439700000,
+        endTime: 1663470600000,
+        limit: 1500,
+      };
+      writeLog('kline', await api.getSymbolKlines(params));
 
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker());
       // console.log('getSymbolPriceTicker() =>', await api.getSymbolPriceTicker({ symbol: 'BNBUSDT'}));

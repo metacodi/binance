@@ -16,7 +16,7 @@ import {
   BinanceWsBookTicker, parseBookTicker,
   BinanceWsFuturesAccountConfigUpdate,
   BinanceWsFuturesMarginCall,
-  BinanceWsKline, parseKline,
+  BinanceWsKline, parseBinanceWsKline,
   parseMarginCall,
 } from './types/binance-websocket.types';
 
@@ -421,6 +421,7 @@ export class BinanceWebsocket extends EventEmitter {
     return this.registerMarketStreamSubscription(key);
   }
 
+  /** {@link https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-streams Kline/Candlestick Streams} */
   kline(symbol: string, interval: BinanceKlineInterval): Subject<BinanceWsKline> {
     const key = `${symbol.toLocaleLowerCase()}@kline_${interval}`;
     return this.registerMarketStreamSubscription(key);
@@ -438,7 +439,7 @@ export class BinanceWebsocket extends EventEmitter {
 
   protected emitKline(event: any) {
     const key = this.streamFormat === 'raw' ? `${(event.s as string).toLowerCase()}@kline_${event.k.i}` : event.stream;
-    this.emitNextMarketStreamEvent(key, event, parseKline);
+    this.emitNextMarketStreamEvent(key, event, parseBinanceWsKline);
   }
 
   protected registerMarketStreamSubscription(key: string) {

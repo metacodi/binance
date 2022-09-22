@@ -8,5 +8,12 @@ if [%1]==[pub] (
 )
 
 if [%1]==[test] (
-  npx ts-node test/test.ts
+  if [%2]==[api] (
+    npx ts-node test/test-api.ts
+  ) else if [%2]==[user] (
+    npx ts-node test/test-ws-user.ts
+  ) else (
+    npx ts-node test/test-ws-market.ts
+  )
+
 )

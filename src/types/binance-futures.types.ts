@@ -117,6 +117,49 @@ export interface BinanceFuturesSymbolKlinesRequest {
   limit?: number;
 }
 
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data Kline/Candlestick Data} */
+export interface BinanceKline {
+  /** Open time. Ex: `1499040000000`. */
+  openTime: number;
+  /** Open. Ex: `"0.01634790"`. */
+  open: number;
+  /** High. Ex: `"0.80000000"`. */
+  high: number;
+  /** Low. Ex: `"0.01575800"`. */
+  low: number;
+  /** Close. Ex: `"0.01577100"`. */
+  close: number;
+  /** Volume. Ex: `"148976.11427815"`. */
+  volume: number;
+  /** Close time. Ex: `1499644799999`. */
+  closeTime: number;
+  /** Quote asset volume. Ex: `"2434.19055334"`. */
+  quoteVolume: number;
+  /** Number of trades. Ex: `308`. */
+  trades: number;
+  /** Taker buy base asset volume. Ex: `"1756.87402397"`. */
+  takerBaseVolume: number;
+  /** Taker buy quote asset volume. Ex: `"28.46694368"`. */
+  takerQuotequoteVolume: number;
+}
+
+/** {@link https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data Kline/Candlestick Data} */
+export function parseBinanceKline(data: any[]): BinanceKline {
+  return {
+    openTime: +data[0],
+    open: +data[1],
+    high: +data[2],
+    low: +data[3],
+    close: +data[4],
+    volume: +data[5],
+    closeTime: +data[6],
+    quoteVolume: +data[7],
+    trades: +data[8],
+    takerBaseVolume: +data[9],
+    takerQuotequoteVolume: +data[10],
+  };
+}
+
 
 // ---------------------------------------------------------------------------------------------------
 //  getAccountInformation

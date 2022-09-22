@@ -15,25 +15,38 @@ import { apiKeys, setTestKeys } from './api-keys';
  * ```
  */
 
+/** Archivo donde se escribirá la salida. */
+const logFileName = 'results/exemple-kline-01.ts';
+
+/** Escribe en el archivo `logFileName`. */
+function writeLog(variable: string, data: any) {
+  const url = Resource.normalize(`./test/${logFileName}`);
+  const value = JSON.stringify(data, null, ' ');
+  console.log(value);
+  fs.appendFileSync(url, `const ${variable} = ${value};\n\n`);
+}
+
 const testMarketWs = async () => {
   try {
 
     console.log('---------------- Market WebSocket TEST ----------------------');
  
-    const market: BinanceMarketType = 'spot';
-    // const market: BinanceMarketType = 'usdm';
+    // const market: BinanceMarketType = 'spot';
+    const market: BinanceMarketType = 'usdm';
 
     const marketOptions: BinanceWebsocketOptions = {
       streamType: 'market',
       market: market,
       streamFormat: 'stream',
+      // streamFormat: 'raw',
       // isTest: true,
     };
     
     const wsMarket = new BinanceWebsocket(marketOptions);
 
-    const klineUSDT = wsMarket.kline('BNBUSDT', '1m').subscribe(data => console.log(data));
-    const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
+    // const klineUSDT = wsMarket.kline('BTCUSDT', '1m').subscribe(data => writeLog('exemple_01', data));
+    const klineUSDT = wsMarket.kline('BTCUSDT', '1m').subscribe(data => console.log(data));
+    // const miniTickerUSDT = wsMarket.miniTicker('BTCUSDT').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
     // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log([data.eventType, data.symbol, data.close]));
     // const miniTickerUSDT = wsMarket.miniTicker('BNBUSDT').subscribe(data => console.log(data));
     // const miniTickerEUR = wsMarket.miniTicker('BNBEUR').subscribe(data => console.log(data));
