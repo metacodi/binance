@@ -11,7 +11,7 @@ export declare class BinanceWebsocket extends EventEmitter {
     protected ws: WebSocket;
     protected api: BinanceApi;
     protected status: WsConnectionState;
-    protected pingInterval?: Subscription;
+    protected pingTimer?: Subscription;
     protected pongTimer?: Subscription;
     protected listenKey?: string;
     protected listenKeyTimer?: Subscription;

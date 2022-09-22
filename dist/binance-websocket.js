@@ -103,8 +103,8 @@ class BinanceWebsocket extends events_1.default {
                 if (this.status !== 'reconnecting') {
                     this.status = 'closing';
                 }
-                if (this.pingInterval) {
-                    this.pingInterval.unsubscribe();
+                if (this.pingTimer) {
+                    this.pingTimer.unsubscribe();
                 }
                 if (this.pongTimer) {
                     this.pongTimer.unsubscribe();
@@ -139,10 +139,10 @@ class BinanceWebsocket extends events_1.default {
             this.emit('open', { event });
         }
         this.status = 'connected';
-        if (this.pingInterval) {
-            this.pingInterval.unsubscribe();
+        if (this.pingTimer) {
+            this.pingTimer.unsubscribe();
         }
-        this.pingInterval = (0, rxjs_1.interval)(this.pingInterval).subscribe(() => this.ping());
+        this.pingTimer = (0, rxjs_1.interval)(this.pingInterval).subscribe(() => this.ping());
         this.respawnMarketStreamSubscriptions();
     }
     onWsClose(event) {
@@ -353,7 +353,7 @@ class BinanceWebsocket extends events_1.default {
     }
     emitKline(event) {
         const key = this.streamFormat === 'raw' ? `${event.s.toLowerCase()}@kline_${event.k.i}` : event.stream;
-        this.emitNextMarketStreamEvent(key, event, binance_websocket_types_1.parseKline);
+        this.emitNextMarketStreamEvent(key, event, binance_websocket_types_1.parseBinanceWsKline);
     }
     registerMarketStreamSubscription(key) {
         if (this.streamType === 'user') {

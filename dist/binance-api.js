@@ -64,7 +64,7 @@ class BinanceApi {
             const { serialisedParams, signature, requestBody } = yield this.getRequestSignature(params, apiSecret, recvWindow, timestamp);
             if (!isPublic && createSignature) {
                 const concat = config.url.includes('?') ? (config.url.endsWith('?') ? '' : '&') : '?';
-                const query = [serialisedParams, 'signature=' + signature].join('&');
+                const query = [serialisedParams, `signature=${signature}`].join('&');
                 config.url += concat + query;
             }
             else if (method === 'GET' || method === 'DELETE') {

@@ -65,6 +65,20 @@ export interface BinanceFuturesSymbolKlinesRequest {
     endTime?: number;
     limit?: number;
 }
+export interface BinanceKline {
+    openTime: number;
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    volume: number;
+    closeTime: number;
+    quoteVolume: number;
+    trades: number;
+    takerBaseVolume: number;
+    takerQuotequoteVolume: number;
+}
+export declare function parseBinanceKline(data: any[]): BinanceKline;
 export interface BinanceFuturesAccountInformation {
     feeTier: string;
     canTrade: boolean;

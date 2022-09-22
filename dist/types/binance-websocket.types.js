@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseKline = exports.parseBookTicker = exports.parseMiniTicker = exports.parseOrderUpdate = exports.parseAccountConfigUpdate = exports.parseMarginCall = exports.parseAccountUpdate = exports.parseBalanceUpdate = void 0;
+exports.parseBinanceWsKline = exports.parseBookTicker = exports.parseMiniTicker = exports.parseOrderUpdate = exports.parseAccountConfigUpdate = exports.parseMarginCall = exports.parseAccountUpdate = exports.parseBalanceUpdate = void 0;
 function parseBalanceUpdate(data) {
     if (data.e === 'balanceUpdate') {
         return {
@@ -226,7 +226,7 @@ function parseBookTicker(data) {
     };
 }
 exports.parseBookTicker = parseBookTicker;
-function parseKline(data) {
+function parseBinanceWsKline(data) {
     return {
         eventType: 'kline',
         symbol: data.s,
@@ -249,5 +249,5 @@ function parseKline(data) {
         ignored: +data.k.B,
     };
 }
-exports.parseKline = parseKline;
+exports.parseBinanceWsKline = parseBinanceWsKline;
 //# sourceMappingURL=binance-websocket.types.js.map

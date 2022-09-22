@@ -395,6 +395,6 @@ export interface BinanceWsKline {
     quoteVolumeActive: number;
     ignored: number;
 }
-export declare function parseKline(data: BinanceWsKlineRaw): BinanceWsKline;
+export declare function parseBinanceWsKline(data: BinanceWsKlineRaw): BinanceWsKline;
 export {};
 //# sourceMappingURL=binance-websocket.types.d.ts.map
