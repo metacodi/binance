@@ -1,4 +1,4 @@
-const exemple_8_orderUpdate_ = {
+const exemple_8_orderUpdate_BuyMarket_New = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646748898535,
  "transactionTime": 1646748898528,
@@ -35,7 +35,7 @@ const exemple_8_orderUpdate_ = {
  }
 };
 
-const exemple_8_balanceUpdate_ = {
+const exemple_8_balanceUpdate_BuyMarket_Filled = {
  "eventType": "ACCOUNT_UPDATE",
  "eventTime": 1646748898535,
  "transactionId": 1646748898528,
@@ -64,7 +64,7 @@ const exemple_8_balanceUpdate_ = {
  }
 };
 
-const exemple_8_orderUpdate_ = {
+const exemple_8_orderUpdate_BuyMarket_Filled = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646748898535,
  "transactionTime": 1646748898528,
@@ -102,7 +102,7 @@ const exemple_8_orderUpdate_ = {
  }
 };
 
-const exemple_8_orderUpdate_ = {
+const exemple_8_orderUpdate_SellLimit_New = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646749022187,
  "transactionTime": 1646749022177,
@@ -139,7 +139,7 @@ const exemple_8_orderUpdate_ = {
  }
 };
 
-const exemple_8_orderUpdate_ = {
+const exemple_8_orderUpdate_SellLimit_Expired = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646750682315,
  "transactionTime": 1646750682307,
@@ -176,7 +176,7 @@ const exemple_8_orderUpdate_ = {
  }
 };
 
-const exemple_8_orderUpdate_ = {
+const exemple_8_orderUpdate_SellMarket2_New = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646750682315,
  "transactionTime": 1646750682307,
@@ -213,7 +213,7 @@ const exemple_8_orderUpdate_ = {
  }
 };
 
-const exemple_8_balanceUpdate_ = {
+const exemple_8_balanceUpdate_SellMarket2_Filled = {
  "eventType": "ACCOUNT_UPDATE",
  "eventTime": 1646750682315,
  "transactionId": 1646750682307,
@@ -224,7 +224,7 @@ const exemple_8_balanceUpdate_ = {
     "asset": "USDT",
     "balanceChange": 0,
     "crossWalletBalance": 31.34460743,
-    "walletBalance": 31.34460743
+    "walletBalance": 31.2,61
    }
   ],
   "updatedPositions": [
@@ -242,7 +242,7 @@ const exemple_8_balanceUpdate_ = {
  }
 };
 
-const exemple_8_orderUpdate_ = {
+const exemple_8_orderUpdate_SellMarket2_Filled = {
  "eventType": "ORDER_TRADE_UPDATE",
  "eventTime": 1646750682315,
  "transactionTime": 1646750682307,
@@ -280,7 +280,8 @@ const exemple_8_orderUpdate_ = {
  }
 };
 
-const exemple_8_balanceUpdate_ = {
+
+const exemple_8_balanceUpdate_Withdraw = {
  "eventType": "ACCOUNT_UPDATE",
  "eventTime": 1646753256852,
  "transactionId": 1646753256845,
@@ -298,7 +299,7 @@ const exemple_8_balanceUpdate_ = {
  }
 };
 
-const exemple_8_balanceUpdate_ = {
+const exemple_8_balanceUpdate_Deposit = {
  "eventType": "ACCOUNT_UPDATE",
  "eventTime": 1646753271772,
  "transactionId": 1646753271768,
