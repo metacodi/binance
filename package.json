@@ -4,6 +4,9 @@
   "description": "Binance API Client",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build": "tsc",
     "serve": "nodemon test/test.ts --exec ts-node",
@@ -31,27 +34,25 @@
   "homepage": "https://github.com/metacodi/binance#readme",
   "license": "ISC",
   "peerDependencies": {
+    "@metacodi/abstract-exchange": "^1.0.2",
     "axios": "^0.24.0",
     "isomorphic-ws": "^4.0.1",
-    "rxjs": "~6.6.0",
+    "rxjs": "^7.5.7",
     "ws": "^8.4.2"
   },
   "devDependencies": {
-    "@angular-eslint/builder": "^13.0.1",
-    "@angular-eslint/eslint-plugin": "^13.0.1",
-    "@angular-eslint/eslint-plugin-template": "^13.0.1",
-    "@angular-eslint/template-parser": "^13.0.1",
-    "@metacodi/precode": "^1.0.52",
-    "@types/node": "^16.11.22",
+    "@metacodi/node-utils": "^1.0.11",
+    "@types/node": "^18.7.23",
     "@types/ws": "^8.2.2",
-    "@typescript-eslint/eslint-plugin": "^5.9.1",
-    "@typescript-eslint/parser": "^5.9.1",
-    "eslint": "^8.6.0",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsdoc": "^37.6.1",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "commander": "^4.1.1",
+    "eslint": "^8.24.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^39.3.6",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "nodemon": "^2.0.15",
-    "ts-node": "^10.5.0",
-    "typescript": "^4.5.3"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
   }
 }
