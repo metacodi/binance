@@ -21,5 +21,6 @@ __exportStar(require("./types/binance-websocket.types"), exports);
 __exportStar(require("./binance-api"), exports);
 __exportStar(require("./binance-api-spot"), exports);
 __exportStar(require("./binance-api-futures"), exports);
+__exportStar(require("./binance-exchange"), exports);
 __exportStar(require("./binance-websocket"), exports);
 //# sourceMappingURL=index.js.map
