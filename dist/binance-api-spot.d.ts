@@ -1,5 +1,6 @@
+import { Limit } from '@metacodi/abstract-exchange';
 import { BinanceApi } from './binance-api';
-import { BinanceApiOptions, BinanceMarketType, BinanceSpotSubdomain } from './types/binance.types';
+import { BinanceApiOptions, BinanceMarketType, BinanceRateLimiter, BinanceSpotSubdomain } from './types/binance.types';
 import { BinanceSpotTradeListRequest, BinanceSpotTradeList, BinanceSpotAccountInformation, BinanceSpotExchangeInfoRequest, BinanceSpotExchangeInfo, BinanceSpotAccountBalance, BinanceSpotSymbolPriceTickerRequest, BinanceSpotSymbolPriceTicker, BinanceSpotSymbolOrderBookTickerRequest, BinanceSpotSymbolOrderBookTicker, BinanceSpotGetAllOrdersRequest, BinanceSpotGetOpenOrdersRequest, BinanceSpotGetOrderRequest, BinanceSpotOrder, BinanceSpotPostOrderRequest, BinanceSpotNewOrder, BinanceSpotCancelOrderRequest, BinanceSpotCancelAllSymbolOrdersRequest, BinanceSpotCancelOrder, BinanceSpotSymbolKlinesRequest } from './types/binance-spot.types';
 export declare class BinanceApiSpot extends BinanceApi {
     market: BinanceMarketType;
@@ -7,6 +8,7 @@ export declare class BinanceApiSpot extends BinanceApi {
     constructor(options?: BinanceApiOptions);
     baseUrl(): string;
     getExchangeInfo(params?: BinanceSpotExchangeInfoRequest): Promise<BinanceSpotExchangeInfo>;
+    protected parseBinanceRateLimit(data: BinanceRateLimiter): Limit;
     getSymbolPriceTicker(params?: BinanceSpotSymbolPriceTickerRequest): Promise<BinanceSpotSymbolPriceTicker | BinanceSpotSymbolPriceTicker[]>;
     getSymbolOrderBookTicker(params?: BinanceSpotSymbolOrderBookTickerRequest): Promise<BinanceSpotSymbolOrderBookTicker | BinanceSpotSymbolOrderBookTicker[]>;
     getSymbolKlines(params?: BinanceSpotSymbolKlinesRequest): Promise<any[]>;

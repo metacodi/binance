@@ -1,5 +1,9 @@
+import moment from 'moment';
+
+import { Limit } from '@metacodi/abstract-exchange';
+
 import { BinanceApi } from './binance-api';
-import { BinanceApiOptions, BinanceApiResquestOptions, BinanceMarketType, BinanceSpotSubdomain } from './types/binance.types';
+import { BinanceApiOptions, BinanceApiResquestOptions, BinanceMarketType, BinanceRateLimiter, BinanceSpotSubdomain } from './types/binance.types';
 import { BinanceSpotTradeListRequest,
   BinanceSpotTradeList,
   BinanceSpotAccountInformation,
@@ -46,6 +50,14 @@ export class BinanceApiSpot extends BinanceApi {
   getExchangeInfo(params?: BinanceSpotExchangeInfoRequest): Promise<BinanceSpotExchangeInfo> {
     if (params?.symbols) { params.symbols = JSON.stringify(params.symbols) as any; }
     return this.get('api/v3/exchangeInfo', { params, isPublic: true, baseUrlOverride: 'api.binance.com' });
+  }
+
+  protected parseBinanceRateLimit(data: BinanceRateLimiter): Limit {
+    const { rateLimitType, intervalNum, limit } = data;
+    const unitOfTime = data.interval.toLowerCase() as moment.unitOfTime.DurationAs;
+    const seconds = moment.duration(intervalNum, unitOfTime).asSeconds();
+    const maxQuantity = Math.floor(data.limit / seconds);
+    return { type: rateLimitType, maxQuantity, period: 1, unitOfTime };
   }
 
   /** {@link https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker Symbol Price Ticker} */

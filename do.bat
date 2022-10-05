@@ -15,5 +15,4 @@ if [%1]==[test] (
   ) else (
     npx ts-node test/test-ws-market.ts
   )
-
 )

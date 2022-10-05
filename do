@@ -13,6 +13,13 @@ fi
 
 if [ $FIRST_ARGUMENT == "test" ] 
 then
-  npx ts-node test/test.ts
+  if [ $SECOND_ARGUMENT == "api" ] 
+  then
+    npx ts-node test/test-api.ts
+  else if [ $SECOND_ARGUMENT == "market" ] 
+    npx ts-node test/test-ws-market.ts
+  else if [ $SECOND_ARGUMENT == "user" ] 
+    npx ts-node test/test-ws-user.ts
+  fi
 fi
 

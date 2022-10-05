@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BinanceApiSpot = void 0;
+const moment_1 = __importDefault(require("moment"));
 const binance_api_1 = require("./binance-api");
 class BinanceApiSpot extends binance_api_1.BinanceApi {
     constructor(options) {
@@ -14,6 +18,13 @@ class BinanceApiSpot extends binance_api_1.BinanceApi {
             params.symbols = JSON.stringify(params.symbols);
         }
         return this.get('api/v3/exchangeInfo', { params, isPublic: true, baseUrlOverride: 'api.binance.com' });
+    }
+    parseBinanceRateLimit(data) {
+        const { rateLimitType, intervalNum, limit } = data;
+        const unitOfTime = data.interval.toLowerCase();
+        const seconds = moment_1.default.duration(intervalNum, unitOfTime).asSeconds();
+        const maxQuantity = Math.floor(data.limit / seconds);
+        return { type: rateLimitType, maxQuantity, period: 1, unitOfTime };
     }
     getSymbolPriceTicker(params) {
         return this.get('api/v3/ticker/price', { isPublic: true, params });

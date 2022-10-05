@@ -1,6 +1,6 @@
 {
   "name": "@metacodi/binance",
-  "version": "1.0.69",
+  "version": "1.0.70",
   "description": "Binance API Client",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -33,13 +33,15 @@
   "author": "Metacodi, S.L.",
   "homepage": "https://github.com/metacodi/binance#readme",
   "license": "ISC",
-  "peerDependencies": {
-    "@metacodi/abstract-exchange": "^1.0.8",
-    "@metacodi/node-utils": "^1.0.15",
+  "dependencies": {
+    "@metacodi/abstract-exchange": "^1.0.14",
     "axios": "^0.24.0",
     "isomorphic-ws": "^4.0.1",
     "rxjs": "~6.6.0",
     "ws": "^8.4.2"
+  },
+  "peerDependencies": {
+    "@metacodi/node-utils": "^1.0.16"
   },
   "devDependencies": {
     "@types/node": "^18.7.23",
