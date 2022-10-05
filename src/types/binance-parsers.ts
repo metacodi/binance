@@ -1,7 +1,7 @@
 import moment from "moment";
 
 import { timestamp } from "@metacodi/node-utils";
-import { Balance, CoinType, KlineIntervalType, Limit, MarketKline, MarketPrice, MarketSymbol, MarketType, Order, OrderBookPrice, OrderEvent, OrderSide, OrderStatus, OrderType, ResultOrderStatus, SymbolType } from "@metacodi/abstract-exchange";
+import { Balance, CoinType, KlineIntervalType, Limit, MarketKline, MarketPrice, MarketSymbol, MarketType, Order, OrderBookPrice, OrderSide, OrderStatus, OrderType, ResultOrderStatus, SymbolType } from "@metacodi/abstract-exchange";
 
 import { BinanceWsSpotOrderUpdate, BinanceWsFuturesOrderUpdate, BinanceWs24hrMiniTicker, BinanceWsKline } from "./binance-websocket.types";
 import { BinanceSpotAccountBalance, BinanceSpotOrder, BinanceSpotSymbolExchangeInfo, BinanceSpotSymbolOrderBookTicker, BinanceSpotSymbolPriceTicker } from "./binance-spot.types";
@@ -260,7 +260,7 @@ const parseBinanceOrder = (order: BinanceSpotOrder | BinanceFuturesOrder, market
   }
 }
 
-const parseBinanceOrderUpdate = (orderUpdate: BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate, market: MarketType): OrderEvent => {
+const parseBinanceOrderUpdate = (orderUpdate: BinanceWsSpotOrderUpdate | BinanceWsFuturesOrderUpdate, market: MarketType): Order => {
   const result = (orderUpdate as any).order || orderUpdate;
   const status: OrderStatus = parseBinanceStatus(result.orderStatus);
   if ((result as any).originalClientOrderId) {
@@ -278,11 +278,10 @@ const parseBinanceOrderUpdate = (orderUpdate: BinanceWsSpotOrderUpdate | Binance
       price: spot.lastTradePrice,
       posted: timestamp(spot.orderCreationTime),
       executed: isExecutedStatus(status) ? timestamp(spot.tradeTime) : undefined,
-    };
-    return { order, data: {
       commission: spot.commission,
       commissionAsset: (spot.commissionAsset as CoinType),
-    }} as OrderEvent;
+    };
+    return order;
 
   } else {
     // FUTURES
@@ -299,13 +298,12 @@ const parseBinanceOrderUpdate = (orderUpdate: BinanceWsSpotOrderUpdate | Binance
       quoteQuantity: +futures.orderFilledAccumulatedQuantity * (futures.averagePrice ? +futures.averagePrice : +futures.lastFilledPrice),
       price: futures.averagePrice ? futures.averagePrice : futures.lastFilledPrice,
       profit: futures.realisedProfit,
+      commission: futures.commissionAmount,
+      commissionAsset: (futures.commissionAsset as CoinType),
     };
     const time = timestamp(futures.orderTradeTime);
     if (isExecutedStatus(status)) { order.executed = time; } else { order.posted = time; }
-    return { order, data: {
-      commission: futures.commissionAmount,
-      commissionAsset: (futures.commissionAsset as CoinType),
-    }} as OrderEvent;
+    return order;
   }
 }
 

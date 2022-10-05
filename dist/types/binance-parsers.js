@@ -260,11 +260,10 @@ const parseBinanceOrderUpdate = (orderUpdate, market) => {
             price: spot.lastTradePrice,
             posted: (0, node_utils_1.timestamp)(spot.orderCreationTime),
             executed: isExecutedStatus(status) ? (0, node_utils_1.timestamp)(spot.tradeTime) : undefined,
+            commission: spot.commission,
+            commissionAsset: spot.commissionAsset,
         };
-        return { order, data: {
-                commission: spot.commission,
-                commissionAsset: spot.commissionAsset,
-            } };
+        return order;
     }
     else {
         const futures = result;
@@ -279,6 +278,8 @@ const parseBinanceOrderUpdate = (orderUpdate, market) => {
             quoteQuantity: +futures.orderFilledAccumulatedQuantity * (futures.averagePrice ? +futures.averagePrice : +futures.lastFilledPrice),
             price: futures.averagePrice ? futures.averagePrice : futures.lastFilledPrice,
             profit: futures.realisedProfit,
+            commission: futures.commissionAmount,
+            commissionAsset: futures.commissionAsset,
         };
         const time = (0, node_utils_1.timestamp)(futures.orderTradeTime);
         if (isExecutedStatus(status)) {
@@ -287,10 +288,7 @@ const parseBinanceOrderUpdate = (orderUpdate, market) => {
         else {
             order.posted = time;
         }
-        return { order, data: {
-                commission: futures.commissionAmount,
-                commissionAsset: futures.commissionAsset,
-            } };
+        return order;
     }
 };
 const parseBinanceRateLimit = (data) => {

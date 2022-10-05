@@ -11,6 +11,11 @@ then
   npx ts-node publish/publish.ts
 fi
 
+if [ $FIRST_ARGUMENT == "metacodi" ] 
+then
+  npx ts-node publish/upgrade-metacodi-dependencies.ts
+fi
+
 if [ $FIRST_ARGUMENT == "test" ] 
 then
   if [ $SECOND_ARGUMENT == "api" ] 
